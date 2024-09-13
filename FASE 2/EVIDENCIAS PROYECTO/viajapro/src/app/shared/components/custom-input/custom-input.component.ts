@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 @Component({
@@ -14,6 +14,8 @@ export class CustomInputComponent  implements OnInit {
   @Input() label!: string;
   @Input() autocomplete!: string;
   @Input() icon!: string;
+  @Output() blur = new EventEmitter<void>();
+
 
   isPassword!: boolean;
   hide: boolean = true;
@@ -36,5 +38,8 @@ export class CustomInputComponent  implements OnInit {
     };
   }
 
+  onBlur() {
+    this.blur.emit();
+  }
 
 }

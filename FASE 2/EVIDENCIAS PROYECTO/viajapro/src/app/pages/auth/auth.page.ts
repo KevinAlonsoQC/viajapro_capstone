@@ -50,10 +50,10 @@ export class AuthPage implements OnInit {
       const loading = await this.utilsSvc.loading();
       await loading.present();
 
-      let path = `users/${uid}`
+      let path = `usuario/${uid}`
 
       this.firebaseSvc.getDocument(path).then((user: User) => {
-        this.utilsSvc.saveInLocalStorage('user', user)
+        this.utilsSvc.saveInLocalStorage('usuario', user)
         this.utilsSvc.routerLink('/main/home');
         this.form.reset();
 

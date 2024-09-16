@@ -1,8 +1,6 @@
-import { Injectable, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, GuardResult, MaybeAsync, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { FirebaseService } from '../services/firebase.service';
-import { UtilsService } from '../services/utils.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,26 +8,21 @@ import { UtilsService } from '../services/utils.service';
 
 export class AuthGuard implements CanActivate {
 
-  firebaseSvc = inject(FirebaseService)
-  utilsSvc = inject(UtilsService)
+  constructor(
+    private router: Router,
+    ) { }
 
   canActivate(
-    route: ActivatedRouteSnapshot, 
+    route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-      let user = localStorage.getItem('user');
+      if(localStorage.getItem('usuario')){
+        return true;
+      }else{
+        this.router.navigateByUrl('')
+        return false;
+      }
 
-    return new Promise((resolve) => {
-      this.firebaseSvc.getAuth().onAuthStateChanged((auth) => {
-        if(auth){
-          if(user){
-            resolve(true)
-          }
-        }else{
-          this.utilsSvc.routerLink('/auth');
-          resolve(false)
-        }
-      })
-    })
   }
+
 }

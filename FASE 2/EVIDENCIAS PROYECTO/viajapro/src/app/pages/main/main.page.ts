@@ -16,8 +16,9 @@ export class MainPage implements OnInit {
   public usuario: any;
 
   constructor() { }
-  ngOnInit() {
-    this.getInfoAndTipoCuenta();
+  
+  async ngOnInit() {
+    await this.getInfoAndTipoCuenta();
   }
 
   async getInfoAndTipoCuenta() {
@@ -27,6 +28,7 @@ export class MainPage implements OnInit {
     try {
       this.usuario = this.utilsSvc.getFromLocalStorage('usuario')
       const tipo_cuenta = this.usuario.tipo_usuario;
+
       if(tipo_cuenta == "0"){
         this.utilsSvc.routerLink('');
       }else if(tipo_cuenta == "1"){
@@ -48,7 +50,7 @@ export class MainPage implements OnInit {
     } catch (error) {
       console.log(error);
       this.utilsSvc.presentToast({
-        message: 'No se pudo obtener los datos :(',
+        message: 'No se pudo cargar el tipo de usuario',
         duration: 3500,
         color: 'primary',
         position: 'middle',

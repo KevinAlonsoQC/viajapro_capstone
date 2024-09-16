@@ -1,4 +1,4 @@
-<ion-menu contentId="main-content">
+<ion-menu menuId="choferMenu" contentId="chofer-content">
   <ion-header>
     <ion-toolbar>
       <ion-title>
@@ -11,10 +11,10 @@
   </ion-header>
   <ion-content class="ion-padding">
     <ion-list>
-        <ion-item routerLink="/ruta1">Ruta 1</ion-item>
-        <ion-item routerLink="/ruta2">Ruta 2</ion-item>
-        <ion-item routerLink="/ruta2">Ruta 2</ion-item>
-        <ion-item routerLink="/ruta2">Ruta 2</ion-item>
+      <ion-item routerLink="/ruta1">Chofer</ion-item>
+      <ion-item routerLink="/ruta2">Chofer</ion-item>
+      <ion-item routerLink="/ruta2">Chofer</ion-item>
+      <ion-item routerLink="/ruta2">Chofer</ion-item>
       <ion-item>
         <ion-button color="danger" (click)="signOut()" expand="block" mode="ios" class="submit" type="submit">
           Cerrar Sesión
@@ -25,7 +25,21 @@
   </ion-content>
 </ion-menu>
 
-<!-- Contenido principal -->
-<ion-content id="main-content">
-  <app-header-menu title="Inicio"></app-header-menu>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button menu="choferMenu"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      <strong>Inicio</strong>
+      <div class="admin">
+        V I A J A <strong style="color: #FFC300;">PRO</strong>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- Contenido principal / Cuerpo sector amarillo-->
+<ion-content id="chofer-content">
+
 </ion-content>

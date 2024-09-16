@@ -1,33 +1,9 @@
-<ion-menu contentId="main-content">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>
-        <strong>Menú</strong>
-        <div class="admin">
-          V I A J A <strong style="color: #000;">PRO</strong>
-        </div>
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content class="ion-padding">
-    <ion-list>
-      <!--
-        <ion-item routerLink="/ruta1">Ruta 1</ion-item>
-        <ion-item routerLink="/ruta2">Ruta 2</ion-item>
-        <ion-item routerLink="/ruta2">Ruta 2</ion-item>
-        <ion-item routerLink="/ruta2">Ruta 2</ion-item>
-      -->
-      <ion-item>
-        <ion-button color="danger" (click)="signOut()" expand="block" mode="ios" class="submit" type="submit">
-          Cerrar Sesión
-          <ion-icon slot="end" name="exit-outline"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu>
 
 <!-- Contenido principal -->
 <ion-content id="main-content">
   <app-header-menu title="Inicio"></app-header-menu>
+  <ion-button color="danger" (click)="signOut()" expand="block" mode="ios" class="submit" type="submit">
+    Cerrar Sesión
+    <ion-icon slot="end" name="exit-outline"></ion-icon>
+  </ion-button>
 </ion-content>

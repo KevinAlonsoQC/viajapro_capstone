@@ -162,7 +162,8 @@
       "img_vehiculo": "url_a_la_imagen",
       "estado_vehiculo": "A",
       "asientos_dispo_vehiculo": 4,
-      "coordenadas_vehiculo": "coordenadas GPS"
+      "coordenadas_vehiculo": "coordenadas GPS",
+      "marca_vehiculo": 1
     }
   ],
   "historial_pago": [

@@ -11,9 +11,13 @@ export class PasajeroPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
+  usuario: any;
+
   constructor() { }
 
   ngOnInit() {
+    this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
+    console.log(this.usuario)
   }
 
   signOut() {

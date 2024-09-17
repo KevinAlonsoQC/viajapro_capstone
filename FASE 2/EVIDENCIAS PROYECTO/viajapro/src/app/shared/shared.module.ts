@@ -6,6 +6,7 @@ import { LogoComponent } from './components/logo/logo.component';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuMasterComponent } from './components/menu-master/menu-master.component';
+import { AvatarComponent } from './components/avatar/avatar.component';
 import { BotonLargeComponent } from './components/boton-large/boton-large.component';
 import { RouterModule } from '@angular/router';
 
@@ -16,6 +17,8 @@ import { RouterModule } from '@angular/router';
     CustomInputComponent,
     LogoComponent,
     MenuMasterComponent,
+    AvatarComponent,
+    MenuMasterComponent,
     BotonLargeComponent
   ],
   exports: [
@@ -25,6 +28,7 @@ import { RouterModule } from '@angular/router';
     ReactiveFormsModule,
     FormsModule,
     MenuMasterComponent,
+    AvatarComponent,
     BotonLargeComponent
   ],
   imports: [

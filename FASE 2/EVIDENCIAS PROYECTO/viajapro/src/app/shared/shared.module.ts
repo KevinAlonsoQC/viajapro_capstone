@@ -6,14 +6,15 @@ import { LogoComponent } from './components/logo/logo.component';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuMasterComponent } from './components/menu-master/menu-master.component';
-
+import { AvatarComponent } from './components/avatar/avatar.component';
 
 @NgModule({
   declarations: [
     HeaderComponent,
     CustomInputComponent,
     LogoComponent,
-    MenuMasterComponent
+    MenuMasterComponent,
+    AvatarComponent
   ],
   exports: [
     HeaderComponent,
@@ -21,7 +22,8 @@ import { MenuMasterComponent } from './components/menu-master/menu-master.compon
     LogoComponent,
     ReactiveFormsModule,
     FormsModule,
-    MenuMasterComponent
+    MenuMasterComponent,
+    AvatarComponent
   ],
   imports: [
     CommonModule,

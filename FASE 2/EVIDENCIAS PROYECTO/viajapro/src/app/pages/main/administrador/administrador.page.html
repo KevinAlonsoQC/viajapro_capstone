@@ -30,12 +30,15 @@
     <ion-buttons slot="start">
       <ion-menu-button menu="adminMenu"></ion-menu-button>
     </ion-buttons>
+
     <ion-title>
       <strong>Inicio</strong>
       <div class="admin">
         V I A J A <strong style="color: #FFC300;">PRO</strong>
       </div>
     </ion-title>
+
+    <app-avatar slot="end" [img]="usuario.img_usuario" [nombre]="usuario.name"></app-avatar>
   </ion-toolbar>
 </ion-header>
 
@@ -43,4 +46,20 @@
 <ion-content id="admin-content">
 </ion-content>
 
-<app-menu-master icon_1="car-outline" txt_icon_1="Colectivos" txt_icon_2="Administracion" icon_2="settings-outline" txt_icon_3="Pagos" icon_3="wallet-outline"  txt_icon_4="Mi perfil" icon_4="person-outline"></app-menu-master>
+<app-menu-master 
+  txt_icon_1="Administración" 
+  icon_1="settings-outline" 
+  url_icon_1="main"
+
+  txt_icon_2="Colectivos" 
+  icon_2="car-outline"
+  url_icon_2="main"
+
+  txt_icon_3="Personal" 
+  icon_3="person-outline"
+  url_icon_3="main"
+
+  txt_icon_4="Finanzas" 
+  icon_4="wallet-outline"
+  url_icon_4="main"
+></app-menu-master>

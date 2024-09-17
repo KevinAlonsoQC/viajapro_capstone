@@ -10,10 +10,13 @@ import { UtilsService } from 'src/app/services/utils.service';
 export class AdministradorPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
+  usuario: any;
 
   constructor() { }
 
   ngOnInit() {
+    this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
+    console.log(this.usuario)
   }
 
   signOut() {

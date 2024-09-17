@@ -22,16 +22,12 @@
     <br>
     <ion-row>
       <ion-col>
-        <ion-button class="boton_i"  expand="block" [routerLink]="['/auth']" >
-          Ingresar
-        </ion-button>
+        <app-boton-large texto="Ingresar" color="#000814" [routerLink]="['/auth']"></app-boton-large>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-button class="boton_r" expand="block" [routerLink]="['/auth/sign-up']">
-          Registrarme
-        </ion-button>
+        <app-boton-large texto="Resgistrarme" color="#FF8811" [routerLink]="['/auth/sign-up']"></app-boton-large>
       </ion-col>
     </ion-row>
   </ion-grid>

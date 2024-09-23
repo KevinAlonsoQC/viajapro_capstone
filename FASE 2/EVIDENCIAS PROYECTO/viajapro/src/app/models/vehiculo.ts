@@ -9,5 +9,5 @@ export interface Vehiculo {
     estado_vehiculo: string;
     asientos_dispo_vehiculo?: number; // Opcional
     coordenadas_vehiculo?: string; // Opcional
-    tipo_usuario: string;  // Referencia a TipoUsuario
+    usuario: string;  // Referencia a TipoUsuario
 }

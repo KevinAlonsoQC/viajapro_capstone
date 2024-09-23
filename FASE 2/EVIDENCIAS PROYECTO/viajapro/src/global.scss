@@ -130,3 +130,20 @@ ion-button {
     }
 }
 
+.toolbar-superior{
+    --background:#FFCE48;
+}
+
+.back-button{
+    background-color:#FFF8F0;
+    height: 30px;
+    width: 30px;
+    color: #1F1F1F;
+    border-radius: 10px;
+
+    .back-button ::after{
+        height: 16px;
+        width: 16px;
+    }
+}
+

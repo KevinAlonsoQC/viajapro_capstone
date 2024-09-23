@@ -9,6 +9,10 @@ import { MenuMasterComponent } from './components/menu-master/menu-master.compon
 import { AvatarComponent } from './components/avatar/avatar.component';
 import { BotonLargeComponent } from './components/boton-large/boton-large.component';
 import { RouterModule } from '@angular/router';
+import { CampanaComponent } from './components/campana/campana.component';
+import { LogoSmallComponent } from './components/logo-small/logo-small.component';
+import { AvatarLargeComponent } from './components/avatar-large/avatar-large.component';
+import { ProfileBotonEditComponent } from './components/profile-boton-edit/profile-boton-edit.component';
 
 
 @NgModule({
@@ -19,7 +23,11 @@ import { RouterModule } from '@angular/router';
     MenuMasterComponent,
     AvatarComponent,
     MenuMasterComponent,
-    BotonLargeComponent
+    BotonLargeComponent,
+    CampanaComponent,
+    LogoSmallComponent,
+    AvatarLargeComponent,
+    ProfileBotonEditComponent
   ],
   exports: [
     HeaderComponent,
@@ -29,7 +37,12 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     MenuMasterComponent,
     AvatarComponent,
-    BotonLargeComponent
+    BotonLargeComponent,
+    CampanaComponent,
+    LogoSmallComponent,
+    AvatarLargeComponent,
+    ProfileBotonEditComponent
+
   ],
   imports: [
     CommonModule,

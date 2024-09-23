@@ -5,7 +5,7 @@ import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, up
 import { User } from '../models/user';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
-import { getFirestore, setDoc, doc, getDoc, getDocs, collection } from '@angular/fire/firestore';
+import { getFirestore, setDoc, doc, getDoc, getDocs, collection, updateDoc } from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
 
 @Injectable({
@@ -53,6 +53,12 @@ export class FirebaseService {
   // ========== Setear documentos ==========
   setDocument(path: string, data: any) {
     return setDoc(doc(getFirestore(), path), data);
+  }
+
+  // Añadido el método para actualizar un documento
+  async updateDocument(path: string, data: any) {
+    const docRef = doc(getFirestore(), path);
+    return updateDoc(docRef, data);
   }
 
   async getDocument(path: string) {

@@ -35,7 +35,7 @@
 
     <ion-buttons slot="end">
       <app-campana [notifica]="true"></app-campana>
-      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile',userId]"></app-avatar>
+      <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
     </ion-buttons>
     
   </ion-toolbar>

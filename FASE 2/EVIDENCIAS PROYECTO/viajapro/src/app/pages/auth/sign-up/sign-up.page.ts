@@ -83,9 +83,11 @@ export class SignUpPage implements OnInit {
   
       if (this.form.valid) {
         this.form.value.img_usuario = this.imagenBase64;
+        console.log('Imagen en base64 antes de enviar:', this.form.value.img_usuario);
         this.form.value.coordenadas_usuario = '';
 
         this.firebaseSvc.signUp(this.form.value as User).then(async res => {
+          console.log('Datos enviados a Firebase:', this.form.value);  // Asegúrate de que aún sea base64
           await this.firebaseSvc.updateProfile(this.form.value.name);
           let uid = res.user.uid;
           this.form.controls.uid.setValue(uid);
@@ -236,6 +238,8 @@ export class SignUpPage implements OnInit {
     reader.onload = () => {
       this.imagenCargando = false;
       this.imagenBase64 = reader.result as string;
+      console.log('Imagen en base64:', this.imagenBase64); // Verifica la salida en consola
+
     }
   }
 }

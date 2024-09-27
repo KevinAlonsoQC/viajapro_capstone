@@ -33,10 +33,10 @@ export class AuthPage implements OnInit {
         console.log(error);
         this.utilsSvc.presentToast({
           message: 'Las credenciales son incorrectas',
-          duration: 3500,
-          color: 'primary',
+          duration: 2500,
           position: 'middle',
-          icon: 'alert-circle-outline'
+          icon: 'close-circle-outline',
+          cssClass:'toast-error'
         })
 
       }).finally(() =>{

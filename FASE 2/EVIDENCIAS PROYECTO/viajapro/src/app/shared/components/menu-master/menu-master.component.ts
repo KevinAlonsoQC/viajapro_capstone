@@ -14,6 +14,8 @@ export class MenuMasterComponent  implements OnInit {
 
   @Input() icon :string;
   @Input() txt_icon :string
+  @Input() activo :boolean;
+  
  
 
 }

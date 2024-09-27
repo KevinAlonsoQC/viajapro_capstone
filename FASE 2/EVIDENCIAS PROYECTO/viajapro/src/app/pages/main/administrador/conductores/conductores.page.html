@@ -1,0 +1,146 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start" class="back-button">
+      <ion-button [routerLink]="['/main/administrador']" class="back-button ion-text-center">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar img="https://img.freepik.com/fotos-premium/retrato-hombre-negocios-expresion-cara-seria-fondo-estudio-espacio-copia-behttps://img.freepik.com/fotos-premium/retrato-hombre-negocios-expresion-cara-seria-fondo-estudio-espacio-copia-bengala-persona-corporativa-enfoque-pensamiento-duda-mirada-facial-dilema-o-concentracion_590464-84924.jpg" [routerLink]="['/main/profile']"></app-avatar>
+    </ion-buttons>
+    
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col>
+        <app-header-funtion titulo="Conductores"></app-header-funtion>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-searchbar></ion-searchbar>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list lines="full">
+          <app-conductor-item (botonModal)="recibirMensaje($event)" (botonModal2)="recibirMensaje2($event)" nombre="Cristian Leiva" patente="XVZ-092"></app-conductor-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-modal [isOpen]="isOpen">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-button class="button-close" (click)="isOpen=false" ><ion-icon name="close-outline"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-grid class="ion-no-padding">
+          <ion-row>
+            <ion-col class="pefil" style="display: flex; flex-direction: column;align-items: center;">
+              <app-avatar-large img="https://img.freepik.com/fotos-premium/retrato-hombre-negocios-expresion-cara-seria-fondo-estudio-espacio-copia-behttps://img.freepik.com/fotos-premium/retrato-hombre-negocios-expresion-cara-seria-fondo-estudio-espacio-copia-bengala-persona-corporativa-enfoque-pensamiento-duda-mirada-facial-dilema-o-concentracion_590464-84924.jpg"></app-avatar-large>
+              <app-profile-boton-edit name="create-outline"></app-profile-boton-edit>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()">
+                <ion-row class="ion-padding profile-description">
+                  <ion-col>
+                    <app-custom-input icon="person-outline" autocomplete="name" type="text"
+                      [label]="usuario.name" [control]="form.controls.name"></app-custom-input>
+                  </ion-col>
+                  <ion-col>
+                    <app-custom-input icon="mail-outline" autocomplete="email" type="email"
+                      [label]="usuario.email" [control]="form.controls.email"></app-custom-input>
+                  </ion-col>
+                  <ion-col>
+                    <app-custom-input icon="phone-portrait-outline" autocomplete="telefono_usuario" type="number"
+                      [label]="'+56 9 '+usuario.telefono_usuario" [control]="form.controls.telefono_usuario">
+                      ></app-custom-input>
+                  </ion-col>
+                </ion-row>
+          
+                <ion-button expand="block" mode="ios" class="submit" type="submit" [disabled]="form.invalid">
+                  Guardar Perfil
+                </ion-button>
+              </form>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  <ion-modal [isOpen]="isOpen2">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="end">
+            <ion-button class="button-close" (click)="isOpen2 = false"><ion-icon name="close-outline"></ion-icon></ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-grid class="ion-no-padding">
+          <ion-row>
+            <ion-col class="pefil" style="display: flex; flex-direction: column;align-items: center;">
+              <app-avatar-large img="https://img.freepik.com/fotos-premium/retrato-hombre-negocios-expresion-cara-seria-fondo-estudio-espacio-copia-behttps://img.freepik.com/fotos-premium/retrato-hombre-negocios-expresion-cara-seria-fondo-estudio-espacio-copia-bengala-persona-corporativa-enfoque-pensamiento-duda-mirada-facial-dilema-o-concentracion_590464-84924.jpg"></app-avatar-large>
+              <app-profile-boton-edit name="create-outline"></app-profile-boton-edit>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()">
+                <ion-row class="ion-padding profile-description">
+                  <ion-col>
+                    <app-custom-input icon="person-outline" autocomplete="name" type="text"
+                      [label]="usuario.name" [control]="form.controls.name"></app-custom-input>
+                  </ion-col>
+                  <ion-col>
+                    <app-custom-input icon="mail-outline" autocomplete="email" type="email"
+                      [label]="usuario.email" [control]="form.controls.email"></app-custom-input>
+                  </ion-col>
+                  <ion-col>
+                    <app-custom-input icon="phone-portrait-outline" autocomplete="telefono_usuario" type="number"
+                      [label]="'+56 9 '+usuario.telefono_usuario" [control]="form.controls.telefono_usuario">
+                      ></app-custom-input>
+                  </ion-col>
+                </ion-row>
+          
+                <ion-button expand="block" mode="ios" class="submit" type="submit" [disabled]="form.invalid">
+                  Guardar Perfil
+                </ion-button>
+              </form>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+</ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" mode="ios" class="submit"  (click)="this.isOpen2 = true">
+            Crear Perfil
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

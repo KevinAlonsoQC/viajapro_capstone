@@ -43,6 +43,21 @@
 
 <!-- Contenido principal / Cuerpo sector amarillo-->
 <ion-content id="admin-content">
+  <ion-grid class="ion-no-padding" *ngIf="administracion">
+    <ion-row>
+      <ion-col>
+        <app-header-funtion titulo="Administración"></app-header-funtion>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <app-function-item  titulo="Conductores" [routerLink]="['/main/administrador/conductores']"  descripcion="Agrega, modifica o elimina fácilmente." icono="person-outline" ></app-function-item>
+          <app-function-item titulo="Automoviles" descripcion="Agrega, modifica o elimina fácilmente." icono="car-outline"></app-function-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 
 
@@ -50,8 +65,8 @@
   <ion-toolbar>
     <ion-grid [fixed]="true">
       <ion-row>
-        <ion-col class="ion-text-center" [routerLink]="['/auth']">
-          <app-menu-master txt_icon="Administración" icon="settings-outline" ></app-menu-master>
+        <ion-col class="ion-text-center">
+          <app-menu-master txt_icon="Administración" icon="settings-outline" (click)="onClickAd()" [activo]="administracion" ></app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center"> 
           <app-menu-master txt_icon="Colectivos" icon="car-outline" ></app-menu-master>

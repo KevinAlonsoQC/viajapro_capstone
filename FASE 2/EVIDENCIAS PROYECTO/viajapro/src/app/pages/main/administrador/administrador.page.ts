@@ -13,7 +13,9 @@ export class AdministradorPage implements OnInit {
   utilsSvc = inject(UtilsService);
   usuario: User;
   userId: string;
+  administracion:boolean;
   constructor() { }
+  
 
   ngOnInit() {
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
@@ -27,6 +29,10 @@ export class AdministradorPage implements OnInit {
 
   signOut() {
     this.firebaseSvc.signOut();
+  }
+
+  onClickAd(){
+    this.administracion = true;
   }
 
 }

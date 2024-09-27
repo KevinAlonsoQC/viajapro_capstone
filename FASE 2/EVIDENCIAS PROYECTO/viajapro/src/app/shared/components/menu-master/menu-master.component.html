@@ -1,5 +1,5 @@
 
-  <ion-icon [name]="icon"></ion-icon>
-  <p>{{txt_icon}}</p>
+  <ion-icon [ngClass]="{ 'color-activo': activo, 'color-desactivado': !activo}" [name]="icon" ></ion-icon>
+  <p [ngClass]="{ 'color-activo': activo, 'color-desactivado': !activo}" >{{txt_icon}}</p>
 
       

@@ -13,6 +13,9 @@ import { CampanaComponent } from './components/campana/campana.component';
 import { LogoSmallComponent } from './components/logo-small/logo-small.component';
 import { AvatarLargeComponent } from './components/avatar-large/avatar-large.component';
 import { ProfileBotonEditComponent } from './components/profile-boton-edit/profile-boton-edit.component';
+import { HeaderFuntionComponent } from './components/header-funtion/header-funtion.component';
+import { FunctionItemComponent } from './components/function-item/function-item.component';
+import { ConductorItemComponent } from './components/conductor-item/conductor-item.component';
 
 
 @NgModule({
@@ -27,7 +30,10 @@ import { ProfileBotonEditComponent } from './components/profile-boton-edit/profi
     CampanaComponent,
     LogoSmallComponent,
     AvatarLargeComponent,
-    ProfileBotonEditComponent
+    ProfileBotonEditComponent,
+    HeaderFuntionComponent,
+    FunctionItemComponent,
+    ConductorItemComponent
   ],
   exports: [
     HeaderComponent,
@@ -41,7 +47,10 @@ import { ProfileBotonEditComponent } from './components/profile-boton-edit/profi
     CampanaComponent,
     LogoSmallComponent,
     AvatarLargeComponent,
-    ProfileBotonEditComponent
+    ProfileBotonEditComponent,
+    HeaderFuntionComponent,
+    FunctionItemComponent,
+    ConductorItemComponent
 
   ],
   imports: [

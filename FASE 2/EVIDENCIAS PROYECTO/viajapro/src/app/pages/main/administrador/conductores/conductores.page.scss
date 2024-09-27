@@ -1,0 +1,26 @@
+ion-content{
+    --background: #FFFFFF;
+}
+
+ion-modal {
+    
+}
+
+.pefil{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-close{
+    height: 32px;
+    width: 32px;
+    background: #1A1528;
+    border-radius: 30px;
+    color: #FFFFFF;
+}
+
+.submit{
+    --background: #1A1528;
+}
+

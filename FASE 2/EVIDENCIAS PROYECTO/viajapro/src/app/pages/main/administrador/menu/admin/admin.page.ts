@@ -4,11 +4,11 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
-  selector: 'app-administrador',
-  templateUrl: './administrador.page.html',
-  styleUrls: ['./administrador.page.scss'],
+  selector: 'app-admin',
+  templateUrl: './admin.page.html',
+  styleUrls: ['./admin.page.scss'],
 })
-export class AdministradorPage implements OnInit {
+export class AdminPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
   usuario: User;

@@ -11,7 +11,23 @@ const routes: Routes = [
   {
     path: 'conductores',
     loadChildren: () => import('./conductores/conductores.module').then( m => m.ConductoresPageModule)
+  },  {
+    path: 'finanzas',
+    loadChildren: () => import('./menu/finanzas/finanzas.module').then( m => m.FinanzasPageModule)
+  },
+  {
+    path: 'personal',
+    loadChildren: () => import('./menu/personal/personal.module').then( m => m.PersonalPageModule)
+  },
+  {
+    path: 'colectivos',
+    loadChildren: () => import('./menu/colectivos/colectivos.module').then( m => m.ColectivosPageModule)
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./menu/admin/admin.module').then( m => m.AdminPageModule)
   }
+
 
 ];
 

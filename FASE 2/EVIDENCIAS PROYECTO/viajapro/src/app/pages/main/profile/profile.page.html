@@ -10,44 +10,42 @@
 
     <ion-buttons slot="end">
       <app-campana [notifica]="true"></app-campana>
-      <app-avatar
-        img="https://img.freepik.com/fotos-premium/retrato-hombre-negocios-expresion-cara-seria-fondo-estudio-espacio-copia-bengala-persona-corporativa-enfoque-pensamiento-duda-mirada-facial-dilema-o-concentracion_590464-84924.jpg"></app-avatar>
+      <app-avatar [img]="usuario.img_usuario"></app-avatar>
     </ion-buttons>
 
   </ion-toolbar>
 </ion-header>
 
 <ion-content fullscreen="true">
-  <ion-grid class="ion-no-padding">
-    <ion-row class="profile-img ion-padding">
-      <ion-col>
-        <ion-row>
-          <ion-col style="display: flex; flex-direction: column;align-items: center;">
-            <app-avatar-large [img]="usuario.img_usuario"></app-avatar-large>
-            <app-profile-boton-edit *ngIf="editPicture" name="create-outline"></app-profile-boton-edit>
-            <app-profile-boton-edit *ngIf="!editPicture" name="camera-outline"></app-profile-boton-edit>
-          </ion-col>
-        </ion-row>
-        <ion-row>
-          <ion-col class="ion-text-center">
-            <br>
-            <h1>{{usuario.name}}</h1>
-          </ion-col>
-        </ion-row>
-      </ion-col>
-    </ion-row>
-    
-    <ion-row>
-      <ion-col>
-        <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()">
+  <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()">
+    <ion-grid class="ion-no-padding">
+      <ion-row class="profile-img ion-padding">
+        <ion-col>
+          <ion-row>
+            <ion-col style="display: flex; flex-direction: column; align-items: center;">
+              <app-avatar-large [img]="form.value.img_usuario"></app-avatar-large>
+              <app-profile-boton-edit name="create-outline" (click)="takeImage()" ></app-profile-boton-edit>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col class="ion-text-center">
+              <br>
+              <h1>{{usuario.name}}</h1>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
           <ion-row class="ion-padding profile-description">
             <ion-col>
-              <app-custom-input icon="person-outline" autocomplete="name" type="text"
-                [label]="usuario.name" [control]="form.controls.name"></app-custom-input>
+              <app-custom-input icon="person-outline" autocomplete="name" type="text" [label]="usuario.name"
+                [control]="form.controls.name"></app-custom-input>
             </ion-col>
             <ion-col>
-              <app-custom-input icon="mail-outline" autocomplete="email" type="email"
-                [label]="usuario.email" [control]="form.controls.email"></app-custom-input>
+              <app-custom-input icon="mail-outline" autocomplete="email" type="email" [label]="usuario.email"
+                [control]="form.controls.email"></app-custom-input>
             </ion-col>
             <ion-col>
               <app-custom-input icon="phone-portrait-outline" autocomplete="telefono_usuario" type="number"
@@ -55,15 +53,16 @@
                 ></app-custom-input>
             </ion-col>
           </ion-row>
-    
+
           <ion-button expand="block" mode="ios" class="submit" type="submit" [disabled]="form.invalid">
             Guardar Perfil
             <ion-icon slot="end" name="person-add-outline"></ion-icon>
           </ion-button>
-        </form>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+
 </ion-content>
 
 <ion-footer>

@@ -16,8 +16,16 @@ export class MainPage implements OnInit {
   public usuario: any;
 
   constructor() { }
-  
+
   async ngOnInit() {
+    // Suscribirse al observable del usuario
+    this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
+      this.usuario = user;
+      // Aquí puedes realizar más acciones si es necesario
+    });
+    // Cargar el usuario inicialmente
+    this.utilsSvc.getFromLocalStorage('usuario');
+    //Realiza el get info para ver el tipo de cuenta
     await this.getInfoAndTipoCuenta();
   }
 
@@ -26,7 +34,6 @@ export class MainPage implements OnInit {
     await loading.present();
 
     try {
-      this.usuario = this.utilsSvc.getFromLocalStorage('usuario')
       const tipo_cuenta = this.usuario.tipo_usuario;
 
       if(tipo_cuenta == "0"){

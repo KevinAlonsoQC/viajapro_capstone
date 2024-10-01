@@ -7,11 +7,13 @@
       <app-logo></app-logo>
 
       <ion-item lines="none">
-        <ion-avatar slot="start">
-          <img alt="avatar" [src]=imagenBase64 />
+        <ion-avatar slot="start" *ngIf="form.value.img_usuario">
+          <img alt="avatar" [src]=form.value.img_usuario />
         </ion-avatar>
-        <ion-input [disabled]="imagenCargando" (change)="cargarFoto($event)" type="file" formControlName="img_usuario">
-        </ion-input>
+        <ion-avatar slot="start" *ngIf="!form.value.img_usuario">
+          <img alt="avatar" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+        </ion-avatar>
+        <ion-button (click)="takeImage()" shape="round" mode="ios">Seleccionar Imagen</ion-button>
       </ion-item>
 
       <app-custom-input icon="id-card-outline" [control]="form.controls.rut_usuario" type="text" label="RUT"

@@ -17,9 +17,14 @@ export class AdministradorPage implements OnInit {
   
 
   ngOnInit() {
-    this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    //URL de Prueba ****
-    this.userId = this.usuario.uid;
+    // Suscribirse al observable del usuario
+    this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
+      this.usuario = user;
+      // Aquí puedes realizar más acciones si es necesario
+    });
+
+    // Cargar el usuario inicialmente
+    this.utilsSvc.getFromLocalStorage('usuario');
   }
 
   profile(){

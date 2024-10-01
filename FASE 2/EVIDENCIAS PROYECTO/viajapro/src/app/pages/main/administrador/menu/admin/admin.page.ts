@@ -17,9 +17,12 @@ export class AdminPage implements OnInit {
   
 
   ngOnInit() {
+    // Suscribirse al observable del usuario
+    this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
+      this.usuario = user;
+      // Aquí puedes realizar más acciones si es necesario
+    });
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    //URL de Prueba ****
-    this.userId = this.usuario.uid;
   }
 
   profile(){

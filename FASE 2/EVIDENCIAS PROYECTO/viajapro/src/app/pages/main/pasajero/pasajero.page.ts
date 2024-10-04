@@ -16,8 +16,13 @@ export class PasajeroPage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    // Suscribirse al observable del usuario
+    this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
+      this.usuario = user;
+      // Aquí puedes realizar más acciones si es necesario
+    });
+
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    console.log(this.usuario)
   }
 
   signOut() {

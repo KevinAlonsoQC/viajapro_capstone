@@ -18,7 +18,7 @@ export class SignUpPage implements OnInit {
   public tipo_usuario: TipoUsuario[];
 
   public imagenCargando = false;
-  public imagenBase64 = 'https://ionicframework.com/docs/img/demos/avatar.svg';
+  public imagenDefault = 'https://ionicframework.com/docs/img/demos/avatar.svg';
 
   //variable protegida para uso interno
   private ruts_usados: any;
@@ -41,6 +41,7 @@ export class SignUpPage implements OnInit {
 
   async ngOnInit() {
     await this.getInfoAndTipoCuenta();
+    this.form.controls.img_usuario.setValue(this.imagenDefault);
   }
 
   async submit() {
@@ -82,10 +83,7 @@ export class SignUpPage implements OnInit {
       }
   
       if (this.form.valid) {
-        this.form.value.img_usuario = this.imagenBase64;
-        console.log('Imagen en base64 antes de enviar:', this.form.value.img_usuario);
         this.form.value.coordenadas_usuario = '';
-
         this.firebaseSvc.signUp(this.form.value as User).then(async res => {
           console.log('Datos enviados a Firebase:', this.form.value);  // Asegúrate de que aún sea base64
           await this.firebaseSvc.updateProfile(this.form.value.name);
@@ -126,6 +124,9 @@ export class SignUpPage implements OnInit {
       await loading.present();
 
       let path = `usuario/${uid}`
+      let imagePath = `usuario/${uid}/${Date.now()}`;
+      let imageUrl = await this.firebaseSvc.uploadImage(imagePath,  this.form.value.img_usuario);
+      this.form.controls.img_usuario.setValue(imageUrl)
       delete this.form.value.password;
 
       this.firebaseSvc.setDocument(path, this.form.value).then(async res => {
@@ -228,18 +229,8 @@ export class SignUpPage implements OnInit {
     }
   }
 
-  cargarFoto(e: Event) {
-    this.imagenCargando = true;
-    const elemento = e.target as HTMLInputElement;
-    const archivo = elemento.files[0];
-    const reader = new FileReader();
-
-    reader.readAsDataURL(archivo);
-    reader.onload = () => {
-      this.imagenCargando = false;
-      this.imagenBase64 = reader.result as string;
-      console.log('Imagen en base64:', this.imagenBase64); // Verifica la salida en consola
-
-    }
+  async takeImage(){
+    const dataUrl = (await this.utilsSvc.takePicture('Foto de Perfil')).dataUrl;
+    this.form.controls.img_usuario.setValue(dataUrl);
   }
 }

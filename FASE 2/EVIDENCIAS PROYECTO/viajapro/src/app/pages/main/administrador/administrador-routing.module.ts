@@ -9,9 +9,6 @@ const routes: Routes = [
     component: AdministradorPage
   },
   {
-    path: 'conductores',
-    loadChildren: () => import('./conductores/conductores.module').then( m => m.ConductoresPageModule)
-  },  {
     path: 'finanzas',
     loadChildren: () => import('./menu/finanzas/finanzas.module').then( m => m.FinanzasPageModule)
   },

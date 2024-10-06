@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button class="button-close" [routerLink]="['/main/administrador/admin/vehiculos']">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <div class="d-flex-center">
+    <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()">
+      <app-logo></app-logo>
+
+      <ion-item lines="none">
+        <ion-avatar slot="start" *ngIf="form.value.img_vehiculo">
+          <img alt="avatar" [src]=form.value.img_vehiculo />
+        </ion-avatar>
+        <ion-avatar slot="start" *ngIf="!form.value.img_vehiculo">
+          <img alt="avatar" [src]="imagenDefault" />
+        </ion-avatar>
+        <ion-button (click)="takeImage()" shape="round" mode="ios">Seleccionar Imagen</ion-button>
+      </ion-item>
+
+      <app-custom-input icon="id-card-outline" [control]="form.controls.patente_vehiculo" type="text"
+        label="Patente Vehículo">
+      </app-custom-input>
+      <div class="validators" *ngIf="form.controls.patente_vehiculo.errors && form.controls.patente_vehiculo.touched">
+        <div *ngIf="form.controls.patente_vehiculo.errors?.['required']">
+          Por favor ingresa la patente del Vehículo
+        </div>
+      </div>
+
+      <app-custom-input icon="person-outline" autocomplete="nombre_vehiculo" [control]="form.controls.nombre_vehiculo"
+        type="text" label="Modelo Vehículo"></app-custom-input>
+      <div class="validators" *ngIf="form.controls.nombre_vehiculo.errors && form.controls.nombre_vehiculo.touched">
+        <div *ngIf="form.controls.nombre_vehiculo.errors?.['required']">
+          Por favor ingresa el Modelo del Vehículo
+        </div>
+        <div *ngIf="form.controls.nombre_vehiculo.errors?.['minlenght']">
+          El Modelo debe tener al menos 3 caracteres
+        </div>
+      </div>
+
+      <ion-item>
+        <ion-label position="stacked">Vencimiento Revisión Técnica</ion-label>
+        <ion-input type="date" formControlName="cad_revision_tecnica_vehiculo"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Vencimiento Permiso de Circulación</ion-label>
+        <ion-input type="date" formControlName="cad_per_circulacion_vehiculo"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Vencimiento SOAP</ion-label>
+        <ion-input type="date" formControlName="cad_soap_vehiculo"></ion-input>
+      </ion-item>
+
+      <ion-list>
+        <ion-item lines="none">
+          <ion-icon slot="start" name="flag-outline"></ion-icon>
+          <ion-select placeholder="Choferes" formControlName="usuario">
+            <div slot="label">Choferes</div>
+            <ion-select-option *ngFor="let item of choferes" [value]="item.uid">
+              {{ item.name }} - {{ item.rut_usuario }}
+            </ion-select-option>
+          </ion-select>
+
+          <div class="validators" *ngIf="form.controls.usuario.errors && form.controls.usuario.touched">
+            <div *ngIf="form.controls.usuario.errors?.['required']">
+              Por favor selecciona el Chofer de este Vehículo
+            </div>
+          </div>
+        </ion-item>
+      </ion-list>
+
+      <ion-button expand="block" mode="ios" class="submit" type="submit" [disabled]="form.invalid">
+        Crear Cuenta
+        <ion-icon slot="end" name="person-add-outline"></ion-icon>
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

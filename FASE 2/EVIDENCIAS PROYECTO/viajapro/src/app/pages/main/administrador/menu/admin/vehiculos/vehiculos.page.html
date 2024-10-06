@@ -1,0 +1,80 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start" class="back-button">
+      <ion-button [routerLink]="['/main/administrador']" class="back-button ion-text-center">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile']"></app-avatar>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col>
+        <app-header-funtion titulo="Vehículos"></app-header-funtion>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-searchbar></ion-searchbar>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list lines="full">
+          <!-- Para listar conductores -->
+          <ion-item-sliding *ngFor="let item of vehiculos">
+            <ion-item [button]="true">
+              <ion-avatar aria-hidden="true" slot="start">
+                <img alt="Imagen de {{item.name}}" [src]="item.img_vehiculo" />
+              </ion-avatar>
+              <ion-label>{{ item.patente_vehiculo }}</ion-label>
+              <ion-buttons>
+                <ion-button slot="start">
+                  <ion-icon name="car-outline"></ion-icon>
+                </ion-button>
+                <p>{{ item.nombre_vehiculo }}</p>
+              </ion-buttons>
+            </ion-item>
+
+            <ion-item-options slot="end">
+              <ion-item-option (click)="modificarVehiculo(item.uid)">
+                <ion-icon class="icon-option" slot="icon-only" name="pencil"></ion-icon>
+              </ion-item-option>
+
+              <ion-item-option expandable="true" (click)="eliminarVehiculo(item.uid, item.patente_vehiculo)">
+                <ion-icon class="icon-option" slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-button expand="block" mode="ios" class="submit" (click)="crearVehiculo()" >
+            Crear Vehículo
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

@@ -65,9 +65,23 @@ export class FirebaseService {
     return updateDoc(docRef, data);
   }
 
+  //Obtener un documento de la colección
   async getDocument(path: string) {
     return (await getDoc(doc(getFirestore(), path))).data();
   }
+
+  //añadir uno nuevo a la colección
+  async addDocument(collectionPath: string, data: any): Promise<void> {
+    const docRef = this.firestore.collection(collectionPath).doc(); // Crea un nuevo documento
+    return docRef.set(data); // Guarda el documento en la colección
+  }  
+
+  //eliminar un documento de la colección
+  async deleteDocument(path: string): Promise<void> {
+    return this.firestore.collection(path.split('/')[0]).doc(path.split('/')[1]).delete();
+  }
+
+
 
   // Obtener todos los documentos de una colección
   async getCollectionDocuments(collectionPath: string) {
@@ -81,6 +95,8 @@ export class FirebaseService {
     const docSnap = await getDoc(docRef);
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   }
+
+
 
   // ========= Subir Imagen a Firebase Storage =========
   async uploadImage(path: string, data_url: string){

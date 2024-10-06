@@ -1,27 +1,29 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Pais } from 'src/app/models/pais';
-import { TipoUsuario } from 'src/app/models/tipo-usuario';
-import { User } from 'src/app/models/user';
+import { IonModal } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { AbstractControl } from '@angular/forms';
 
-@Component({
-  selector: 'app-sign-up',
-  templateUrl: './sign-up.page.html',
-  styleUrls: ['./sign-up.page.scss'],
-})
-export class SignUpPage implements OnInit {
+import { User } from 'src/app/models/user';
+import { Pais } from 'src/app/models/pais';
 
-  public pais: Pais[];
-  public tipo_usuario: TipoUsuario[];
+@Component({
+  selector: 'app-crear-conductor',
+  templateUrl: './crear-conductor.page.html',
+  styleUrls: ['./crear-conductor.page.scss'],
+})
+export class CrearConductorPage implements OnInit {
+  firebaseSvc = inject(FirebaseService);
+  utilsSvc = inject(UtilsService);
 
   public imagenDefault = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMF8xNzY1XzcwNTUpIj4KPHBhdGggZD0iTTAgMEg1MTJWNTEySDBWMFoiIGZpbGw9IiMyMjJEM0EiLz4KPHBhdGggZD0iTTMzMC4wODUgMTEwLjk1NUMzMTEuMjk5IDkwLjY3MiAyODUuMDU5IDc5LjUwMjQgMjU2LjA5NyA3OS41MDI0QzIyNi45ODEgNzkuNTAyNCAyMDAuNjU1IDkwLjYwNDQgMTgxLjk1NSAxMTAuNzYyQzE2My4wNTMgMTMxLjE0MSAxNTMuODQzIDE1OC44MzggMTU2LjAwNSAxODguNzQ2QzE2MC4yOTIgMjQ3Ljc1MSAyMDUuMTkyIDI5NS43NSAyNTYuMDk3IDI5NS43NUMzMDcuMDAzIDI5NS43NSAzNTEuODI2IDI0Ny43NiAzNTYuMTggMTg4Ljc2NUMzNTguMzcxIDE1OS4xMjggMzQ5LjEwMyAxMzEuNDg5IDMzMC4wODUgMTEwLjk1NVoiIGZpbGw9IiNCM0JBQzAiLz4KPHBhdGggZD0iTTUzLjkyNzUgNTExLjk5N0g0NTguMzMzQzQ1OSA1MDMgNDU4LjIwNiA0ODMuNDk5IDQ1Ni4zMzMgNDczLjE0MUM0NDguMTg1IDQyNy45NDEgNDIyLjc1NyAzODkuOTcyIDM4Mi43ODkgMzYzLjMyN0MzNDcuMjgyIDMzOS42NzUgMzAyLjMwNSAzMjYuNjQyIDI1Ni4xMyAzMjYuNjQyQzIwOS45NTYgMzI2LjY0MiAxNjQuOTc4IDMzOS42NjYgMTI5LjQ3MSAzNjMuMzI3Qzg5LjUwMzggMzg5Ljk4MiA2NC4wNzU0IDQyNy45NTEgNTUuOTI3NSA0NzMuMTVDNTQuMDU0NiA0ODMuNTA5IDUzLjUwMDEgNTA0LjUgNTMuOTI3NSA1MTEuOTk3WiIgZmlsbD0iI0IzQkFDMCIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE3NjVfNzA1NSI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=';
 
   //variable protegida para uso interno
   private ruts_usados: any;
+  public pais: Pais[];
 
+  usuario!: User;
   form = new FormGroup({
     uid: new FormControl(''),
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -31,17 +33,22 @@ export class SignUpPage implements OnInit {
     telefono_usuario: new FormControl(0, [Validators.required, Validators.maxLength(8), Validators.minLength(8)]),
     img_usuario: new FormControl(this.imagenDefault),
     coordenadas_usuario: new FormControl(''),
-    tipo_usuario: new FormControl('', [Validators.required]),
+    tipo_usuario: new FormControl('2'),
     pais: new FormControl('', [Validators.required]),
     central: new FormControl(''),
   })
 
-  firebaseSvc = inject(FirebaseService);
-  utilsSvc = inject(UtilsService);
+  constructor() { }
 
   async ngOnInit() {
     await this.getInfoAndTipoCuenta();
-    this.form.controls.img_usuario.setValue(this.imagenDefault);
+
+    // Suscribirse al observable del usuario
+    this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
+      this.usuario = user;
+      // Aquí puedes realizar más acciones si es necesario
+    });
+    this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
   }
 
   async submit() {
@@ -84,6 +91,7 @@ export class SignUpPage implements OnInit {
   
       if (this.form.valid) {
         this.form.value.coordenadas_usuario = '';
+        this.form.controls.central.setValue(this.usuario.central);
         this.firebaseSvc.signUp(this.form.value as User).then(async res => {
           console.log('Datos enviados a Firebase:', this.form.value);  // Asegúrate de que aún sea base64
           await this.firebaseSvc.updateProfile(this.form.value.name);
@@ -117,7 +125,6 @@ export class SignUpPage implements OnInit {
     }
   }
 
-
   async setUserInfo(uid: string) {
     if (this.form.valid) {
       const loading = await this.utilsSvc.loading();
@@ -130,9 +137,15 @@ export class SignUpPage implements OnInit {
       delete this.form.value.password;
 
       this.firebaseSvc.setDocument(path, this.form.value).then(async res => {
-        this.utilsSvc.saveInLocalStorage('usuario', this.form.value)
-        this.utilsSvc.routerLink('/main');
+        this.utilsSvc.routerLink('/main/administrador/admin/conductores');
         this.form.reset();
+        this.utilsSvc.presentToast({
+          message: 'Usuario creado con éxito',
+          duration: 3500,
+          color: 'primary',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        })
       }).catch(error => {
         console.log(error);
         this.utilsSvc.presentToast({
@@ -154,19 +167,16 @@ export class SignUpPage implements OnInit {
     await loading.present();
 
     const paisPath = 'pais';
-    const tipoUsuarioPath = 'tipo_usuario';
     const usuarioPath = 'usuario'; // Ruta de la colección de usuarios
 
     try {
       // Ejecutar ambas promesas en paralelo
-      const [pais, tipo_usuario, usuarios] = await Promise.all([
+      const [pais, usuarios] = await Promise.all([
         this.firebaseSvc.getCollectionDocuments(paisPath) as Promise<Pais[]>,
-        this.firebaseSvc.getCollectionDocuments(tipoUsuarioPath) as Promise<TipoUsuario[]>,
         this.firebaseSvc.getCollectionDocuments(usuarioPath) as Promise<any[]> // Cambia 'any' por el tipo adecuado si lo tienes
       ]);
 
       // Filtrar los resultados para eliminar el tipo_usuario con id 0
-      this.tipo_usuario = tipo_usuario.filter(t => Number(t.id) !== 0);
       this.pais = pais;
       // Extraer ruts_usados de los documentos de usuarios
       this.ruts_usados = usuarios.map(user => user.rut_usuario).filter(rut => rut);
@@ -184,6 +194,7 @@ export class SignUpPage implements OnInit {
       loading.dismiss();
     }
   }
+
 
   // Función para validar un RUT chileno
   validarRut(rut: string): boolean {

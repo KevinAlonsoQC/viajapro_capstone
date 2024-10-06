@@ -54,9 +54,17 @@ export class ProfilePage implements OnInit {
         // Actualizar la información del usuario en Firebase
 
         if (this.form.value.img_usuario !== this.usuario.img_usuario) {
-          let imagePath = await this.firebaseSvc.getFilePath(this.usuario.img_usuario);
-          let imageUrl = await this.firebaseSvc.uploadImage(imagePath, this.form.value.img_usuario);
-          this.form.controls.img_usuario.setValue(imageUrl)
+          //Si la imagen es default, entonces creará una nueva cosa en el storage para evitar errores
+          if (this.usuario.img_usuario == 'https://ionicframework.com/docs/img/demos/avatar.svg' || this.usuario.img_usuario == '') {
+            let imagePath = `usuario/${this.usuario.uid}}/${Date.now()}`;
+            let imageUrl = await this.firebaseSvc.uploadImage(imagePath, this.form.value.img_usuario);
+            this.form.controls.img_usuario.setValue(imageUrl)
+          }else{
+            let imagePath = await this.firebaseSvc.getFilePath(this.usuario.img_usuario);
+            let imageUrl = await this.firebaseSvc.uploadImage(imagePath, this.form.value.img_usuario);
+            this.form.controls.img_usuario.setValue(imageUrl)
+          }
+          
           this.usuario.img_usuario = this.form.value.img_usuario
         }
 

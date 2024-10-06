@@ -9,5 +9,6 @@ export interface User {
     coordenadas_usuario?: string; // Opcional
     tipo_usuario: string;  // Referencia a TipoUsuario
     pais: string;  // Referencia a Pais
+    central: string;
 }
 

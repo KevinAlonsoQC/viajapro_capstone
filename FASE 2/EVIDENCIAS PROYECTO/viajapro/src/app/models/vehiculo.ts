@@ -6,8 +6,8 @@ export interface Vehiculo {
     cad_per_circulacion_vehiculo: string;  // Fecha en formato ISO
     cad_soap_vehiculo: string;  // Fecha en formato ISO
     img_vehiculo?: string; // Opcional
-    estado_vehiculo: string;
     asientos_dispo_vehiculo?: number; // Opcional
     coordenadas_vehiculo?: string; // Opcional
-    usuario: string;  // Referencia a TipoUsuario
+    usuario?: [];  // Cadena de los usuarios que manejan este vehículo
+    central: string;
 }

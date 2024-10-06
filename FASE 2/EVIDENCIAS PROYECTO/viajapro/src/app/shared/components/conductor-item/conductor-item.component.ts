@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
+import { FirebaseService } from 'src/app/services/firebase.service';
+import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
   selector: 'app-conductor-item',
@@ -6,24 +8,20 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
   styleUrls: ['./conductor-item.component.scss'],
 })
 export class ConductorItemComponent  implements OnInit {
-
+  firebaseSvc = inject(FirebaseService);
+  utilsSvc = inject(UtilsService);
   @Input() nombre:string;
-  @Input() patente:string;
-  @Output() botonModal: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() botonModal2: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() rut:string;
+  @Input() url:string
+
   
   constructor() { }
 
   ngOnInit() {}
 
-  setOpen() {
-    const isOpen = true;
-    this.botonModal.emit(isOpen);
-  }
-
-  setOpen2() {
-    const isOpen = true;
-    this.botonModal2.emit(isOpen);
+  navegar(url:string) {
+    const id = 42;
+    this.utilsSvc.routerLink(`/${url}`);
   }
 
 }

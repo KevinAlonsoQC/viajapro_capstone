@@ -6,16 +6,16 @@
     <ion-label>{{nombre}}</ion-label>
     <ion-buttons>
       <ion-button slot="start">
-        <ion-icon name="car-outline"></ion-icon>
+        <ion-icon name="person-outline"></ion-icon>
       </ion-button>
-      <p>{{patente}}</p>
+      <p>{{rut}}</p>
     </ion-buttons>
   </ion-item>
   <ion-item-options slot="end">
-    <ion-item-option (click)="setOpen()">
+    <ion-item-option (click)="navegar(url)">
       <ion-icon  class="icon-option" slot="icon-only" name="pencil"></ion-icon>
     </ion-item-option>
-    <ion-item-option (click)="setOpen2()" expandable="true">
+    <ion-item-option (click)="navegar(url)" expandable="true">
       <ion-icon class="icon-option" slot="icon-only" name="trash"></ion-icon>
     </ion-item-option>
   </ion-item-options>

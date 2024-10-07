@@ -76,6 +76,13 @@ export class FirebaseService {
     return docRef.set(data); // Guarda el documento en la colección
   }  
 
+  //AÑADIR UN DOCUMENTO NUEVO A LA COLECCIÓN CON UN UID DE LA FUNCIÓN UID, PARA MEJOR MANEJO
+  async addDocumentWithId(collectionPath: string, data: any, id: string): Promise<void> {
+    const docRef = this.firestore.collection(collectionPath).doc(id); // Usa el ID proporcionado
+    return docRef.set(data); // Guarda el documento en la colección
+}
+
+
   //eliminar un documento de la colección
   async deleteDocument(path: string): Promise<void> {
     return this.firestore.collection(path.split('/')[0]).doc(path.split('/')[1]).delete();

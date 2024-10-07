@@ -1,5 +1,5 @@
 export interface Vehiculo {
-    id: string;
+    id?: string;
     nombre_vehiculo: string;
     patente_vehiculo: string;
     cad_revision_tecnica_vehiculo: string;  // Fecha en formato ISO

@@ -11,17 +11,17 @@ import { AlertController } from '@ionic/angular';
 
 
 @Component({
-  selector: 'app-vehiculos',
-  templateUrl: './vehiculos.page.html',
-  styleUrls: ['./vehiculos.page.scss'],
+	selector: 'app-vehiculos',
+	templateUrl: './vehiculos.page.html',
+	styleUrls: ['./vehiculos.page.scss'],
 })
 export class VehiculosPage implements OnInit {
-
-  firebaseSvc = inject(FirebaseService);
+	firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
   usuario!: User;
   vehiculos!: any;
+  central!: CentralColectivo;
 
   constructor(private router: Router, private alertController: AlertController) { }
 
@@ -35,22 +35,26 @@ export class VehiculosPage implements OnInit {
     await this.getVehiculos();
   }
 
-  async getVehiculos() {
-    const loading = await this.utilsSvc.loading();
-    await loading.present();
 
-    const vehPath = 'vehiculo'; // Ruta de la colección
+	async getVehiculos() {
+		const loading = await this.utilsSvc.loading();
+    await loading.present();
+    const vehPath = 'vehiculo'; // Ruta de la colección de usuarios
+
     try {
       // Ejecutar ambas promesas en paralelo
-      const [vehiculo] = await Promise.all([
+      const [vehiculos] = await Promise.all([
         this.firebaseSvc.getCollectionDocuments(vehPath) as Promise<any[]>
       ]);
 
       // Filtrar los resultados para obtener solo los choferes de la misma central
-      this.vehiculos = vehiculo.filter(auto => auto.central == this.usuario.central);
+      this.vehiculos = vehiculos.filter(vehiculo =>
+        vehiculo.central == this.usuario.central
+      );
+      
       if (this.vehiculos.length > 0) {
         this.utilsSvc.presentToast({
-          message: 'Vehículos Cargados con Éxito',
+          message: 'Conductores Cargados con Éxito',
           duration: 3500,
           color: 'success',
           position: 'middle',
@@ -58,7 +62,7 @@ export class VehiculosPage implements OnInit {
         });
       } else {
         this.utilsSvc.presentToast({
-          message: 'No hay Vehículos disponibles',
+          message: 'No hay choferes disponibles',
           duration: 3500,
           color: 'warning',
           position: 'middle',
@@ -80,71 +84,71 @@ export class VehiculosPage implements OnInit {
     }
   }
 
-  modificarVehiculo(id: string) {
-    this.router.navigate(['/main/administrador/admin/vehiculos/modificar-vehiculo', id]);
-  }
+	modificarVehiculo(id: string) {
+		this.router.navigate(['/main/administrador/admin/vehiculos/modificar-vehiculo', id]);
+	}
 
-  crearVehiculo() {
-    this.router.navigate(['/main/administrador/admin/vehiculos/crear-vehiculo']);
-  }
+	crearVehiculo() {
+		this.router.navigate(['/main/administrador/admin/vehiculos/crear-vehiculo']);
+	}
 
-  async eliminarVehiculo(id: string, patente: string) {
-    const alert = await this.alertController.create({
-      header: '¿Seguro de eliminar el vehiculo?',
-      subHeader: `Se eliminará al vehiculo con Patente: ${patente}`,
-      message: 'Recuerda que si aceptas, esta opción es irreversible.',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          handler: () => {
-            this.utilsSvc.presentToast({
-              message: 'Cancelaste la acción',
-              duration: 3500,
-              color: 'primary',
-              position: 'middle',
-              icon: 'alert-circle-outline'
-            });
-          },
-        },
-        {
-          text: 'Eliminar',
-          role: 'confirm',
-          handler: async () => {
-            const loading = await this.utilsSvc.loading();
-            await loading.present();
+	async eliminarVehiculo(id: string, patente: string) {
+		const alert = await this.alertController.create({
+			header: '¿Seguro de eliminar el vehiculo?',
+			subHeader: `Se eliminará al vehiculo con Patente: ${patente}`,
+			message: 'Recuerda que si aceptas, esta opción es irreversible.',
+			buttons: [
+				{
+					text: 'Cancelar',
+					role: 'cancel',
+					handler: () => {
+						this.utilsSvc.presentToast({
+							message: 'Cancelaste la acción',
+							duration: 3500,
+							color: 'primary',
+							position: 'middle',
+							icon: 'alert-circle-outline'
+						});
+					},
+				},
+				{
+					text: 'Eliminar',
+					role: 'confirm',
+					handler: async () => {
+						const loading = await this.utilsSvc.loading();
+						await loading.present();
 
-            try {
-              // Elimina el documento de Firebase
-              await this.firebaseSvc.deleteDocument(`vehiculo/${id}`);
+						try {
+							// Elimina el documento de Firebase
+							await this.firebaseSvc.deleteDocument(`vehiculo/${id}`);
 
-              this.utilsSvc.presentToast({
-                message: `Has eliminado el vehículo con patente ${patente}`,
-                duration: 3500,
-                color: 'success',
-                position: 'middle',
-                icon: 'checkmark-circle-outline',
-              });
-              
-              await this.vehiculos();
-            } catch (error) {
-              console.error('Error al eliminar vehículo:', error);
-              this.utilsSvc.presentToast({
-                message: `Hubo un error al eliminar el vehículo con patente ${patente}. Inténtalo de nuevo.`,
-                duration: 3500,
-                color: 'danger',
-                position: 'middle',
-                icon: 'alert-circle-outline',
-              });
-            } finally {
-              loading.dismiss();
-            }
-          }
-        },
-      ],
-    });
+							this.utilsSvc.presentToast({
+								message: `Has eliminado el vehículo con patente ${patente}`,
+								duration: 3500,
+								color: 'success',
+								position: 'middle',
+								icon: 'checkmark-circle-outline',
+							});
 
-    await alert.present();
-  }
+							await this.getVehiculos();
+						} catch (error) {
+							console.error('Error al eliminar vehículo:', error);
+							this.utilsSvc.presentToast({
+								message: `Hubo un error al eliminar el vehículo con patente ${patente}. Inténtalo de nuevo.`,
+								duration: 3500,
+								color: 'danger',
+								position: 'middle',
+								icon: 'alert-circle-outline',
+							});
+						} finally {
+							loading.dismiss();
+						}
+					}
+				},
+			],
+		});
+
+		await alert.present();
+	}
 }
 

@@ -61,7 +61,7 @@
       <ion-list>
         <ion-item lines="none">
           <ion-icon slot="start" name="flag-outline"></ion-icon>
-          <ion-select placeholder="Choferes" formControlName="usuario">
+          <ion-select placeholder="Choferes" formControlName="usuario" [multiple]="true">
             <div slot="label">Choferes</div>
             <ion-select-option *ngFor="let item of choferes" [value]="item.uid">
               {{ item.name }} - {{ item.rut_usuario }}
@@ -77,7 +77,7 @@
       </ion-list>
 
       <ion-button expand="block" mode="ios" class="submit" type="submit" [disabled]="form.invalid">
-        Crear Cuenta
+        Crear Vehículo
         <ion-icon slot="end" name="person-add-outline"></ion-icon>
       </ion-button>
     </form>

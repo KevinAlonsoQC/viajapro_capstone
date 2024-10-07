@@ -26,6 +26,7 @@ export class CrearVehiculoPage implements OnInit {
 	choferes!: any;
 	usuario!: User;
 
+	private uniqueId = '';
 	form = new FormGroup({
 		id: new FormControl(''),
 		nombre_vehiculo: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -64,44 +65,21 @@ export class CrearVehiculoPage implements OnInit {
 
 			try {
 				// Generar un UID único
-				const uniqueId = uuidv4();
-				console.log('uid', uniqueId);
+				this.uniqueId = uuidv4();
+				console.log('uid', this.uniqueId);
 
-				// Convertir las fechas a Timestamp de Firebase
-				const revisionTecnicaTimestamp = new Date(this.form.value.cad_revision_tecnica_vehiculo).getTime();
-				const permisoCirculacionTimestamp = new Date(this.form.value.cad_per_circulacion_vehiculo).getTime();
-				const soapTimestamp = new Date(this.form.value.cad_soap_vehiculo).getTime();
+
 
 				// Crear el objeto del nuevo vehículo
 				const nuevoVehiculo = {
 					...this.form.value,
-					id: uniqueId, // Asigna el UID único aquí
-					cad_revision_tecnica_vehiculo: revisionTecnicaTimestamp,
-					cad_per_circulacion_vehiculo: permisoCirculacionTimestamp,
-					cad_soap_vehiculo: soapTimestamp,
-					central: this.usuario.central // Agregar la central del usuario
+					id: this.uniqueId, // Asigna el UID único aquí
+					central: this.usuario.central, // Agregar la central del usuario
 				};
 
 				// Guardar el nuevo vehículo en Firebase
-				await this.firebaseSvc.addDocumentWithId('vehiculo', nuevoVehiculo, uniqueId);
-
-					// Subir la imagen si el usuario ha seleccionado una
-				let imageUrl = '';
-				if (this.form.value.img_vehiculo) {
-					const imagePath = `vehiculo/${uniqueId}/${Date.now()}`;
-					imageUrl = await this.firebaseSvc.uploadImage(imagePath, this.form.value.img_vehiculo);
-				}
-
-				this.utilsSvc.presentToast({
-					message: 'Vehículo agregado con éxito.',
-					duration: 3500,
-					color: 'success',
-					position: 'middle',
-					icon: 'checkmark-circle-outline',
-				});
-
-				// Redirigir o actualizar la lista de vehículos después de agregar
-				this.utilsSvc.routerLink('/main/administrador/admin'); // Cambia esta ruta si es necesario
+				await this.firebaseSvc.addDocumentWithId('vehiculo', nuevoVehiculo, this.uniqueId);
+				this.setVehicleInfo();
 			} catch (error) {
 				console.error('Error al agregar vehículo:', error);
 				this.utilsSvc.presentToast({
@@ -115,9 +93,50 @@ export class CrearVehiculoPage implements OnInit {
 				loading.dismiss();
 			}
 		}
+	}
+
+	async setVehicleInfo() {
+		if (this.form.valid) {
+			const loading = await this.utilsSvc.loading();
+			await loading.present();
+
+			let path = `vehiculo/${this.uniqueId}`
+			let imagePath = `vehiculo/${this.uniqueId}/${Date.now()}`;
+			let imageUrl = await this.firebaseSvc.uploadImage(imagePath, this.form.value.img_vehiculo);
+			this.form.controls.img_vehiculo.setValue(imageUrl)
+
+			// Crear nuevamente el objeto, para guardarlo con la URL de la imagen.
+			const nuevoVehiculo = {
+				...this.form.value,
+				id: this.uniqueId, // Asigna el UID único aquí
+				central: this.usuario.central, // Agregar la central del usuario
+			};
+
+			this.firebaseSvc.setDocument(path, nuevoVehiculo).then(async res => {
+				this.utilsSvc.routerLink('/main/administrador/admin/vehiculos');
+				this.form.reset();
+				this.utilsSvc.presentToast({
+					message: 'Vehículo creado con éxito',
+					duration: 3500,
+					color: 'primary',
+					position: 'middle',
+					icon: 'alert-circle-outline'
+				})
+			}).catch(error => {
+				console.log(error);
+				this.utilsSvc.presentToast({
+					message: 'Las credenciales son incorrectas',
+					duration: 3500,
+					color: 'primary',
+					position: 'middle',
+					icon: 'alert-circle-outline'
+				})
+
+			}).finally(() => {
+				loading.dismiss();
+			})
 		}
-
-
+	}
 
 	async getChoferesAndMarcas() {
 		const loading = await this.utilsSvc.loading();

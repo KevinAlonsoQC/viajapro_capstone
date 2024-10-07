@@ -62,7 +62,7 @@ export class VehiculosPage implements OnInit {
         });
       } else {
         this.utilsSvc.presentToast({
-          message: 'No hay choferes disponibles',
+          message: 'No hay vehículos disponibles',
           duration: 3500,
           color: 'warning',
           position: 'middle',

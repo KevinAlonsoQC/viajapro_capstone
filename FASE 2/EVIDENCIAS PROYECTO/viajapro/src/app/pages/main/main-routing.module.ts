@@ -22,7 +22,11 @@ const routes: Routes = [
   {
     path: 'pasajero',
     loadChildren: () => import('./pasajero/pasajero.module').then( m => m.PasajeroPageModule)
+  },  {
+    path: 'owner',
+    loadChildren: () => import('./owner/owner.module').then( m => m.OwnerPageModule)
   }
+
 
 ];
 

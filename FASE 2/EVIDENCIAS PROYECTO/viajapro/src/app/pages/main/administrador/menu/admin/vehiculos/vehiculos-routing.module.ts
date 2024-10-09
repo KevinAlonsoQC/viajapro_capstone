@@ -15,7 +15,12 @@ const routes: Routes = [
   {
     path: 'modificar-vehiculo/:id',
     loadChildren: () => import('./modificar-vehiculo/modificar-vehiculo.module').then( m => m.ModificarVehiculoPageModule)
+  },
+  {
+    path: 'detalle-vehiculo/:id',
+    loadChildren: () => import('./detalle-vehiculo/detalle-vehiculo.module').then( m => m.DetalleVehiculoPageModule)
   }
+
 
 ];
 

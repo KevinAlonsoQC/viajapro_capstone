@@ -1,0 +1,66 @@
+<ion-menu menuId="adminMenu" contentId="admin-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        <strong>Menú</strong>
+        <div class="admin">
+          V I A J A <strong style="color: #000;">PRO</strong>
+        </div>
+      </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-list>
+      <ion-item routerLink="/ruta1">Admin</ion-item>
+      <ion-item routerLink="/ruta2">Admin</ion-item>
+      <ion-item routerLink="/ruta2">Admin</ion-item>
+      <ion-item routerLink="/ruta2">Admin</ion-item>
+      <ion-item>
+        <ion-button color="danger" (click)="signOut()" expand="block" mode="ios" class="submit" type="submit">
+          Cerrar Sesión
+          <ion-icon slot="end" name="exit-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-menu>
+
+<ion-header>
+  <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start">
+      <ion-menu-button menu="adminMenu"></ion-menu-button>
+    </ion-buttons>
+
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
+    </ion-buttons>
+    
+  </ion-toolbar>
+</ion-header>
+
+<!-- Contenido principal / Cuerpo sector amarillo-->
+<ion-content id="admin-content">
+  
+</ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid [fixed]="true">
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/owner/admin" txt_icon="Aplicación" icon="settings-outline"></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center"> 
+          <app-menu-master url="main/owner" txt_icon="Inicio" icon="home-outline" ></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/owner/central" txt_icon="Cuentas" icon="person-outline" ></app-menu-master>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

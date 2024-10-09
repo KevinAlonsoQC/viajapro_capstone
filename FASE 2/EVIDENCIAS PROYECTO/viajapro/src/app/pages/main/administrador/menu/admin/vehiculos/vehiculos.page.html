@@ -33,7 +33,7 @@
         <ion-list lines="full">
           <!-- Para listar conductores -->
           <ion-item-sliding *ngFor="let item of vehiculos">
-            <ion-item [button]="true">
+            <ion-item [button]="true" (click)="detalleVehiculo(item.id)">
               <ion-avatar aria-hidden="true" slot="start">
                 <img alt="Imagen de {{item.name}}" [src]="item.img_vehiculo" />
               </ion-avatar>

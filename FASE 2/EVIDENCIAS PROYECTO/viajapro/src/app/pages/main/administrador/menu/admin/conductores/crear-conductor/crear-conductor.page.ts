@@ -65,7 +65,7 @@ export class CrearConductorPage implements OnInit {
       if (!this.validarRut(this.form.value.rut_usuario)) {
         this.utilsSvc.presentToast({
           message: 'El RUT ingresado no existe.',
-          duration: 3500,
+          duration: 1500,
           color: 'primary',
           position: 'middle',
           icon: 'alert-circle-outline'
@@ -81,7 +81,7 @@ export class CrearConductorPage implements OnInit {
         this.form.controls.rut_usuario.setErrors({ rutEnUso: true });
         this.utilsSvc.presentToast({
           message: 'El RUT ingresado ya está en uso.',
-          duration: 3500,
+          duration: 1500,
           color: 'primary',
           position: 'middle',
           icon: 'alert-circle-outline'
@@ -102,7 +102,7 @@ export class CrearConductorPage implements OnInit {
           console.log(error);
           this.utilsSvc.presentToast({
             message: '¡Este correo está en uso!',
-            duration: 3500,
+            duration: 1500,
             color: 'primary',
             position: 'middle',
             icon: 'alert-circle-outline'
@@ -115,7 +115,7 @@ export class CrearConductorPage implements OnInit {
       console.log(error);
       this.utilsSvc.presentToast({
         message: 'No se pudo obtener la información de RUTs usados.',
-        duration: 3500,
+        duration: 1500,
         color: 'primary',
         position: 'middle',
         icon: 'alert-circle-outline'
@@ -141,7 +141,7 @@ export class CrearConductorPage implements OnInit {
         this.form.reset();
         this.utilsSvc.presentToast({
           message: 'Usuario creado con éxito',
-          duration: 3500,
+          duration: 1500,
           color: 'primary',
           position: 'middle',
           icon: 'alert-circle-outline'
@@ -150,7 +150,7 @@ export class CrearConductorPage implements OnInit {
         console.log(error);
         this.utilsSvc.presentToast({
           message: 'Las credenciales son incorrectas',
-          duration: 3500,
+          duration: 1500,
           color: 'primary',
           position: 'middle',
           icon: 'alert-circle-outline'
@@ -185,7 +185,7 @@ export class CrearConductorPage implements OnInit {
       console.log(error);
       this.utilsSvc.presentToast({
         message: 'No se pudo obtener los datos :(',
-        duration: 3500,
+        duration: 1500,
         color: 'primary',
         position: 'middle',
         icon: 'alert-circle-outline'

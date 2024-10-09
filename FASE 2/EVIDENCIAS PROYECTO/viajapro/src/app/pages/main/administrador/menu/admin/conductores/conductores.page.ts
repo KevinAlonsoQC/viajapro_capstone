@@ -55,7 +55,7 @@ export class ConductoresPage implements OnInit {
       if (this.choferes.length > 0) {
         this.utilsSvc.presentToast({
           message: 'Conductores Cargados con Éxito',
-          duration: 3500,
+          duration: 1500,
           color: 'success',
           position: 'middle',
           icon: 'checkmark-circle-outline'
@@ -63,7 +63,7 @@ export class ConductoresPage implements OnInit {
       } else {
         this.utilsSvc.presentToast({
           message: 'No hay choferes disponibles',
-          duration: 3500,
+          duration: 1500,
           color: 'warning',
           position: 'middle',
           icon: 'alert-circle-outline'
@@ -74,7 +74,7 @@ export class ConductoresPage implements OnInit {
       console.log(error);
       this.utilsSvc.presentToast({
         message: 'No se pudo obtener los datos :(',
-        duration: 3500,
+        duration: 1500,
         color: 'primary',
         position: 'middle',
         icon: 'alert-circle-outline'
@@ -104,7 +104,7 @@ export class ConductoresPage implements OnInit {
           handler: () => {
             this.utilsSvc.presentToast({
               message: 'Cancelaste la acción',
-              duration: 3500,
+              duration: 1500,
               color: 'primary',
               position: 'middle',
               icon: 'alert-circle-outline'
@@ -124,7 +124,7 @@ export class ConductoresPage implements OnInit {
 
               this.utilsSvc.presentToast({
                 message: `Has eliminado al Conductor con RUT ${rut}`,
-                duration: 3500,
+                duration: 1500,
                 color: 'success',
                 position: 'middle',
                 icon: 'checkmark-circle-outline',
@@ -135,7 +135,7 @@ export class ConductoresPage implements OnInit {
               console.error('Error al eliminar usuario:', error);
               this.utilsSvc.presentToast({
                 message: `Hubo un error al eliminar al Conductor con RUT ${rut}. Inténtalo de nuevo.`,
-                duration: 3500,
+                duration: 1500,
                 color: 'danger',
                 position: 'middle',
                 icon: 'alert-circle-outline',

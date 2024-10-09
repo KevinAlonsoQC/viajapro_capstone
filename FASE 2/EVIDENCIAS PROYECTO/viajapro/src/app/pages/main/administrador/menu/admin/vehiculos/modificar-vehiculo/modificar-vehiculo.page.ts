@@ -72,7 +72,7 @@ export class ModificarVehiculoPage implements OnInit {
           console.error('Error: El vehículo no tiene los permisos necesarios o no pertenece a la misma central.');
           this.utilsSvc.presentToast({
             message: 'No tienes permiso para acceder a este vehículo.',
-            duration: 3500,
+            duration: 1500,
             color: 'danger',
             position: 'middle',
             icon: 'alert-circle-outline',
@@ -82,7 +82,7 @@ export class ModificarVehiculoPage implements OnInit {
         console.error('Error al obtener el vehúclo desde Firebase:', error);
         this.utilsSvc.presentToast({
           message: 'Error al obtener los datos del vehículo.',
-          duration: 3500,
+          duration: 1500,
           color: 'danger',
           position: 'middle',
           icon: 'alert-circle-outline',
@@ -129,7 +129,7 @@ export class ModificarVehiculoPage implements OnInit {
 
         this.utilsSvc.presentToast({
           message: 'Vehículo actualizado con éxito.',
-          duration: 3500,
+          duration: 1500,
           color: 'success',
           position: 'middle',
           icon: 'checkmark-circle-outline',
@@ -138,7 +138,7 @@ export class ModificarVehiculoPage implements OnInit {
         console.error('Error actualizando Vehículo:', error);
         this.utilsSvc.presentToast({
           message: 'Error al actualizar el Vehículo. Inténtalo de nuevo.',
-          duration: 3500,
+          duration: 1500,
           color: 'danger',
           position: 'middle',
           icon: 'alert-circle-outline',
@@ -175,7 +175,7 @@ export class ModificarVehiculoPage implements OnInit {
 				console.error('Usuario no definido o sin central.');
 				this.utilsSvc.presentToast({
 					message: 'Error: Usuario no definido o sin central.',
-					duration: 3500,
+					duration: 1500,
 					color: 'danger',
 					position: 'middle',
 					icon: 'alert-circle-outline',
@@ -186,7 +186,7 @@ export class ModificarVehiculoPage implements OnInit {
 			console.error(error);
 			this.utilsSvc.presentToast({
 				message: 'No se pudo obtener los datos :(',
-				duration: 3500,
+				duration: 1500,
 				color: 'primary',
 				position: 'middle',
 				icon: 'alert-circle-outline'

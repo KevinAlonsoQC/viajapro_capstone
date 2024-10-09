@@ -17,75 +17,79 @@ import { AlertController } from '@ionic/angular';
 })
 export class VehiculosPage implements OnInit {
 	firebaseSvc = inject(FirebaseService);
-  utilsSvc = inject(UtilsService);
+	utilsSvc = inject(UtilsService);
 
-  usuario!: User;
-  vehiculos!: any;
-  central!: CentralColectivo;
+	usuario!: User;
+	vehiculos!: any;
+	central!: CentralColectivo;
 
-  constructor(private router: Router, private alertController: AlertController) { }
+	constructor(private router: Router, private alertController: AlertController) { }
 
-  async ngOnInit() {
-    // Suscribirse al observable del usuario
-    this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
-      this.usuario = user;
-      // Aquí puedes realizar más acciones si es necesario
-    });
-    this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    await this.getVehiculos();
-  }
+	async ngOnInit() {
+		// Suscribirse al observable del usuario
+		this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
+			this.usuario = user;
+			// Aquí puedes realizar más acciones si es necesario
+		});
+		this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
+		await this.getVehiculos();
+	}
 
 
 	async getVehiculos() {
 		const loading = await this.utilsSvc.loading();
-    await loading.present();
-    const vehPath = 'vehiculo'; // Ruta de la colección de usuarios
+		await loading.present();
+		const vehPath = 'vehiculo'; // Ruta de la colección de usuarios
 
-    try {
-      // Ejecutar ambas promesas en paralelo
-      const [vehiculos] = await Promise.all([
-        this.firebaseSvc.getCollectionDocuments(vehPath) as Promise<any[]>
-      ]);
+		try {
+			// Ejecutar ambas promesas en paralelo
+			const [vehiculos] = await Promise.all([
+				this.firebaseSvc.getCollectionDocuments(vehPath) as Promise<any[]>
+			]);
 
-      // Filtrar los resultados para obtener solo los choferes de la misma central
-      this.vehiculos = vehiculos.filter(vehiculo =>
-        vehiculo.central == this.usuario.central
-      );
-      
-      if (this.vehiculos.length > 0) {
-        this.utilsSvc.presentToast({
-          message: 'Conductores Cargados con Éxito',
-          duration: 3500,
-          color: 'success',
-          position: 'middle',
-          icon: 'checkmark-circle-outline'
-        });
-      } else {
-        this.utilsSvc.presentToast({
-          message: 'No hay vehículos disponibles',
-          duration: 3500,
-          color: 'warning',
-          position: 'middle',
-          icon: 'alert-circle-outline'
-        });
-      }
+			// Filtrar los resultados para obtener solo los choferes de la misma central
+			this.vehiculos = vehiculos.filter(vehiculo =>
+				vehiculo.central == this.usuario.central
+			);
 
-    } catch (error) {
-      console.log(error);
-      this.utilsSvc.presentToast({
-        message: 'No se pudo obtener los datos :(',
-        duration: 3500,
-        color: 'primary',
-        position: 'middle',
-        icon: 'alert-circle-outline'
-      });
-    } finally {
-      loading.dismiss();
-    }
-  }
+			if (this.vehiculos.length > 0) {
+				this.utilsSvc.presentToast({
+					message: 'Conductores Cargados con Éxito',
+					duration: 1500,
+					color: 'success',
+					position: 'middle',
+					icon: 'checkmark-circle-outline'
+				});
+			} else {
+				this.utilsSvc.presentToast({
+					message: 'No hay vehículos disponibles',
+					duration: 1500,
+					color: 'warning',
+					position: 'middle',
+					icon: 'alert-circle-outline'
+				});
+			}
+
+		} catch (error) {
+			console.log(error);
+			this.utilsSvc.presentToast({
+				message: 'No se pudo obtener los datos :(',
+				duration: 1500,
+				color: 'primary',
+				position: 'middle',
+				icon: 'alert-circle-outline'
+			});
+		} finally {
+			loading.dismiss();
+		}
+	}
 
 	modificarVehiculo(id: string) {
 		this.router.navigate(['/main/administrador/admin/vehiculos/modificar-vehiculo', id]);
+	}
+
+	detalleVehiculo(id: string) {
+		this.router.navigate(['/main/administrador/admin/vehiculos/detalle-vehiculo', id]);
 	}
 
 	crearVehiculo() {
@@ -104,7 +108,7 @@ export class VehiculosPage implements OnInit {
 					handler: () => {
 						this.utilsSvc.presentToast({
 							message: 'Cancelaste la acción',
-							duration: 3500,
+							duration: 1500,
 							color: 'primary',
 							position: 'middle',
 							icon: 'alert-circle-outline'
@@ -124,7 +128,7 @@ export class VehiculosPage implements OnInit {
 
 							this.utilsSvc.presentToast({
 								message: `Has eliminado el vehículo con patente ${patente}`,
-								duration: 3500,
+								duration: 1500,
 								color: 'success',
 								position: 'middle',
 								icon: 'checkmark-circle-outline',
@@ -135,7 +139,7 @@ export class VehiculosPage implements OnInit {
 							console.error('Error al eliminar vehículo:', error);
 							this.utilsSvc.presentToast({
 								message: `Hubo un error al eliminar el vehículo con patente ${patente}. Inténtalo de nuevo.`,
-								duration: 3500,
+								duration: 1500,
 								color: 'danger',
 								position: 'middle',
 								icon: 'alert-circle-outline',

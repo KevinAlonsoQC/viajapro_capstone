@@ -58,7 +58,7 @@ export class MainPage implements OnInit {
       console.log(error);
       this.utilsSvc.presentToast({
         message: 'No se pudo cargar el tipo de usuario',
-        duration: 3500,
+        duration: 1500,
         color: 'primary',
         position: 'middle',
         icon: 'alert-circle-outline'

@@ -59,7 +59,7 @@ export class ModificarConductorPage implements OnInit {
           console.error('Error: El usuario no tiene los permisos necesarios o no pertenece a la misma central.');
           this.utilsSvc.presentToast({
             message: 'No tienes permiso para acceder a este usuario.',
-            duration: 3500,
+            duration: 1500,
             color: 'danger',
             position: 'middle',
             icon: 'alert-circle-outline',
@@ -69,7 +69,7 @@ export class ModificarConductorPage implements OnInit {
         console.error('Error al obtener el usuario desde Firebase:', error);
         this.utilsSvc.presentToast({
           message: 'Error al obtener los datos del usuario.',
-          duration: 3500,
+          duration: 1500,
           color: 'danger',
           position: 'middle',
           icon: 'alert-circle-outline',
@@ -114,7 +114,7 @@ export class ModificarConductorPage implements OnInit {
 
         this.utilsSvc.presentToast({
           message: 'Perfil actualizado con éxito.',
-          duration: 3500,
+          duration: 1500,
           color: 'success',
           position: 'middle',
           icon: 'checkmark-circle-outline',
@@ -123,7 +123,7 @@ export class ModificarConductorPage implements OnInit {
         console.error('Error actualizando perfil:', error);
         this.utilsSvc.presentToast({
           message: 'Error al actualizar el perfil. Inténtalo de nuevo.',
-          duration: 3500,
+          duration: 1500,
           color: 'danger',
           position: 'middle',
           icon: 'alert-circle-outline',

@@ -78,7 +78,7 @@ export class ProfilePage implements OnInit {
 
         this.utilsSvc.presentToast({
           message: 'Perfil actualizado con éxito.',
-          duration: 3500,
+          duration: 1500,
           color: 'success',
           position: 'middle',
           icon: 'checkmark-circle-outline',
@@ -87,7 +87,7 @@ export class ProfilePage implements OnInit {
         console.error('Error actualizando perfil:', error);
         this.utilsSvc.presentToast({
           message: 'Error al actualizar el perfil. Inténtalo de nuevo.',
-          duration: 3500,
+          duration: 1500,
           color: 'danger',
           position: 'middle',
           icon: 'alert-circle-outline',

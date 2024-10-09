@@ -84,7 +84,7 @@ export class CrearVehiculoPage implements OnInit {
 				console.error('Error al agregar vehículo:', error);
 				this.utilsSvc.presentToast({
 					message: 'Error al agregar el vehículo. Inténtalo de nuevo.',
-					duration: 3500,
+					duration: 1500,
 					color: 'danger',
 					position: 'middle',
 					icon: 'alert-circle-outline',
@@ -117,7 +117,7 @@ export class CrearVehiculoPage implements OnInit {
 				this.form.reset();
 				this.utilsSvc.presentToast({
 					message: 'Vehículo creado con éxito',
-					duration: 3500,
+					duration: 1500,
 					color: 'primary',
 					position: 'middle',
 					icon: 'alert-circle-outline'
@@ -126,7 +126,7 @@ export class CrearVehiculoPage implements OnInit {
 				console.log(error);
 				this.utilsSvc.presentToast({
 					message: 'Las credenciales son incorrectas',
-					duration: 3500,
+					duration: 1500,
 					color: 'primary',
 					position: 'middle',
 					icon: 'alert-circle-outline'
@@ -164,7 +164,7 @@ export class CrearVehiculoPage implements OnInit {
 				console.error('Usuario no definido o sin central.');
 				this.utilsSvc.presentToast({
 					message: 'Error: Usuario no definido o sin central.',
-					duration: 3500,
+					duration: 1500,
 					color: 'danger',
 					position: 'middle',
 					icon: 'alert-circle-outline',
@@ -175,7 +175,7 @@ export class CrearVehiculoPage implements OnInit {
 			console.error(error);
 			this.utilsSvc.presentToast({
 				message: 'No se pudo obtener los datos :(',
-				duration: 3500,
+				duration: 1500,
 				color: 'primary',
 				position: 'middle',
 				icon: 'alert-circle-outline'

@@ -7,9 +7,19 @@ import { Observable } from 'rxjs';
 })
 
 export class NoAuthGuard implements CanActivate {
+  constructor(
+    private router: Router,
+    ) { }
+
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return true;
+
+      if(!localStorage.getItem('usuario')){
+        return true;
+      }else{
+        this.router.navigateByUrl('/main')
+        return false;
+      }
   }
 }

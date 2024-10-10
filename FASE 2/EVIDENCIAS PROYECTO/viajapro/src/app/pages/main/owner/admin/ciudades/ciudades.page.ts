@@ -232,7 +232,7 @@ export class CiudadesPage implements OnInit {
           type: 'text',
           min: 6,
           max: 50,
-          placeholder: 'Ingresa el Nombre del País',
+          placeholder: 'Ingresa el Nombre de la Ciudad',
           value: ciudad.nombre_ciudad
         },
       ],
@@ -330,7 +330,7 @@ export class CiudadesPage implements OnInit {
     }
     const alert = await this.alertController.create({
       header: `¿Seguro de ${titulo} la ciudad?`,
-      subHeader: `Se cambiará el estado al País con nombre: ${ciudad.nombre_ciudad}`,
+      subHeader: `Se cambiará el estado a la Ciudad con nombre: ${ciudad.nombre_ciudad}`,
       buttons: [
         {
           text: 'Cancelar',
@@ -363,7 +363,7 @@ export class CiudadesPage implements OnInit {
                 await this.firebaseSvc.updateDocument(`ciudad/${ciudad.id}`, { ...ciudad, estado: true });
               }
               this.utilsSvc.presentToast({
-                message: `Cambio realizado para el País ${ciudad.nombre_pais}`,
+                message: `Cambio realizado para el la Ciudad ${ciudad.nombre_ciudad}`,
                 duration: 1500,
                 color: 'success',
                 position: 'middle',

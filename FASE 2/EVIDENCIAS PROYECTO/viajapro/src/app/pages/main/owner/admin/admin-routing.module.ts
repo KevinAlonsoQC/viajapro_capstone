@@ -7,17 +7,14 @@ const routes: Routes = [
   {
     path: '',
     component: AdminPage
-  },  {
+  },
+  {
     path: 'paises',
     loadChildren: () => import('./paises/paises.module').then( m => m.PaisesPageModule)
   },
   {
     path: 'ciudades',
     loadChildren: () => import('./ciudades/ciudades.module').then( m => m.CiudadesPageModule)
-  },
-  {
-    path: 'provincias',
-    loadChildren: () => import('./provincias/provincias.module').then( m => m.ProvinciasPageModule)
   },
   {
     path: 'comunas',

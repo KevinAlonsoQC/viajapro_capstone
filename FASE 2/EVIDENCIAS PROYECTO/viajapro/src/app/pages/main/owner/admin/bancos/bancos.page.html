@@ -38,7 +38,7 @@
                 <img alt="Imagen de {{item.nombre_banco}}" [src]="item.img_banco" />
               </ion-avatar>
               <ion-avatar aria-hidden="true" slot="start" *ngIf="!item.img_banco">
-                <img alt="Imagen de {{item.nombre_banco}}" [src]="imgDefault" />
+                <img alt="Imagen de {{item.nombre_banco}}" src="assets/icon/bank.svg"/>
               </ion-avatar>
 
               <ion-label>{{ item.nombre_banco }}</ion-label>

@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { CiudadesPageRoutingModule } from './ciudades-routing.module';
 
 import { CiudadesPage } from './ciudades.page';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CiudadesPageRoutingModule
+    CiudadesPageRoutingModule,
+    SharedModule
   ],
   declarations: [CiudadesPage]
 })

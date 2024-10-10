@@ -208,7 +208,7 @@ export class BancosPage implements OnInit {
           },
         },
         {
-          text: 'Agregar',
+          text: 'Modificar',
           role: 'confirm',
           handler: async (bancoNuevo) => {
             if (bancoNuevo.nombre_banco == "") {
@@ -229,7 +229,7 @@ export class BancosPage implements OnInit {
               // Capturar la imagen
               const dataUrl = (await this.utilsSvc.takePicture('Logo del Banco')).dataUrl;
               if (dataUrl) {
-                let imagePath = await this.firebaseSvc.getFilePath(banco.img_usuario);
+                let imagePath = await this.firebaseSvc.getFilePath(banco.img_banco);
                 let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
 
                 const datoModificado = {
@@ -237,24 +237,24 @@ export class BancosPage implements OnInit {
                   img_banco: imageUrl
                 }  
                 // Actualizar el documento en Firestore con la URL de la imagen
-                await this.firebaseSvc.updateDocument(`banco/${banco.id}`, {...banco, datoModificado});
+                await this.firebaseSvc.updateDocument(`banco/${banco.id}`, {...datoModificado});
 
+                // Actualizar la lista de bancos
+                await this.getBancos();
                 // Mostrar un mensaje de éxito
                 this.utilsSvc.presentToast({
-                  message: 'Banco creado con éxito',
+                  message: 'Banco modificado con éxito',
                   duration: 1500,
                   color: 'primary',
                   position: 'middle',
                   icon: 'checkmark-circle-outline'
                 });
 
-                // Actualizar la lista de bancos
-                await this.getBancos();
               }
             } catch (error) {
-              console.error('Error al crear banco:', error);
+              console.error('Error al modificar banco:', error);
               this.utilsSvc.presentToast({
-                message: 'Error al crear el banco. Inténtalo de nuevo.',
+                message: 'Error al modificar el banco. Inténtalo de nuevo.',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -272,11 +272,16 @@ export class BancosPage implements OnInit {
     await alert.present();
   }
 
-  async eliminarBanco(banco: any) {
+  async estadoBanco(banco: any) {
+    let titulo = '';
+    if(banco.estado){
+      titulo = 'Desactivar'
+    }else{
+      titulo ='Activar'
+    }
     const alert = await this.alertController.create({
-      header: '¿Seguro de eliminar el banco?',
-      subHeader: `Se eliminará al banco con nombre: ${banco.nombre_banco}`,
-      message: 'Recuerda que si aceptas, esta opción es irreversible.',
+      header: `¿Seguro de ${titulo} el banco?`,
+      subHeader: `Se cambiará el estado al banco con nombre: ${banco.nombre_banco}`,
       buttons: [
         {
           text: 'Cancelar',
@@ -292,7 +297,7 @@ export class BancosPage implements OnInit {
           },
         },
         {
-          text: 'Eliminar',
+          text: titulo,
           role: 'confirm',
           handler: async () => {
             const loading = await this.utilsSvc.loading();
@@ -303,9 +308,13 @@ export class BancosPage implements OnInit {
               //await this.firebaseSvc.deleteDocument(`banco/${banco.id}`);
               //En vez de eliminarlo se pone como estado 0, porque si lo eliminamos, y llegasen a existir datos con un banco, al eliminarlo causará
               //un error a escala!
-              await this.firebaseSvc.updateDocument(`banco/${banco.id}`, {...banco, estado: false});
+              if(banco.estado){
+                await this.firebaseSvc.updateDocument(`banco/${banco.id}`, {...banco, estado: false});
+              }else{
+                await this.firebaseSvc.updateDocument(`banco/${banco.id}`, {...banco, estado: true});
+              }
               this.utilsSvc.presentToast({
-                message: `Has eliminado el banco ${banco.nombre_banco}`,
+                message: `Cambio realizado para el banco ${banco.nombre_banco}`,
                 duration: 1500,
                 color: 'success',
                 position: 'middle',
@@ -314,9 +323,9 @@ export class BancosPage implements OnInit {
 
               await this.getBancos();
             } catch (error) {
-              console.error('Error al eliminar banco:', error);
+              console.error('Error al cambiar el estado banco:', error);
               this.utilsSvc.presentToast({
-                message: `Hubo un error al eliminar el banco con nombre ${banco.nombre_banco}. Inténtalo de nuevo.`,
+                message: `Hubo un error al realizar el cambio en el banco con nombre ${banco.nombre_banco}. Inténtalo de nuevo.`,
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',

@@ -33,7 +33,7 @@
         <ion-list lines="full">
           <!-- Para listar conductores -->
           <ion-item-sliding *ngFor="let item of bancos">
-            <ion-item [button]="true" *ngIf="item.estado" >
+            <ion-item [button]="true">
               <ion-avatar aria-hidden="true" slot="start" *ngIf="item.img_banco">
                 <img alt="Imagen de {{item.nombre_banco}}" [src]="item.img_banco" />
               </ion-avatar>
@@ -42,10 +42,12 @@
               </ion-avatar>
 
               <ion-label>{{ item.nombre_banco }}</ion-label>
-              <ion-buttons>
+              <ion-buttons [ngClass]="{noActivo: !item.estado}">
                 <ion-button slot="start">
                   <ion-icon name="cash-outline"></ion-icon>
                 </ion-button>
+                <p *ngIf="item.estado">Activado</p>
+                <p *ngIf="!item.estado">Desactivado</p>
               </ion-buttons>
             </ion-item>
 
@@ -54,9 +56,11 @@
                 <ion-icon class="icon-option" slot="icon-only" name="pencil"></ion-icon>
               </ion-item-option>
 
-              <ion-item-option expandable="true" (click)="eliminarBanco(item)">
-                <ion-icon class="icon-option" slot="icon-only" name="trash"></ion-icon>
+              <ion-item-option expandable="true" (click)="estadoBanco(item)">
+                <ion-icon *ngIf="item.estado"  class="icon-option" slot="icon-only" name="stop-circle"></ion-icon>
+                <ion-icon *ngIf="!item.estado"  class="icon-option" slot="icon-only" name="play-circle"></ion-icon>
               </ion-item-option>
+
             </ion-item-options>
           </ion-item-sliding>
         </ion-list>

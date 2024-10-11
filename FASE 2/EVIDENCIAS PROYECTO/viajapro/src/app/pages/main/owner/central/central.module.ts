@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { CentralPageRoutingModule } from './central-routing.module';
 
 import { CentralPage } from './central.page';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    CentralPageRoutingModule
+    CentralPageRoutingModule,
+    SharedModule
   ],
   declarations: [CentralPage]
 })

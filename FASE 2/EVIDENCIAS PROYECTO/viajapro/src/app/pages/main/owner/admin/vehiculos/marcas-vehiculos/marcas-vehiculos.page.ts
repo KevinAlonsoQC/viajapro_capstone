@@ -7,20 +7,20 @@ import { UtilsService } from 'src/app/services/utils.service';
 import { AlertController } from '@ionic/angular';
 
 import { v4 as uuidv4 } from 'uuid';
-import { Pais } from 'src/app/models/pais';
+import { MarcaVehiculo } from 'src/app/models/marca-vehiculo';
 
 @Component({
-  selector: 'app-paises',
-  templateUrl: './paises.page.html',
-  styleUrls: ['./paises.page.scss'],
+  selector: 'app-marcas-vehiculos',
+  templateUrl: './marcas-vehiculos.page.html',
+  styleUrls: ['./marcas-vehiculos.page.scss'],
 })
-export class PaisesPage implements OnInit {
+export class MarcasVehiculosPage implements OnInit {
 
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
   usuario!: User;
-  paises!: Pais[];
+  marcas!: MarcaVehiculo[];
   private uniqueId = '';
 
   constructor(private router: Router, private alertController: AlertController) { }
@@ -39,20 +39,20 @@ export class PaisesPage implements OnInit {
   async getData() {
     const loading = await this.utilsSvc.loading();
     await loading.present();
-    const urlPath = 'pais'; // Ruta de la colección de usuarios
+    const urlPath = 'marca_vehiculo'; // Ruta de la colección de usuarios
 
     try {
       // Ejecutar ambas promesas en paralelo
       const [callback] = await Promise.all([
-        this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<Pais[]>
+        this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<MarcaVehiculo[]>
       ]);
 
       // Filtrar los resultados para obtener solo los choferes de la misma central
-      this.paises = callback;
+      this.marcas = callback;
 
-      if (this.paises.length <= 0) {
+      if (this.marcas.length <= 0) {
         this.utilsSvc.presentToast({
-          message: 'No hay Paises Creados',
+          message: 'No hay Marcas de Vehículos Creadas',
           duration: 1500,
           color: 'warning',
           position: 'middle',
@@ -77,22 +77,15 @@ export class PaisesPage implements OnInit {
 
   async crear() {
     const alert = await this.alertController.create({
-      header: 'Agregar un Nuevo Dato',
-      message: 'Rellena todos los campos para agregar el nuevo dato.',
+      header: 'Agregar un Nueva Marca',
+      message: 'Rellena todos los campos para agregar la nueva marca.',
       inputs: [
         {
           name: 'nombre_dato',
           type: 'text',
           min: 6,
           max: 50,
-          placeholder: 'Ingresa el Nombre del País',
-        },
-        {
-          name: 'nombre_nacionalidad',
-          type: 'text',
-          min: 6,
-          max: 50,
-          placeholder: 'Ingresa la Nacionalidad (EJ: Chilena)',
+          placeholder: 'Nombre de la Marca',
         },
       ],
       buttons: [
@@ -115,7 +108,7 @@ export class PaisesPage implements OnInit {
           handler: async (dato) => {
             if (dato.nombre_dato == "") {
               this.utilsSvc.presentToast({
-                message: 'No puedes dejar datos vacíos',
+                message: 'Debes agregar un nombre a la Marca',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -123,24 +116,10 @@ export class PaisesPage implements OnInit {
               });
               return;
             }
-
-            if (dato.nombre_nacionalidad == "") {
-              this.utilsSvc.presentToast({
-                message: 'No puedes dejar datos vacíos',
-                duration: 1500,
-                color: 'danger',
-                position: 'middle',
-                icon: 'alert-circle-outline'
-              });
-              return;
-            }
-
             const existe = await this.verificarExistente(dato.nombre_dato);
-            const existe2 = await this.verificarExistente(dato.nombre_nacionalidad);
-
             if (existe) {
               this.utilsSvc.presentToast({
-                message: 'Ya existe un País con ese nombre',
+                message: 'Ya existe una marca con ese nombre',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -148,18 +127,6 @@ export class PaisesPage implements OnInit {
               });
               return;
             }
-
-            if (existe2) {
-              this.utilsSvc.presentToast({
-                message: 'Ya existe un País con esa Nacionalidad',
-                duration: 1500,
-                color: 'danger',
-                position: 'middle',
-                icon: 'alert-circle-outline'
-              });
-              return;
-            }
-            
             // Mostrar pantalla de carga
             const loading = await this.utilsSvc.loading();
             await loading.present();
@@ -170,40 +137,38 @@ export class PaisesPage implements OnInit {
 
               const datoNuevo = {
                 id: this.uniqueId,
-                nombre_pais: dato.nombre_dato,
-                nacionalidad_pais: dato.nombre_nacionalidad,
+                nombre_marca: dato.nombre_dato,
                 estado: true,
               }
 
               // Capturar la imagen
-              const dataUrl = (await this.utilsSvc.takePicture('Bandera del País')).dataUrl;
+              const dataUrl = (await this.utilsSvc.takePicture('Logo de la Marca')).dataUrl;
 
               if (dataUrl) {
-                await this.firebaseSvc.addDocumentWithId('pais', datoNuevo, this.uniqueId);
+                await this.firebaseSvc.addDocumentWithId('marca_vehiculo', datoNuevo, this.uniqueId);
 
-                let path = `pais/${this.uniqueId}`;
-                let imagePath = `pais/${this.uniqueId}/${Date.now()}`;
+                let path = `marca_vehiculo/${this.uniqueId}`;
+                let imagePath = `marca_vehiculo/${this.uniqueId}/${Date.now()}`;
                 let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
 
                 // Actualizar el documento en Firestore con la URL de la imagen
-                await this.firebaseSvc.setDocument(path, { ...datoNuevo, bandera_pais: imageUrl });
+                await this.firebaseSvc.setDocument(path, { ...datoNuevo, img_marca: imageUrl });
 
                 // Mostrar un mensaje de éxito
                 this.utilsSvc.presentToast({
-                  message: 'País creado con éxito',
+                  message: 'Marca creada con éxito',
                   duration: 1500,
                   color: 'primary',
                   position: 'middle',
                   icon: 'checkmark-circle-outline'
                 });
 
-                // Actualizar la lista de bancos
                 await this.getData();
               }
             } catch (error) {
-              console.error('Error al crear el país:', error);
+              console.error('Error al crear la marca:', error);
               this.utilsSvc.presentToast({
-                message: 'Error al crear el país. Inténtalo de nuevo.',
+                message: 'Error al crear la marca. Inténtalo de nuevo.',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -221,27 +186,18 @@ export class PaisesPage implements OnInit {
     await alert.present();
   }
 
-
-  async modificar(pais: any) {
+  async modificar(marca: any) {
     const alert = await this.alertController.create({
-      header: 'Modificar País',
-      message: `Rellena todos los campos para modificar ${pais.nombre_pais}.`,
+      header: 'Modificar Marca',
+      message: `Rellena todos los campos para modificar ${marca.nombre_marca}.`,
       inputs: [
         {
           name: 'nombre_dato',
           type: 'text',
           min: 6,
           max: 50,
-          placeholder: 'Ingresa el Nombre del País',
-          value: pais.nombre_pais
-        },
-        {
-          name: 'nombre_nacionalidad',
-          type: 'text',
-          min: 6,
-          max: 50,
-          placeholder: 'Ingresa la Nacionalidad (EJ: Chilena)',
-          value: pais.nacionalidad_pais
+          placeholder: 'Nombre de la Marca',
+          value: marca.nombre_marca
         },
       ],
       buttons: [
@@ -264,7 +220,7 @@ export class PaisesPage implements OnInit {
           handler: async (dato) => {
             if (dato.nombre_dato == "") {
               this.utilsSvc.presentToast({
-                message: 'No puedes dejar datos vacíos',
+                message: 'Debes agregar un nombre a la Marca',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -272,22 +228,10 @@ export class PaisesPage implements OnInit {
               });
               return;
             }
-
-            if (dato.nombre_nacionalidad == "") {
-              this.utilsSvc.presentToast({
-                message: 'No puedes dejar datos vacíos',
-                duration: 1500,
-                color: 'danger',
-                position: 'middle',
-                icon: 'alert-circle-outline'
-              });
-              return;
-            }
-
             const existe = await this.verificarExistente(dato.nombre_dato);
             if (existe) {
               this.utilsSvc.presentToast({
-                message: 'Ya existe un País con ese nombre',
+                message: 'Ya existe una Marca con ese nombre',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -295,19 +239,6 @@ export class PaisesPage implements OnInit {
               });
               return;
             }
-
-            const existe2 = await this.verificarExistente(dato.nombre_nacionalidad);
-            if (existe2) {
-              this.utilsSvc.presentToast({
-                message: 'Ya existe un País con esa Nacionalidad',
-                duration: 1500,
-                color: 'danger',
-                position: 'middle',
-                icon: 'alert-circle-outline'
-              });
-              return;
-            }
-
             // Mostrar pantalla de carga
             const loading = await this.utilsSvc.loading();
             await loading.present();
@@ -324,23 +255,21 @@ export class PaisesPage implements OnInit {
                     handler: async () => {
                       // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
                       const datoModificado = {
-                        nombre_pais: dato.nombre_dato,
-                        nacionalidad_pais: dato.nombre_nacionalidad,
-                        bandera_pais: pais.bandera_pais // Mantiene la imagen original
-                      };
-            
+                        nombre_marca: dato.nombre_dato,
+                      }
+
                       // Actualizar el documento en Firestore sin cambiar la imagen
-                      await this.firebaseSvc.updateDocument(`pais/${pais.id}`, { ...datoModificado });
-            
+                      await this.firebaseSvc.updateDocument(`marca_vehiculo/${marca.id}`, { ...datoModificado });
+
                       // Mostrar un mensaje de éxito
                       this.utilsSvc.presentToast({
-                        message: 'País modificado con éxito',
+                        message: 'Marca modificado con éxito',
                         duration: 1500,
                         color: 'primary',
                         position: 'middle',
                         icon: 'checkmark-circle-outline'
                       });
-            
+
                       // Actualizar la lista de datos
                       await this.getData();
                     }
@@ -350,30 +279,29 @@ export class PaisesPage implements OnInit {
                     role: 'confirm',
                     handler: async () => {
                       // Si el usuario selecciona "Sí", permite capturar la nueva imagen
-                      const dataUrl = (await this.utilsSvc.takePicture('Bandera del País')).dataUrl;
-                      
+                      const dataUrl = (await this.utilsSvc.takePicture('Logo de la Marca')).dataUrl;
+
                       if (dataUrl) {
-                        let imagePath = await this.firebaseSvc.getFilePath(pais.bandera_pais);
+                        let imagePath = await this.firebaseSvc.getFilePath(marca.img_marca);
                         let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-            
+
                         const datoModificado = {
-                          nombre_pais: dato.nombre_dato,
-                          nacionalidad_pais: dato.nombre_nacionalidad,
-                          bandera_pais: imageUrl // Se actualiza la imagen con la nueva URL
+                          nombre_marca: dato.nombre_dato,
+                          img_marca: imageUrl // Se actualiza la imagen con la nueva URL
                         };
-            
+
                         // Actualizar el documento en Firestore con la nueva URL de la imagen
-                        await this.firebaseSvc.updateDocument(`pais/${pais.id}`, { ...datoModificado });
-            
+                        await this.firebaseSvc.updateDocument(`marca_vehiculo/${marca.id}`, { ...datoModificado });
+
                         // Mostrar un mensaje de éxito
                         this.utilsSvc.presentToast({
-                          message: 'País modificado con éxito y bandera actualizada',
+                          message: 'Marca modificada con éxito e Imagen actualizada',
                           duration: 1500,
                           color: 'primary',
                           position: 'middle',
                           icon: 'checkmark-circle-outline'
                         });
-            
+
                         // Actualizar la lista de datos
                         await this.getData();
                       }
@@ -381,19 +309,19 @@ export class PaisesPage implements OnInit {
                   }
                 ]
               });
-            
+
               await confirmAlert.present();
-            
+
             } catch (error) {
-              console.error('Error al modificar el país:', error);
+              console.error('Error al modificar la Marca:', error);
               this.utilsSvc.presentToast({
-                message: 'Hubo un error al modificar el país. Inténtalo de nuevo.',
+                message: 'Hubo un error al modificar la Marca. Inténtalo de nuevo.',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
                 icon: 'alert-circle-outline'
               });
-            }finally {
+            } finally {
               // Cerrar pantalla de carga
               loading.dismiss();
             }
@@ -405,16 +333,16 @@ export class PaisesPage implements OnInit {
     await alert.present();
   }
 
-  async cambiarEstado(pais: any) {
+  async estado(marca: any) {
     let titulo = '';
-    if (pais.estado) {
+    if (marca.estado) {
       titulo = 'Desactivar'
     } else {
       titulo = 'Activar'
     }
     const alert = await this.alertController.create({
-      header: `¿Seguro de ${titulo} el pais?`,
-      subHeader: `Se cambiará el estado al País con nombre: ${pais.nombre_pais}`,
+      header: `¿Seguro de ${titulo} la marca?`,
+      subHeader: `Se cambiará el estado la marca con nombre: ${marca.nombre_marca}`,
       buttons: [
         {
           text: 'Cancelar',
@@ -441,13 +369,13 @@ export class PaisesPage implements OnInit {
               //await this.firebaseSvc.deleteDocument(`banco/${banco.id}`);
               //En vez de eliminarlo se pone como estado 0, porque si lo eliminamos, y llegasen a existir datos con un banco, al eliminarlo causará
               //un error a escala!
-              if (pais.estado) {
-                await this.firebaseSvc.updateDocument(`pais/${pais.id}`, { ...pais, estado: false });
+              if (marca.estado) {
+                await this.firebaseSvc.updateDocument(`marca_vehiculo/${marca.id}`, { ...marca, estado: false });
               } else {
-                await this.firebaseSvc.updateDocument(`pais/${pais.id}`, { ...pais, estado: true });
+                await this.firebaseSvc.updateDocument(`marca_vehiculo/${marca.id}`, { ...marca, estado: true });
               }
               this.utilsSvc.presentToast({
-                message: `Cambio realizado para el País ${pais.nombre_pais}`,
+                message: `Cambio realizado para la Marca ${marca.nombre_marca}`,
                 duration: 1500,
                 color: 'success',
                 position: 'middle',
@@ -456,9 +384,9 @@ export class PaisesPage implements OnInit {
 
               await this.getData();
             } catch (error) {
-              console.error('Error al cambiar el estado País:', error);
+              console.error('Error al cambiar el estado de la Marca:', error);
               this.utilsSvc.presentToast({
-                message: `Hubo un error al realizar el cambio en el País con nombre ${pais.nombre_pais}. Inténtalo de nuevo.`,
+                message: `Hubo un error al realizar el cambio en la marca con nombre ${marca.nombre_marca}. Inténtalo de nuevo.`,
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -477,13 +405,7 @@ export class PaisesPage implements OnInit {
 
   async verificarExistente(dato: string): Promise<boolean> {
     try {
-      if(this.paises.some(callback => callback.nombre_pais.toLowerCase() === dato.toLowerCase())){
-        return true;
-      }
-      if(this.paises.some(callback => callback.nacionalidad_pais.toLowerCase() === dato.toLowerCase())){
-        return true;
-      }
-      return false;
+      return this.marcas.some(callback => callback.nombre_marca.toLowerCase() === dato.toLowerCase());
     } catch (error) {
       console.error('Error al verificar si el dato ya existe:', error);
       return false;

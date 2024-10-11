@@ -7,7 +7,15 @@ const routes: Routes = [
   {
     path: '',
     component: VehiculosPage
+  },  {
+    path: 'marcas-vehiculos',
+    loadChildren: () => import('./marcas-vehiculos/marcas-vehiculos.module').then( m => m.MarcasVehiculosPageModule)
+  },
+  {
+    path: 'modelos-vehiculos',
+    loadChildren: () => import('./modelos-vehiculos/modelos-vehiculos.module').then( m => m.ModelosVehiculosPageModule)
   }
+
 ];
 
 @NgModule({

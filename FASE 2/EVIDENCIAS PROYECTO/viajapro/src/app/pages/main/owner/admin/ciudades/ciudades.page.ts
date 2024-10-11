@@ -172,6 +172,18 @@ export class CiudadesPage implements OnInit {
               });
               return;
             }
+
+            const existe = await this.verificarExistente(dato.nombre_dato);
+            if (existe) {
+              this.utilsSvc.presentToast({
+                message: 'Ya existe una Ciudad con ese nombre',
+                duration: 1500,
+                color: 'danger',
+                position: 'middle',
+                icon: 'alert-circle-outline'
+              });
+              return;
+            }
             // Mostrar pantalla de carga
             const loading = await this.utilsSvc.loading();
             await loading.present();
@@ -390,5 +402,15 @@ export class CiudadesPage implements OnInit {
 
     await alert.present();
   }
+
+  async verificarExistente(dato: string): Promise<boolean> {
+    try {
+      return this.ciudades.some(callback => callback.nombre_ciudad.toLowerCase() === dato.toLowerCase());
+    } catch (error) {
+      console.error('Error al verificar si el dato ya existe:', error);
+      return false;
+    }
+  }
+
 
 }

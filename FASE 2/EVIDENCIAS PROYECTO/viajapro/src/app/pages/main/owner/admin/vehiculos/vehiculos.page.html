@@ -20,38 +20,33 @@
   <ion-grid class="ion-no-padding">
     <ion-row>
       <ion-col>
-        <app-header-funtion titulo="Comunas"></app-header-funtion>
+        <app-header-funtion titulo="Vehículos"></app-header-funtion>
       </ion-col>
     </ion-row>
+    <br>
     <ion-row>
       <ion-col>
-        <ion-searchbar></ion-searchbar>
-      </ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col>
-        <ion-list lines="full">
-          <!-- Para listar conductores -->
-          <ion-item [button]="true">
-            <ion-label>Marcas de Vehículos</ion-label>
-            <ion-buttons>
-              <ion-button slot="start">
-                <ion-icon name="diamond-outline"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-item>
+        <div class="card">
+          <img src="assets/modelos.png" alt="Marcas">
+          <div class="card-img"></div>
+          <div class="card-info">
+            <div>
+              <h3>Marcas De Vehículos</h3>
+            </div>
+            <div class="arrow" [routerLink]="['/main/owner/admin/vehiculos/marcas-vehiculos']">➔</div>
+          </div>
+        </div>
 
-          <!-- Para listar conductores -->
-          <ion-item [button]="true">
-            <ion-label>Modelos de Vehículos</ion-label>
-            <ion-buttons>
-              <ion-button slot="start">
-                <ion-icon name="car-outline"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-          </ion-item>
-        </ion-list>
-
+        <div class="card">
+          <img src="assets/modelos2.png" alt="Modelos">
+          <div class="card-img"></div>
+          <div class="card-info">
+            <div>
+              <h3>Modelos De Vehículos</h3>
+            </div>
+            <div class="arrow" [routerLink]="['/main/owner/admin/vehiculos/modelos-vehiculos']">➔</div>
+          </div>
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>

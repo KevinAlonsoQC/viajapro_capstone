@@ -20,7 +20,7 @@ export class BancosPage implements OnInit {
   utilsSvc = inject(UtilsService);
 
   usuario!: User;
-  bancos!: any;
+  bancos!: Banco[];
   private uniqueId = '';
 
   constructor(private router: Router, private alertController: AlertController) { }
@@ -116,6 +116,17 @@ export class BancosPage implements OnInit {
               });
               return;
             }
+            const existe = await this.verificarExistente(bancoNuevo.nombre_banco);
+            if (existe) {
+              this.utilsSvc.presentToast({
+                message: 'Ya existe un banco con ese nombre',
+                duration: 1500,
+                color: 'danger',
+                position: 'middle',
+                icon: 'alert-circle-outline'
+              });
+              return;
+            }
             // Mostrar pantalla de carga
             const loading = await this.utilsSvc.loading();
             await loading.present();
@@ -176,7 +187,6 @@ export class BancosPage implements OnInit {
     await alert.present();
   }
 
-
   async modificarBanco(banco: any) {
     const alert = await this.alertController.create({
       header: 'Modificar Banco',
@@ -212,6 +222,17 @@ export class BancosPage implements OnInit {
             if (bancoNuevo.nombre_banco == "") {
               this.utilsSvc.presentToast({
                 message: 'Debes agregar un nombre al banco',
+                duration: 1500,
+                color: 'danger',
+                position: 'middle',
+                icon: 'alert-circle-outline'
+              });
+              return;
+            }
+            const existe = await this.verificarExistente(bancoNuevo.nombre_banco);
+            if (existe) {
+              this.utilsSvc.presentToast({
+                message: 'Ya existe un banco con ese nombre',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -293,9 +314,9 @@ export class BancosPage implements OnInit {
               await confirmAlert.present();
 
             } catch (error) {
-              console.error('Error al modificar el país:', error);
+              console.error('Error al modificar el Banco:', error);
               this.utilsSvc.presentToast({
-                message: 'Hubo un error al modificar el país. Inténtalo de nuevo.',
+                message: 'Hubo un error al modificar el Banco. Inténtalo de nuevo.',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -381,6 +402,15 @@ export class BancosPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async verificarExistente(dato: string): Promise<boolean> {
+    try {
+      return this.bancos.some(callback => callback.nombre_banco.toLowerCase() === dato.toLowerCase());
+    } catch (error) {
+      console.error('Error al verificar si el dato ya existe:', error);
+      return false;
+    }
   }
 
 }

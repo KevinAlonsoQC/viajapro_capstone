@@ -224,6 +224,19 @@ export class ComunasPage implements OnInit {
               });
               return;
             }
+
+            const existe = await this.verificarExistente(dato.nombre_dato);
+            if (existe) {
+              this.utilsSvc.presentToast({
+                message: 'Ya existe una Comuna con ese nombre',
+                duration: 1500,
+                color: 'danger',
+                position: 'middle',
+                icon: 'alert-circle-outline'
+              });
+              return;
+            }
+
             // Mostrar pantalla de carga
             const loading = await this.utilsSvc.loading();
             await loading.present();
@@ -449,6 +462,15 @@ export class ComunasPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async verificarExistente(dato: string): Promise<boolean> {
+    try {
+      return this.comunas.some(callback => callback.nombre_comuna.toLowerCase() === dato.toLowerCase());
+    } catch (error) {
+      console.error('Error al verificar si el dato ya existe:', error);
+      return false;
+    }
   }
 
 }

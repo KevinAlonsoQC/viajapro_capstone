@@ -5,5 +5,6 @@ export interface CentralColectivo {
     tarifa_nocturna_central: number; // Opcional
     img_central?: string; // Opcional
     comuna: string;  // Referencia a Comuna
-    presidente: string;
+    presidente?: string;
+    estado: boolean;
 }

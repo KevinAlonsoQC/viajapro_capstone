@@ -74,21 +74,19 @@ export class FirebaseService {
   async addDocument(collectionPath: string, data: any): Promise<void> {
     const docRef = this.firestore.collection(collectionPath).doc(); // Crea un nuevo documento
     return docRef.set(data); // Guarda el documento en la colección
-  }  
+  }
 
   //AÑADIR UN DOCUMENTO NUEVO A LA COLECCIÓN CON UN UID DE LA FUNCIÓN UID, PARA MEJOR MANEJO
   async addDocumentWithId(collectionPath: string, data: any, id: string): Promise<void> {
     const docRef = this.firestore.collection(collectionPath).doc(id); // Usa el ID proporcionado
     return docRef.set(data); // Guarda el documento en la colección
-}
+  }
 
 
   //eliminar un documento de la colección
   async deleteDocument(path: string): Promise<void> {
     return this.firestore.collection(path.split('/')[0]).doc(path.split('/')[1]).delete();
   }
-
-
 
   // Obtener todos los documentos de una colección
   async getCollectionDocuments(collectionPath: string) {
@@ -106,14 +104,14 @@ export class FirebaseService {
 
 
   // ========= Subir Imagen a Firebase Storage =========
-  async uploadImage(path: string, data_url: string){
+  async uploadImage(path: string, data_url: string) {
     return uploadString(ref(getStorage(), path), data_url, 'data_url').then(() => {
       return getDownloadURL(ref(getStorage(), path));
     })
   }
 
   // ==== Obtener La ruta de la image ====
-  async getFilePath(url: string){
+  async getFilePath(url: string) {
     return ref(getStorage(), url).fullPath;
   }
 

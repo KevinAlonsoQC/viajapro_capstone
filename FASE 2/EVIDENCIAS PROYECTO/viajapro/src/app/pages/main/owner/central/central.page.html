@@ -11,10 +11,6 @@
   </ion-header>
   <ion-content class="ion-padding">
     <ion-list>
-      <ion-item routerLink="/ruta1">Owner</ion-item>
-      <ion-item routerLink="/ruta2">Owner</ion-item>
-      <ion-item routerLink="/ruta2">Owner</ion-item>
-      <ion-item routerLink="/ruta2">Owner</ion-item>
       <ion-item>
         <ion-button color="danger" (click)="signOut()" expand="block" mode="ios" class="submit" type="submit">
           Cerrar Sesión
@@ -30,14 +26,11 @@
     <ion-buttons slot="start">
       <ion-menu-button menu="adminMenu"></ion-menu-button>
     </ion-buttons>
-
     <app-logo-small></app-logo-small>
-
     <ion-buttons slot="end">
       <app-campana [notifica]="true"></app-campana>
       <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
     </ion-buttons>
-    
   </ion-toolbar>
 </ion-header>
 
@@ -46,22 +39,21 @@
   <ion-grid class="ion-no-padding">
     <ion-row>
       <ion-col>
-        <app-header-funtion titulo="Configuración de Aplicación"></app-header-funtion>
+        <app-header-funtion titulo="Configuración de Cuentas"></app-header-funtion>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-list>
-          <app-function-item  titulo="Centrales de Colectivos" [routerLink]="['/main/owner/admin/central']" descripcion="Agrega, modifica o elimina fácilmente." icono="briefcase-outline"></app-function-item>
-          <app-function-item  titulo="Presidentes de Centrales" [routerLink]="['/main/owner/admin/presidente']" descripcion="Agrega, modifica o elimina fácilmente." icono="people-circle-outline"></app-function-item>
-          <app-function-item  titulo="Choferes de Centrales" [routerLink]="['/main/owner/admin/chofer']" descripcion="Agrega, modifica o elimina fácilmente." icono="car-outline"></app-function-item>
-          <app-function-item  titulo="Pasajeros" [routerLink]="['/main/owner/admin/pasajero']" descripcion="Agrega, modifica o elimina fácilmente." icono="person-outline"></app-function-item>
+          <app-function-item titulo="Centrales de Colectivos" [routerLink]="['/main/owner/central/centrales']"
+            descripcion="Agrega, modifica o elimina fácilmente." icono="briefcase-outline"></app-function-item>
+          <app-function-item titulo="Pasajeros" [routerLink]="['/main/owner/central/pasajeros']"
+            descripcion="Agrega, modifica o elimina fácilmente." icono="person-outline"></app-function-item>
         </ion-list>
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
-
 
 <ion-footer>
   <ion-toolbar>
@@ -70,11 +62,11 @@
         <ion-col class="ion-text-center">
           <app-menu-master url="main/owner/admin" txt_icon="Aplicación" icon="settings-outline"></app-menu-master>
         </ion-col>
-        <ion-col class="ion-text-center"> 
-          <app-menu-master url="main/owner" txt_icon="Inicio" icon="home-outline" ></app-menu-master>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/owner" txt_icon="Inicio" icon="home-outline"></app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/owner/central" txt_icon="Cuentas" icon="person-outline" ></app-menu-master>
+          <app-menu-master url="main/owner/central" txt_icon="Cuentas" icon="person-outline"></app-menu-master>
         </ion-col>
       </ion-row>
     </ion-grid>

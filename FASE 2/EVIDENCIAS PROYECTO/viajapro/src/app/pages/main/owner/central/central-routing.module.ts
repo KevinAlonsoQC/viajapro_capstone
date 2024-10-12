@@ -7,7 +7,15 @@ const routes: Routes = [
   {
     path: '',
     component: CentralPage
+  },  {
+    path: 'centrales',
+    loadChildren: () => import('./centrales/centrales.module').then( m => m.CentralesPageModule)
+  },
+  {
+    path: 'pasajeros',
+    loadChildren: () => import('./pasajeros/pasajeros.module').then( m => m.PasajerosPageModule)
   }
+
 ];
 
 @NgModule({

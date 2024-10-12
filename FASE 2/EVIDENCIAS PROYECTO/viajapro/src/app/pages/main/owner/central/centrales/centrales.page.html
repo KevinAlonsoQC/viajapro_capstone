@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar class="toolbar-superior">
     <ion-buttons slot="start" class="back-button">
-      <ion-button [routerLink]="['/main/administrador/admin']" class="back-button ion-text-center">
+      <ion-button [routerLink]="['/main/owner/central']" class="back-button ion-text-center">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -20,7 +20,7 @@
   <ion-grid class="ion-no-padding">
     <ion-row>
       <ion-col>
-        <app-header-funtion titulo="Vehículos"></app-header-funtion>
+        <app-header-funtion titulo="Centrales"></app-header-funtion>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -32,36 +32,36 @@
       <ion-col>
         <ion-list lines="full">
           <!-- Para listar conductores -->
-          <ion-item-sliding *ngFor="let item of vehiculos">
-            <ion-item [button]="true" (click)="detalleVehiculo(item.id)">
-              <ion-avatar aria-hidden="true" slot="start">
-                <img alt="Imagen de {{item.name}}" [src]="item.img_vehiculo" />
+          <ion-item-sliding *ngFor="let item of centrales">
+            <ion-item [button]="true" (click)="detalles(item)">
+              <ion-avatar aria-hidden="true" slot="start" *ngIf="item.img_central">
+                <img alt="Imagen de {{item.nombre_central}}" [src]="item.img_central" />
               </ion-avatar>
-              <ion-label>{{ item.patente_vehiculo }}</ion-label>
-              <ion-buttons>
+              <ion-avatar aria-hidden="true" slot="start" *ngIf="!item.img_central">
+                <img alt="Imagen de {{item.nombre_central}}" src="assets/icon/central.svg"/>
+              </ion-avatar>
+
+              <ion-label>{{ item.nombre_central }}</ion-label>
+              <ion-buttons [ngClass]="{noActivo: !item.estado}">
                 <ion-button slot="start">
-                  <ion-icon name="car-outline"></ion-icon>
+                  <ion-icon name="business-outline"></ion-icon>
                 </ion-button>
-                <p>{{ item.nombre_modelo }}</p>
+                <p *ngIf="item.estado">Activado</p>
+                <p *ngIf="!item.estado">Desactivado</p>
               </ion-buttons>
             </ion-item>
 
             <ion-item-options slot="end">
-              <ion-item-option (click)="modificarVehiculo(item.id)">
-                <ion-icon class="icon-option" slot="icon-only" name="pencil"></ion-icon>
-              </ion-item-option>
-
-              <ion-item-option expandable="true" (click)="eliminarVehiculo(item.id, item.patente_vehiculo)">
-                <ion-icon class="icon-option" slot="icon-only" name="trash"></ion-icon>
+              <ion-item-option expandable="true" (click)="estado(item)">
+                <ion-icon *ngIf="item.estado"  class="icon-option" slot="icon-only" name="stop-circle"></ion-icon>
+                <ion-icon *ngIf="!item.estado"  class="icon-option" slot="icon-only" name="play-circle"></ion-icon>
               </ion-item-option>
             </ion-item-options>
           </ion-item-sliding>
         </ion-list>
-
       </ion-col>
     </ion-row>
   </ion-grid>
-
 </ion-content>
 
 
@@ -70,8 +70,8 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          <ion-button expand="block" mode="ios" class="submit" (click)="crearVehiculo()" >
-            Crear Vehículo
+          <ion-button expand="block" mode="ios" class="submit" (click)="crear()" >
+            Agregar Central
           </ion-button>
         </ion-col>
       </ion-row>

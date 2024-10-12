@@ -7,21 +7,27 @@ import { UtilsService } from 'src/app/services/utils.service';
 import { AlertController } from '@ionic/angular';
 
 import { v4 as uuidv4 } from 'uuid';
-import { Banco } from 'src/app/models/banco';
+import { CentralColectivo } from 'src/app/models/central-colectivo';
+import { Comuna } from 'src/app/models/comuna';
 
 @Component({
-  selector: 'app-bancos',
-  templateUrl: './bancos.page.html',
-  styleUrls: ['./bancos.page.scss'],
+  selector: 'app-centrales',
+  templateUrl: './centrales.page.html',
+  styleUrls: ['./centrales.page.scss'],
 })
-export class BancosPage implements OnInit {
+export class CentralesPage implements OnInit {
 
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
   usuario!: User;
-  bancos!: Banco[];
+  centrales!: CentralColectivo[];
+  comunas!: Comuna[];
+  presidentes!: User;
+
+
   private uniqueId = '';
+  private comunaSeleccionada = '';
 
   constructor(private router: Router, private alertController: AlertController) { }
 
@@ -32,28 +38,34 @@ export class BancosPage implements OnInit {
       // Aquí puedes realizar más acciones si es necesario
     });
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    
-    await this.getBancos();
+    await this.getCentrales();
   }
 
 
-  async getBancos() {
+  async getCentrales() {
     const loading = await this.utilsSvc.loading();
     await loading.present();
-    const urlPath = 'banco'; // Ruta de la colección de usuarios
+    const urlPath = 'central_colectivo'; // Ruta de la colección de usuarios
+    const urlPath2 = 'comuna'; // Ruta de la colección de usuarios
+    const urlPath3 = 'usuario'; // Ruta de la colección de usuarios
 
     try {
       // Ejecutar ambas promesas en paralelo
-      const [callback] = await Promise.all([
-        this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<Banco[]>
+      const [callback, callback2, callback3] = await Promise.all([
+        this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<CentralColectivo[]>,
+        this.firebaseSvc.getCollectionDocuments(urlPath2) as Promise<Comuna[]>,
+        this.firebaseSvc.getCollectionDocuments(urlPath3) as Promise<any>
       ]);
 
       // Filtrar los resultados para obtener solo los choferes de la misma central
-      this.bancos = callback;
+      this.centrales = callback;
+      this.comunas = callback2;
+      this.presidentes = callback3.filter(usuario => usuario.tipo_usuario == '1'); //1, porque el tipo de usuario 1 es de los presidentes/administradores
 
-      if (this.bancos.length <= 0) {
+
+      if (this.centrales.length <= 0) {
         this.utilsSvc.presentToast({
-          message: 'No hay Bancos Creados',
+          message: 'No hay Centrales Creadas',
           duration: 1500,
           color: 'warning',
           position: 'middle',
@@ -75,21 +87,73 @@ export class BancosPage implements OnInit {
     }
   }
 
-
-  async crearBanco() {
+  async presentSelectComuna() {
     const alert = await this.alertController.create({
-      header: 'Agregar un Nuevo Banco',
-      message: 'Rellena todos los campos para agregar el nuevo banco.',
+      header: 'Selecciona Una Comuna',
+      inputs: this.comunas.map(comuna => ({
+        type: 'radio',
+        label: comuna.nombre_comuna,
+        value: comuna.id,
+      })),
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Seleccionar',
+          handler: (comunaId) => {
+            // Asigna el país seleccionado
+            this.comunaSeleccionada = comunaId;
+            console.log('Comuna seleccionado:', comunaId);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  async detalles(central: any) {
+    this.router.navigate(['/main/owner/central/centrales/detalle-central', central.id]);
+  }
+
+  async crear() {
+    const alert = await this.alertController.create({
+      header: 'Agregar una nueva Central',
+      message: 'Rellena todos los campos para agregar la nueva Central de Colectivos.',
       inputs: [
         {
-          name: 'nombre_banco',
+          name: 'nombre_dato',
           type: 'text',
           min: 6,
           max: 50,
-          placeholder: 'Nombre del Banco',
+          placeholder: 'Nombre de la Central de Colectivos',
+        },
+        {
+          name: 'tarifa_diurna',
+          type: 'number',
+          min: 1,
+          max: 5000,
+          placeholder: 'Tarifa Diurna de Central',
+        },
+        {
+          name: 'tarifa_nocturna',
+          type: 'number',
+          min: 1,
+          max: 5000,
+          placeholder: 'Tarifa Nocturna de Central',
         },
       ],
       buttons: [
+        {
+          text: 'Seleccionar Comuna',
+          handler: () => {
+            // Abrir el ion-select para seleccionar el país
+            this.presentSelectComuna();
+            return false; // Evitar que el alert se cierre al presionar este botón
+          }
+        },
         {
           text: 'Cancelar',
           role: 'cancel',
@@ -106,10 +170,10 @@ export class BancosPage implements OnInit {
         {
           text: 'Agregar',
           role: 'confirm',
-          handler: async (bancoNuevo) => {
-            if (bancoNuevo.nombre_banco == "") {
+          handler: async (dato) => {
+            if (dato.nombre_dato == "") {
               this.utilsSvc.presentToast({
-                message: 'Debes agregar un nombre al banco',
+                message: 'Debes agregar un nombre a la Central',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -117,10 +181,31 @@ export class BancosPage implements OnInit {
               });
               return;
             }
-            const existe = await this.verificarExistente(bancoNuevo.nombre_banco);
+            if (dato.tarifa_diurna == "" || dato.tarifa_diurna == undefined || dato.tarifa_diurna == null) {
+              this.utilsSvc.presentToast({
+                message: 'Debes agregar una tarifa diurna a la Central',
+                duration: 1500,
+                color: 'danger',
+                position: 'middle',
+                icon: 'alert-circle-outline'
+              });
+              return;
+            }
+            if (dato.tarifa_nocturna == "" || dato.tarifa_nocturna == undefined || dato.tarifa_nocturna == null) {
+              this.utilsSvc.presentToast({
+                message: 'Debes agregar una tarifa nocturna a la Central',
+                duration: 1500,
+                color: 'danger',
+                position: 'middle',
+                icon: 'alert-circle-outline'
+              });
+              return;
+            }
+
+            const existe = await this.verificarExistente(dato.nombre_dato);
             if (existe) {
               this.utilsSvc.presentToast({
-                message: 'Ya existe un banco con ese nombre',
+                message: 'Ya existe una Central de Colectivos con ese nombre',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -128,6 +213,7 @@ export class BancosPage implements OnInit {
               });
               return;
             }
+
             // Mostrar pantalla de carga
             const loading = await this.utilsSvc.loading();
             await loading.present();
@@ -138,26 +224,29 @@ export class BancosPage implements OnInit {
 
               const datoNuevo = {
                 id: this.uniqueId,
-                nombre_banco: bancoNuevo.nombre_banco,
+                nombre_central: dato.nombre_dato,
+                tarifa_diurna_central: Number(dato.tarifa_diurna),
+                tarifa_nocturna_central: Number(dato.tarifa_nocturna),
+                comuna: this.comunaSeleccionada,
                 estado: true,
               }
 
               // Capturar la imagen
-              const dataUrl = (await this.utilsSvc.takePicture('Logo del Banco')).dataUrl;
+              const dataUrl = (await this.utilsSvc.takePicture('Logo de Central')).dataUrl;
 
               if (dataUrl) {
-                await this.firebaseSvc.addDocumentWithId('banco', datoNuevo, this.uniqueId);
+                await this.firebaseSvc.addDocumentWithId('central_colectivo', datoNuevo, this.uniqueId);
 
-                let path = `banco/${this.uniqueId}`;
-                let imagePath = `banco/${this.uniqueId}/${Date.now()}`;
+                let path = `central_colectivo/${this.uniqueId}`;
+                let imagePath = `central_colectivo/${this.uniqueId}/${Date.now()}`;
                 let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
 
                 // Actualizar el documento en Firestore con la URL de la imagen
-                await this.firebaseSvc.setDocument(path, { ...datoNuevo, img_banco: imageUrl });
+                await this.firebaseSvc.setDocument(path, { ...datoNuevo, img_central: imageUrl });
 
                 // Mostrar un mensaje de éxito
                 this.utilsSvc.presentToast({
-                  message: 'Banco creado con éxito',
+                  message: 'Central de Colectivos creada con éxito',
                   duration: 1500,
                   color: 'primary',
                   position: 'middle',
@@ -165,12 +254,12 @@ export class BancosPage implements OnInit {
                 });
 
                 // Actualizar la lista de bancos
-                await this.getBancos();
+                await this.getCentrales();
               }
             } catch (error) {
-              console.error('Error al crear banco:', error);
+              console.error('Error al crear la Central de Colectivos:', error);
               this.utilsSvc.presentToast({
-                message: 'Error al crear el banco. Inténtalo de nuevo.',
+                message: 'Error al crear la Central de Colectivos. Inténtalo de nuevo.',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -188,18 +277,18 @@ export class BancosPage implements OnInit {
     await alert.present();
   }
 
-  async modificarBanco(banco: any) {
+  async modificar(central: any) {
     const alert = await this.alertController.create({
-      header: 'Modificar Banco',
-      message: `Rellena todos los campos para modificar ${banco.nombre_banco}.`,
+      header: 'Modificar Central de Colectivos',
+      message: `Rellena todos los campos para modificar ${central.nombre_central}.`,
       inputs: [
         {
-          name: 'nombre_banco',
+          name: 'nombre_dato',
           type: 'text',
           min: 6,
           max: 50,
           placeholder: 'Nombre del Banco',
-          value: banco.nombre_banco
+          value: central.nombre_central
         },
       ],
       buttons: [
@@ -219,10 +308,10 @@ export class BancosPage implements OnInit {
         {
           text: 'Modificar',
           role: 'confirm',
-          handler: async (bancoNuevo) => {
-            if (bancoNuevo.nombre_banco == "") {
+          handler: async (dato) => {
+            if (dato.nombre_central == "") {
               this.utilsSvc.presentToast({
-                message: 'Debes agregar un nombre al banco',
+                message: 'Debes agregar un nombre a la Central de Colectivos',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -230,10 +319,10 @@ export class BancosPage implements OnInit {
               });
               return;
             }
-            const existe = await this.verificarExistente(bancoNuevo.nombre_banco);
+            const existe = await this.verificarExistente(dato.nombre_central);
             if (existe) {
               this.utilsSvc.presentToast({
-                message: 'Ya existe un banco con ese nombre',
+                message: 'Ya existe una Central de Colectivos con ese nombre',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -257,15 +346,15 @@ export class BancosPage implements OnInit {
                     handler: async () => {
                       // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
                       const datoModificado = {
-                        nombre_banco: bancoNuevo.nombre_banco,
+                        nombre_central: dato.nombre_central,
                       }
 
                       // Actualizar el documento en Firestore sin cambiar la imagen
-                      await this.firebaseSvc.updateDocument(`banco/${banco.id}`, { ...datoModificado });
+                      await this.firebaseSvc.updateDocument(`central_colectivo/${central.id}`, { ...datoModificado });
 
                       // Mostrar un mensaje de éxito
                       this.utilsSvc.presentToast({
-                        message: 'Banco modificado con éxito',
+                        message: 'Central de Colectivos modificada con éxito',
                         duration: 1500,
                         color: 'primary',
                         position: 'middle',
@@ -273,7 +362,7 @@ export class BancosPage implements OnInit {
                       });
 
                       // Actualizar la lista de datos
-                      await this.getBancos();
+                      await this.getCentrales();
                     }
                   },
                   {
@@ -281,23 +370,23 @@ export class BancosPage implements OnInit {
                     role: 'confirm',
                     handler: async () => {
                       // Si el usuario selecciona "Sí", permite capturar la nueva imagen
-                      const dataUrl = (await this.utilsSvc.takePicture('Logo del Banco')).dataUrl;
+                      const dataUrl = (await this.utilsSvc.takePicture('Logo de Central')).dataUrl;
 
                       if (dataUrl) {
-                        let imagePath = await this.firebaseSvc.getFilePath(banco.img_banco);
+                        let imagePath = await this.firebaseSvc.getFilePath(central.img_central);
                         let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
 
                         const datoModificado = {
-                          nombre_banco: bancoNuevo.nombre_banco,
+                          nombre_banco: dato.nombre_central,
                           img_banco: imageUrl // Se actualiza la imagen con la nueva URL
                         };
 
                         // Actualizar el documento en Firestore con la nueva URL de la imagen
-                        await this.firebaseSvc.updateDocument(`banco/${banco.id}`, { ...datoModificado });
+                        await this.firebaseSvc.updateDocument(`central_colectivo/${central.id}`, { ...datoModificado });
 
                         // Mostrar un mensaje de éxito
                         this.utilsSvc.presentToast({
-                          message: 'Banco modificado con éxito e Imagen actualizada',
+                          message: 'Central de Colectivos modificada con éxito e Imagen actualizada',
                           duration: 1500,
                           color: 'primary',
                           position: 'middle',
@@ -305,7 +394,7 @@ export class BancosPage implements OnInit {
                         });
 
                         // Actualizar la lista de datos
-                        await this.getBancos();
+                        await this.getCentrales();
                       }
                     }
                   }
@@ -315,9 +404,9 @@ export class BancosPage implements OnInit {
               await confirmAlert.present();
 
             } catch (error) {
-              console.error('Error al modificar el Banco:', error);
+              console.error('Error al modificar la Central de Colectivos:', error);
               this.utilsSvc.presentToast({
-                message: 'Hubo un error al modificar el Banco. Inténtalo de nuevo.',
+                message: 'Hubo un error al modificar la Central de Colectivos. Inténtalo de nuevo.',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -335,16 +424,16 @@ export class BancosPage implements OnInit {
     await alert.present();
   }
 
-  async estadoBanco(banco: any) {
+  async estado(central: any) {
     let titulo = '';
-    if (banco.estado) {
+    if (central.estado) {
       titulo = 'Desactivar'
     } else {
       titulo = 'Activar'
     }
     const alert = await this.alertController.create({
-      header: `¿Seguro de ${titulo} el banco?`,
-      subHeader: `Se cambiará el estado al banco con nombre: ${banco.nombre_banco}`,
+      header: `¿Seguro de ${titulo} la central?`,
+      subHeader: `Se cambiará el estado la central con nombre: ${central.nombre_central}`,
       buttons: [
         {
           text: 'Cancelar',
@@ -371,24 +460,24 @@ export class BancosPage implements OnInit {
               //await this.firebaseSvc.deleteDocument(`banco/${banco.id}`);
               //En vez de eliminarlo se pone como estado 0, porque si lo eliminamos, y llegasen a existir datos con un banco, al eliminarlo causará
               //un error a escala!
-              if (banco.estado) {
-                await this.firebaseSvc.updateDocument(`banco/${banco.id}`, { ...banco, estado: false });
+              if (central.estado) {
+                await this.firebaseSvc.updateDocument(`central_colectivo/${central.id}`, { ...central, estado: false });
               } else {
-                await this.firebaseSvc.updateDocument(`banco/${banco.id}`, { ...banco, estado: true });
+                await this.firebaseSvc.updateDocument(`central_colectivo/${central.id}`, { ...central, estado: true });
               }
               this.utilsSvc.presentToast({
-                message: `Cambio realizado para el banco ${banco.nombre_banco}`,
+                message: `Cambio realizado para la Central de Colectivos ${central.nombre_central}`,
                 duration: 1500,
                 color: 'success',
                 position: 'middle',
                 icon: 'checkmark-circle-outline',
               });
 
-              await this.getBancos();
+              await this.getCentrales();
             } catch (error) {
-              console.error('Error al cambiar el estado banco:', error);
+              console.error('Error al cambiar el estado de la central de colectivos:', error);
               this.utilsSvc.presentToast({
-                message: `Hubo un error al realizar el cambio en el banco con nombre ${banco.nombre_banco}. Inténtalo de nuevo.`,
+                message: `Hubo un error al realizar el cambio a la Central de Colectivos con nombre ${central.nombre_central}. Inténtalo de nuevo.`,
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -407,7 +496,7 @@ export class BancosPage implements OnInit {
 
   async verificarExistente(dato: string): Promise<boolean> {
     try {
-      return this.bancos.some(callback => callback.nombre_banco.toLowerCase() === dato.toLowerCase());
+      return this.centrales.some(callback => callback.nombre_central.toLowerCase() === dato.toLowerCase());
     } catch (error) {
       console.error('Error al verificar si el dato ya existe:', error);
       return false;

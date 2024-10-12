@@ -32,16 +32,29 @@
         </div>
       </div>
 
-      <app-custom-input icon="person-outline" autocomplete="nombre_vehiculo" [control]="form.controls.nombre_vehiculo"
-        type="text" label="Modelo Vehículo"></app-custom-input>
-      <div class="validators" *ngIf="form.controls.nombre_vehiculo.errors && form.controls.nombre_vehiculo.touched">
-        <div *ngIf="form.controls.nombre_vehiculo.errors?.['required']">
-          Por favor ingresa el Modelo del Vehículo
-        </div>
-        <div *ngIf="form.controls.nombre_vehiculo.errors?.['minlenght']">
-          El Modelo debe tener al menos 3 caracteres
-        </div>
-      </div>
+      <ion-list>
+        <ion-item lines="none">
+          <ion-icon slot="start" name="car-outline"></ion-icon>
+          <ion-select placeholder="Marca del Vehículo" (ionChange)="onMarcaChange($event)">
+            <div slot="label">Marca</div>
+            <ion-select-option *ngFor="let item of marca_vehiculo" [value]="item.id">
+              {{ item.nombre_marca }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
+      <ion-list *ngIf="selectMarca">
+        <ion-item lines="none">
+          <ion-icon slot="start" name="car-outline"></ion-icon>
+          <ion-select placeholder="Modelo del Vehículo" (ionChange)="onModeloChange($event)">
+            <div slot="label">Modelo</div>
+            <ion-select-option *ngFor="let item of modelosFiltrados" [value]="item.nombre_modelo">
+              {{ item.nombre_modelo }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
 
       <ion-item>
         <ion-label position="stacked">Vencimiento Revisión Técnica</ion-label>

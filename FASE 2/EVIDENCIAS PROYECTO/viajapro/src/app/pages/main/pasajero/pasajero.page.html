@@ -1,4 +1,9 @@
-<ion-menu menuId="pasajeroMenu" contentId="pasajero-content">
+<head>
+  ...
+  <script src="https://js.khipu.com/v1/kws.js"></script>
+  ...
+</head>
+<ion-menu menuId="adminMenu" contentId="admin-content">
   <ion-header>
     <ion-toolbar>
       <ion-title>
@@ -22,22 +27,99 @@
 </ion-menu>
 
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar class="toolbar-superior">
     <ion-buttons slot="start">
-      <ion-menu-button menu="pasajeroMenu"></ion-menu-button>
+      <ion-menu-button menu="adminMenu"></ion-menu-button>
     </ion-buttons>
-    <ion-title>
-      <strong>Inicio</strong>
-      <div class="admin">
-        V I A J A <strong style="color: #FFC300;">PRO</strong>
-      </div>
-    </ion-title>
 
-    <app-avatar slot="end" [img]="usuario.img_usuario"></app-avatar>
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
+    </ion-buttons>
+    
   </ion-toolbar>
 </ion-header>
 
 <!-- Contenido principal / Cuerpo sector amarillo-->
-<ion-content id="pasajero-content">
-
+<ion-content id="admin-content">
+  <div id="khipu-web-root"></div>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <app-boton-large texto="Pago" color="#FF8811" id="open-modal" mode="ios" ></app-boton-large>
+      </ion-col>
+    </ion-row>
+    <ion-modal
+    trigger="open-modal"
+    [initialBreakpoint]="0.25"
+    [breakpoints]="[0, 0.25, 0.5, 0.75]"
+    handleBehavior="cycle"
+  >
+    <ng-template>
+      <div id="khipu-web-root"></div>
+      <ion-content class="ion-padding">
+        <ion-row>
+          <ion-col class="ion-text-center">
+            <ion-label>Llegada</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col style="display: flex;align-items: center;justify-content: start;">
+            <h2 style="font-size: 40px;color: #1F1F1F;font-weight:700;">9:46</h2>
+          </ion-col>
+          <ion-col style="display: flex;align-items: center;justify-content: center;">
+            <p style="color: #9D9D9D;">5 min, 2,5</p>
+          </ion-col>
+          <ion-col style="display: flex;align-items: center;justify-content: end;">
+            <ion-button class="campana-notificacion">
+              <ion-img src="../../../../assets/icon/campana_notificacion.png"></ion-img>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <p style="color: #9D9D9D;">Conductor</p>
+            <p style="color: #404040;">Jorgue C.</p>
+          </ion-col>
+          <ion-col style="display: flex;flex-direction: column;align-items: end;">
+            <p style="color: #9D9D9D;">Patente</p>
+            <p style="color: #404040;">XSJ-11 55</p>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            
+          </ion-col>
+          <ion-col>
+            <app-boton-large color="#000814" texto="$900" id="open-modal" mode="ios" (click)="startKhipuPayment()"></app-boton-large>
+          </ion-col>
+        </ion-row>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+  </ion-grid>
 </ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid [fixed]="true">
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/administrador/admin" txt_icon="Administración" icon="settings-outline"></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center"> 
+          <app-menu-master url="main/administrador/colectivos" txt_icon="Colectivos" icon="car-outline" ></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/administrador/personal" txt_icon="Personal" icon="person-outline" ></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/administrador/finanzas" txt_icon="Finanzas" icon="wallet-outline" ></app-menu-master>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

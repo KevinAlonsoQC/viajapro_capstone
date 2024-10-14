@@ -1,0 +1,183 @@
+{
+    "pais": [
+      {
+        "id": "1",
+        "nombre_pais": "Chile",
+        "nacionalidad_pais": "Chilena",
+        "bandera_pais": "url_a_la_bandera"
+      },
+      {
+        "id": "2",
+        "nombre_pais": "Perú",
+        "nacionalidad_pais": "Peruana",
+        "bandera_pais": "url_a_la_bandera"
+      },
+      {
+        "id": "3",
+        "nombre_pais": "Argentina",
+        "nacionalidad_pais": "Argentina",
+        "bandera_pais": "url_a_la_bandera"
+      }
+    ],
+    "ciudad": [
+      {
+        "id": "1",
+        "pais": "pais/1",
+        "nombre_ciudad": "Santiago"
+      }
+    ],
+    "provincia": [
+      {
+        "id": "1",
+        "ciudad": "ciudad/1",
+        "nombre_provincia": "Santiago"
+      }
+    ],
+    "comuna": [
+      {
+        "id": "1",
+        "provincia": "provincia/1",
+        "nombre_comuna": "El Bosque"
+      }
+    ],
+    "banco": [
+      {
+        "id": "1",
+        "nombre_banco": "Banco Estado"
+      },
+      {
+        "id": "2",
+        "nombre_banco": "Banco Santander"
+      }
+    ],
+    "tipo_pago": [
+      {
+        "id": "1",
+        "nombre_pago": "Efectivo"
+      },
+      {
+        "id": "2",
+        "nombre_pago": "Tarjeta Débito"
+      },
+      {
+        "id": "3",
+        "nombre_pago": "Tarjeta Crédito"
+      }
+    ],
+    "central_colectivo": [
+      {
+        "id": "1",
+        "nombre_central": "Central A",
+        "tarifa_diurna_central": 1000,
+        "tarifa_nocturna_central": 1500,
+        "img_central": "url_a_la_imagen",
+        "comuna": "comuna/1"
+      }
+    ],
+    "ruta_central": [
+      {
+        "id": "1",
+        "central": "central_colectivo/1",
+        "nombre_ruta": "Ruta 5002",
+        "coordenada_ruta": {
+          "punto_1": {
+            "x": 100,
+            "y": 100
+          },
+          "punto_2": {
+            "x": 200,
+            "y": 200
+          },
+          "punto_3": {
+            "x": 300,
+            "y": 300
+          }
+        }
+      }
+    ],
+    "tipo_usuario": [
+      {
+        "id": "0",
+        "tipo_usuario": "Owner"
+      },
+      {
+        "id": "1",
+        "tipo_usuario": "Administrador"
+      },
+      {
+        "id": "2",
+        "tipo_usuario": "Chofer"
+      },
+      {
+        "id": "3",
+        "tipo_usuario": "Pasajero"
+      }
+    ],
+    "usuario": [
+      {
+        "id": "1",
+        "nombre_usuario": "Juan Pérez",
+        "rut_usuario": "12345678-9",
+        "correo_usuario": "juan@example.com",
+        "contrasena_usuario": "contraseñaSegura",
+        "telefono_usuario": 987654321,
+        "img_usuario": "url_a_la_imagen",
+        "coordenadas_usuario": "coordenadas GPS",
+        "tipo_usuario": "tipo_usuario/1",
+        "pais": "pais/1"
+      },
+      {
+        "id": "2",
+        "nombre_usuario": "Juan Riquelme",
+        "rut_usuario": "56487952-9",
+        "correo_usuario": "Riquelme@example.com",
+        "contrasena_usuario": "1234567",
+        "telefono_usuario": 965455487,
+        "img_usuario": "url_a_la_imagen",
+        "coordenadas_usuario": "coordenadas GPS",
+        "tipo_usuario": "tipo_usuario/2",
+        "pais": "pais/1"
+      }
+    ],
+    "marca_vehiculo": [
+      {
+        "id": "1",
+        "nombre_marca": "Tesla",
+        "img_marca": "url_a_la_imagen"
+      },
+      {
+        "id": "2",
+        "nombre_marca": "Chevrolet",
+        "img_marca": "url_a_la_imagen"
+      }
+    ],
+    "vehiculo": [
+      {
+        "id": "1",
+        "nombre_vehiculo": "Vehículo 001",
+        "patente_vehiculo": "ABCD123",
+        "cad_revision_tecnica_vehiculo": "2025-01-01",
+        "cad_per_circulacion_vehiculo": "2025-01-01",
+        "cad_soap_vehiculo": "2025-01-01",
+        "img_vehiculo": "url_a_la_imagen",
+        "estado_vehiculo": "A",
+        "asientos_dispo_vehiculo": 4,
+        "coordenadas_vehiculo": "coordenadas GPS",
+        "tipo_usuario": "tipo_usuario/2"
+      }
+    ],
+    "historial_pago": [
+      {
+        "id": "1",
+        "id_transaccion": "KAKAKAKAKAK11",
+        "fecha_pago": "2024-01-01",
+        "monto_pago": 5000,
+        "chofer": "usuario/1",
+        "cliente": "usuario/2",
+        "central": "central_colectivo/1",
+        "vehiculo": "vehiculo/1",
+        "tipo_pago": "tipo_pago/2"
+      }
+    ]
+  }
+  

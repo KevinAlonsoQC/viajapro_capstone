@@ -1,7 +1,0 @@
-{
-  "name": "viajapro",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}

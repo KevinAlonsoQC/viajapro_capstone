@@ -1,0 +1,54 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start" class="back-button">
+      <ion-button [routerLink]="['/main/owner/admin']" class="back-button ion-text-center">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile']"></app-avatar>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col>
+        <app-header-funtion titulo="Vehículos"></app-header-funtion>
+      </ion-col>
+    </ion-row>
+    <br>
+    <ion-row>
+      <ion-col>
+        <div class="card">
+          <img src="assets/modelos.png" alt="Marcas">
+          <div class="card-img"></div>
+          <div class="card-info">
+            <div>
+              <h3>Marcas De Vehículos</h3>
+            </div>
+            <div class="arrow" [routerLink]="['/main/owner/admin/vehiculos/marcas-vehiculos']">➔</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <img src="assets/modelos2.png" alt="Modelos">
+          <div class="card-img"></div>
+          <div class="card-info">
+            <div>
+              <h3>Modelos De Vehículos</h3>
+            </div>
+            <div class="arrow" [routerLink]="['/main/owner/admin/vehiculos/modelos-vehiculos']">➔</div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

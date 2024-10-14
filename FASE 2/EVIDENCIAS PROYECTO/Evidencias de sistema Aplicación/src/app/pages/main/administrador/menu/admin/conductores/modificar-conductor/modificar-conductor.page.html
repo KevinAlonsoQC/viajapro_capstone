@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button class="button-close" [routerLink]="['/main/administrador/admin/conductores']">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <ion-grid *ngIf="chofer" class="ion-no-padding">
+    <ion-row>
+      <ion-col class="pefil" style="display: flex; flex-direction: column;align-items: center;">
+        <ion-buttons>
+          <ion-button slot="start">
+            <ion-icon name="person-outline"></ion-icon>
+          </ion-button>
+          <p>{{ chofer.rut_usuario }}</p>
+        </ion-buttons>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <form *ngIf="chofer" [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()">
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        <ion-col class="pefil" style="display: flex; flex-direction: column;align-items: center;">
+          <app-avatar-large [img]="form.value.img_usuario"></app-avatar-large>
+          <app-profile-boton-edit name="create-outline" (click)="takeImage()" ></app-profile-boton-edit>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-row class="ion-padding profile-description">
+            <ion-col>
+              <app-custom-input icon="person-outline" autocomplete="name" type="text" [label]="chofer.name"
+                [control]="form.controls.name"></app-custom-input>
+            </ion-col>
+            <ion-col>
+              <app-custom-input icon="mail-outline" autocomplete="email" type="email" [label]="chofer.email"
+                [control]="form.controls.email"></app-custom-input>
+            </ion-col>
+            <ion-col>
+              <app-custom-input icon="phone-portrait-outline" autocomplete="telefono_usuario" type="number"
+                [label]="'+56 9 '+chofer.telefono_usuario" [control]="form.controls.telefono_usuario">
+                </app-custom-input>
+            </ion-col>
+          </ion-row>
+
+          <ion-button expand="block" mode="ios" class="submit" type="submit" [disabled]="form.invalid">
+            Guardar Perfil
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>

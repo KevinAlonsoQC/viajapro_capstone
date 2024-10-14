@@ -1,0 +1,19 @@
+ion-content {
+    --background: #FFC300; // Cambia este valor por el color deseado
+    .mapa{
+        max-height: 40%;
+        overflow: hidden;
+        width: 100%;
+    }
+    .titulo{
+        font-size: 45px;
+        font-weight: 800;
+        color: #000814;
+        font-family: 'Arial';
+        text-align: center;
+    }
+    
+    .subtitulo{
+        color: #1F1F1F;
+    }
+}

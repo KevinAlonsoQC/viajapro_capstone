@@ -1,0 +1,42 @@
+ion-content {
+    --background: #FFC300; 
+}
+
+ion-menu::part(backdrop) {
+    background-color: #000814;
+}
+  
+ion-menu::part(container) {
+    border-radius: 0 20px 20px 0;
+    box-shadow: 4px 0px 16px #000814;
+}
+
+ion-menu{
+    ion-header, ion-toolbar{
+        --background: #FFC300;
+        --color: #fff;
+    }
+    ion-content, ion-item, ion-list{
+        --background:#000814;
+        --color: #fff;
+        background-color: #000814;
+        color: #fff;
+    }
+}
+
+.admin{
+    font-size: 13px;
+}
+
+ion-toolbar{
+    --color: #fff;
+    --background: #000814;
+}
+
+ion-icon {
+    --color: #000;
+}
+
+ion-button{
+    --background: #000814;
+}

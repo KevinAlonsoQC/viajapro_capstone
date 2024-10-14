@@ -1,0 +1,22 @@
+<ion-item-sliding>
+  <ion-item [button]="true">
+    <ion-avatar aria-hidden="true" slot="start">
+      <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
+    </ion-avatar>
+    <ion-label>{{nombre}}</ion-label>
+    <ion-buttons>
+      <ion-button slot="start">
+        <ion-icon name="person-outline"></ion-icon>
+      </ion-button>
+      <p>{{rut}}</p>
+    </ion-buttons>
+  </ion-item>
+  <ion-item-options slot="end">
+    <ion-item-option (click)="navegar(url)">
+      <ion-icon  class="icon-option" slot="icon-only" name="pencil"></ion-icon>
+    </ion-item-option>
+    <ion-item-option (click)="navegar(url)" expandable="true">
+      <ion-icon class="icon-option" slot="icon-only" name="trash"></ion-icon>
+    </ion-item-option>
+  </ion-item-options>
+</ion-item-sliding>

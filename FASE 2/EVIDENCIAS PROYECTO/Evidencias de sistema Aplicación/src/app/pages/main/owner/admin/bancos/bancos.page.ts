@@ -188,6 +188,74 @@ export class BancosPage implements OnInit {
     await alert.present();
   }
 
+  async cambiarFoto(dato: any) {
+    // Preguntar si desea cambiar la imagen
+    const confirmAlert = await this.alertController.create({
+      header: 'Cambiar Imagen',
+      message: '¿Deseas cambiar la imagen asociada?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: async () => {
+            // Actualizar la lista de datos
+            await this.getBancos();
+          }
+        },
+        {
+          text: 'Sí',
+          role: 'confirm',
+          handler: async () => {
+            // Si el usuario selecciona "Sí", permite capturar la nueva imagen
+            const dataUrl = (await this.utilsSvc.takePicture('Logo del Banco')).dataUrl;
+
+            if (dataUrl) {
+              let imagePath = await this.firebaseSvc.getFilePath(dato.img_banco);
+              let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
+
+              const datoModificado = {
+                img_banco: imageUrl // Se actualiza la imagen con la nueva URL
+              };
+
+              // Mostrar pantalla de carga
+              const loading = await this.utilsSvc.loading();
+              await loading.present();
+
+              try {
+                // Actualizar el documento en Firestore con la nueva URL de la imagen
+                await this.firebaseSvc.updateDocument(`banco/${dato.id}`, { ...datoModificado });
+                // Mostrar un mensaje de éxito
+                this.utilsSvc.presentToast({
+                  message: 'Imagen Asociada Actualizada',
+                  duration: 1500,
+                  color: 'primary',
+                  position: 'middle',
+                  icon: 'checkmark-circle-outline'
+                });
+
+                // Actualizar la lista de datos
+                await this.getBancos();
+              } catch (error) {
+                console.error('Error al modificar el dato:', error);
+                this.utilsSvc.presentToast({
+                  message: 'Hubo un error al modificar el dato. Inténtalo de nuevo.',
+                  duration: 1500,
+                  color: 'danger',
+                  position: 'middle',
+                  icon: 'alert-circle-outline'
+                });
+              } finally {
+                // Cerrar pantalla de carga
+                loading.dismiss();
+              }
+            }
+          }
+        }]
+    });
+
+    await confirmAlert.present();
+  }
+
   async modificarBanco(banco: any) {
     const alert = await this.alertController.create({
       header: 'Modificar Banco',
@@ -241,92 +309,25 @@ export class BancosPage implements OnInit {
               });
               return;
             }
-            // Mostrar pantalla de carga
-            const loading = await this.utilsSvc.loading();
-            await loading.present();
-
-            try {
-              // Preguntar si desea cambiar la imagen
-              const confirmAlert = await this.alertController.create({
-                header: 'Cambiar Imagen',
-                message: '¿Deseas cambiar la imagen asociada?',
-                buttons: [
-                  {
-                    text: 'No',
-                    role: 'cancel',
-                    handler: async () => {
-                      // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
-                      const datoModificado = {
-                        nombre_banco: bancoNuevo.nombre_banco,
-                      }
-
-                      // Actualizar el documento en Firestore sin cambiar la imagen
-                      await this.firebaseSvc.updateDocument(`banco/${banco.id}`, { ...datoModificado });
-
-                      // Mostrar un mensaje de éxito
-                      this.utilsSvc.presentToast({
-                        message: 'Banco modificado con éxito',
-                        duration: 1500,
-                        color: 'primary',
-                        position: 'middle',
-                        icon: 'checkmark-circle-outline'
-                      });
-
-                      // Actualizar la lista de datos
-                      await this.getBancos();
-                    }
-                  },
-                  {
-                    text: 'Sí',
-                    role: 'confirm',
-                    handler: async () => {
-                      // Si el usuario selecciona "Sí", permite capturar la nueva imagen
-                      const dataUrl = (await this.utilsSvc.takePicture('Logo del Banco')).dataUrl;
-
-                      if (dataUrl) {
-                        let imagePath = await this.firebaseSvc.getFilePath(banco.img_banco);
-                        let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-
-                        const datoModificado = {
-                          nombre_banco: bancoNuevo.nombre_banco,
-                          img_banco: imageUrl // Se actualiza la imagen con la nueva URL
-                        };
-
-                        // Actualizar el documento en Firestore con la nueva URL de la imagen
-                        await this.firebaseSvc.updateDocument(`banco/${banco.id}`, { ...datoModificado });
-
-                        // Mostrar un mensaje de éxito
-                        this.utilsSvc.presentToast({
-                          message: 'Banco modificado con éxito e Imagen actualizada',
-                          duration: 1500,
-                          color: 'primary',
-                          position: 'middle',
-                          icon: 'checkmark-circle-outline'
-                        });
-
-                        // Actualizar la lista de datos
-                        await this.getBancos();
-                      }
-                    }
-                  }
-                ]
-              });
-
-              await confirmAlert.present();
-
-            } catch (error) {
-              console.error('Error al modificar el Banco:', error);
-              this.utilsSvc.presentToast({
-                message: 'Hubo un error al modificar el Banco. Inténtalo de nuevo.',
-                duration: 1500,
-                color: 'danger',
-                position: 'middle',
-                icon: 'alert-circle-outline'
-              });
-            } finally {
-              // Cerrar pantalla de carga
-              loading.dismiss();
+             // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
+             const datoModificado = {
+              nombre_banco: bancoNuevo.nombre_banco,
             }
+
+            // Actualizar el documento en Firestore sin cambiar la imagen
+            await this.firebaseSvc.updateDocument(`banco/${banco.id}`, { ...datoModificado });
+
+            // Mostrar un mensaje de éxito
+            this.utilsSvc.presentToast({
+              message: 'Banco modificado con éxito',
+              duration: 1500,
+              color: 'primary',
+              position: 'middle',
+              icon: 'checkmark-circle-outline'
+            });
+
+            // Actualizar la lista de datos
+            await this.getBancos();
           },
         },
       ],

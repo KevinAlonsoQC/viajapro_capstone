@@ -31,21 +31,17 @@ export class DetalleVehiculoPage implements OnInit {
 
     // Obtener usuario del local storage
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    await this.getChoferesAndMarcas();
-
     // Obtener el ID de la URL
     await this.route.params.subscribe(async params => {
       const id = params['id'];
-      console.log('ID recibido:', id);
-
       try {
         // Obtener el usuario con el ID desde Firebase
         const vehObtenido = await this.firebaseSvc.getDocument(`vehiculo/${id}`);
 
         // Verificar si el Vehículo obtenido pertenece a la misma "central" y si es un vehiculo
         if (vehObtenido && vehObtenido['central'] == this.usuario.central) {
-          console.log('Vehículo válido:', vehObtenido);
           this.vehiculo = vehObtenido;
+          await this.getChoferesAndMarcas();
 
         } else {
           console.error('Error: El vehículo no tiene los permisos necesarios o no pertenece a la misma central.');
@@ -68,56 +64,63 @@ export class DetalleVehiculoPage implements OnInit {
         });
       }
     });
+    
   }
 
   modificarVehiculo() {
-		this.router.navigate(['/main/administrador/admin/vehiculos/modificar-vehiculo', this.vehiculo.id]);
-	}
-  
+    this.router.navigate(['/main/administrador/admin/vehiculos/modificar-vehiculo', this.vehiculo.id]);
+  }
+
   async getChoferesAndMarcas() {
-		const loading = await this.utilsSvc.loading();
-		await loading.present();
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
 
-		const marcaVehiculo = 'marca_vehiculo';
-		const usuarioPath = 'usuario'; // Ruta de la colección de usuarios
+    const marcaVehiculo = 'marca_vehiculo';
+    const usuarioPath = 'usuario'; // Ruta de la colección de usuarios
 
-		try {
-			// Ejecutar ambas promesas en paralelo
-			const [marca_vehiculo, usuarios] = await Promise.all([
-				this.firebaseSvc.getCollectionDocuments(marcaVehiculo) as Promise<MarcaVehiculo[]>,
-				this.firebaseSvc.getCollectionDocuments(usuarioPath) as Promise<any[]> // Cambia 'any' por el tipo adecuado si lo tienes
-			]);
+    try {
+      // Ejecutar ambas promesas en paralelo
+      const [marca_vehiculo, usuarios] = await Promise.all([
+        this.firebaseSvc.getCollectionDocuments(marcaVehiculo) as Promise<MarcaVehiculo[]>,
+        this.firebaseSvc.getCollectionDocuments(usuarioPath) as Promise<any[]> // Cambia 'any' por el tipo adecuado si lo tienes
+      ]);
 
-			this.marca_vehiculo = marca_vehiculo;
+      this.marca_vehiculo = marca_vehiculo;
 
-			// Verificar que this.usuario esté definido
-			if (this.usuario && this.usuario.central) {
-				// Filtrar los resultados para obtener solo los choferes de la misma central
-				this.choferes = usuarios.filter(usuario => {
-					return usuario.central === this.usuario.central && usuario.tipo_usuario === '2';
-				});
-			} else {
-				console.error('Usuario no definido o sin central.');
-				this.utilsSvc.presentToast({
-					message: 'Error: Usuario no definido o sin central.',
-					duration: 1500,
-					color: 'danger',
-					position: 'middle',
-					icon: 'alert-circle-outline',
-				});
-			}
+      // Verificar que this.usuario esté definido
+      if (this.usuario && this.usuario.central) {
+        // Filtrar los resultados para obtener solo los choferes de la misma central
+        this.choferes = usuarios.filter(usuario => {
+          // Recorre la lista de usuarios asociados al vehículo
+          for(let item in this.vehiculo.usuario){
+            if (usuario.central === this.usuario.central && usuario.tipo_usuario === '2' && usuario.uid === this.vehiculo.usuario[item]) {
+              return true;  // Si encuentra coincidencia, lo incluye en el resultado del filtro
+            }
+          }
+          return false;  // Si no encuentra coincidencias, lo excluye
+        });
+      } else {
+        console.error('Usuario no definido o sin central.');
+        this.utilsSvc.presentToast({
+          message: 'Error: Usuario no definido o sin central.',
+          duration: 1500,
+          color: 'danger',
+          position: 'middle',
+          icon: 'alert-circle-outline',
+        });
+      }
 
-		} catch (error) {
-			console.error(error);
-			this.utilsSvc.presentToast({
-				message: 'No se pudo obtener los datos :(',
-				duration: 1500,
-				color: 'primary',
-				position: 'middle',
-				icon: 'alert-circle-outline'
-			});
-		} finally {
-			loading.dismiss();
-		}
-	}
+    } catch (error) {
+      console.error(error);
+      this.utilsSvc.presentToast({
+        message: 'No se pudo obtener los datos :(',
+        duration: 1500,
+        color: 'primary',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+    } finally {
+      loading.dismiss();
+    }
+  }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
-import { PaymentService } from '../../../services/payment.service'; 
+import { PaymentService } from '../../../services/payment.service';
 
 @Component({
   selector: 'app-pasajero',
@@ -15,12 +15,12 @@ export class PasajeroPage implements OnInit {
   usuario: User;
   userId: string;
 
-  
-  constructor(private paymentService: PaymentService) { 
-    
+
+  constructor(private paymentService: PaymentService) {
+
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
@@ -29,11 +29,49 @@ export class PasajeroPage implements OnInit {
 
     // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
-
-    
+    await this.getInfoAndTipoCuenta();
   }
 
-  profile(){
+  async getInfoAndTipoCuenta() {
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
+
+    try {
+      const tipo_cuenta = this.usuario.tipo_usuario;
+
+      if (tipo_cuenta == "0") {
+        this.utilsSvc.routerLink('');
+      } else if (tipo_cuenta == "1") {
+        this.utilsSvc.routerLink('/main/administrador');
+      } else if (tipo_cuenta == "2") {
+        this.utilsSvc.routerLink('/main/chofer');
+      } else if (tipo_cuenta == "3") {
+        this.utilsSvc.routerLink('/main/pasajero');
+      } else {
+        this.utilsSvc.presentToast({
+          message: 'No se pudo reconocer los datos de tu cuenta. Informa a soporte por favor.',
+          duration: 5000,
+          color: 'primary',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
+      }
+
+    } catch (error) {
+      console.log(error);
+      this.utilsSvc.presentToast({
+        message: 'No se pudo cargar el tipo de usuario',
+        duration: 1500,
+        color: 'primary',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+    } finally {
+      loading.dismiss();
+    }
+  }
+
+  profile() {
     this.utilsSvc.routerLink('/main/profile');
   }
 
@@ -48,18 +86,18 @@ export class PasajeroPage implements OnInit {
 
     const api_key = "49c65a51-5874-4471-beaa-a2891b385026"
 
-    this.paymentService.createPayment(amountt,currency,subject,api_key).subscribe(
+    this.paymentService.createPayment(amountt, currency, subject, api_key).subscribe(
       (response) => {
         this.openExternalLink(response.payment_url)
-       
+
       }
     )
-    
+
   }
 
-  openExternalLink(url:string) {
+  openExternalLink(url: string) {
     window.open(url, '_blank');
   }
 
- 
+
 }

@@ -28,8 +28,6 @@ export class ModificarVehiculoPage implements OnInit {
 	usuario!: User;
 
 	form = new FormGroup({
-		patente_vehiculo: new FormControl('', [Validators.required]),
-
 		cad_revision_tecnica_vehiculo: new FormControl(''),
 		cad_per_circulacion_vehiculo: new FormControl(''),
 		cad_soap_vehiculo: new FormControl(''),
@@ -40,7 +38,6 @@ export class ModificarVehiculoPage implements OnInit {
 		coordenadas_vehiculo: new FormControl(''),
 
 		usuario: new FormControl(''),
-		central: new FormControl(''),
 	})
 
   constructor(private route: ActivatedRoute) { }

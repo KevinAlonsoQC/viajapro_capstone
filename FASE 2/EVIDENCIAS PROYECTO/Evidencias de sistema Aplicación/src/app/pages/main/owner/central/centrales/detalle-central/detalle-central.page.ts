@@ -125,7 +125,8 @@ export class DetalleCentralPage implements OnInit {
         });
 
         await this.firebaseSvc.updateDocument(`usuario/${this.central.presidente}`, { central: this.central.id });
-
+        
+        this.utilsSvc.routerLink('main/owner/central');
         this.utilsSvc.presentToast({
           message: 'Central actualizada con éxito.',
           duration: 1500,

@@ -159,7 +159,7 @@ export class PaisesPage implements OnInit {
               });
               return;
             }
-            
+
             // Mostrar pantalla de carga
             const loading = await this.utilsSvc.loading();
             await loading.present();
@@ -308,101 +308,101 @@ export class PaisesPage implements OnInit {
               return;
             }
 
-            // Mostrar pantalla de carga
-            const loading = await this.utilsSvc.loading();
-            await loading.present();
+            // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
+            const datoModificado = {
+              nombre_pais: dato.nombre_dato,
+              nacionalidad_pais: dato.nombre_nacionalidad,
+              bandera_pais: pais.bandera_pais // Mantiene la imagen original
+            };
 
-            try {
-              // Preguntar si desea cambiar la imagen
-              const confirmAlert = await this.alertController.create({
-                header: 'Cambiar Imagen',
-                message: '¿Deseas cambiar la imagen asociada?',
-                buttons: [
-                  {
-                    text: 'No',
-                    role: 'cancel',
-                    handler: async () => {
-                      // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
-                      const datoModificado = {
-                        nombre_pais: dato.nombre_dato,
-                        nacionalidad_pais: dato.nombre_nacionalidad,
-                        bandera_pais: pais.bandera_pais // Mantiene la imagen original
-                      };
-            
-                      // Actualizar el documento en Firestore sin cambiar la imagen
-                      await this.firebaseSvc.updateDocument(`pais/${pais.id}`, { ...datoModificado });
-            
-                      // Mostrar un mensaje de éxito
-                      this.utilsSvc.presentToast({
-                        message: 'País modificado con éxito',
-                        duration: 1500,
-                        color: 'primary',
-                        position: 'middle',
-                        icon: 'checkmark-circle-outline'
-                      });
-            
-                      // Actualizar la lista de datos
-                      await this.getData();
-                    }
-                  },
-                  {
-                    text: 'Sí',
-                    role: 'confirm',
-                    handler: async () => {
-                      // Si el usuario selecciona "Sí", permite capturar la nueva imagen
-                      const dataUrl = (await this.utilsSvc.takePicture('Bandera del País')).dataUrl;
-                      
-                      if (dataUrl) {
-                        let imagePath = await this.firebaseSvc.getFilePath(pais.bandera_pais);
-                        let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-            
-                        const datoModificado = {
-                          nombre_pais: dato.nombre_dato,
-                          nacionalidad_pais: dato.nombre_nacionalidad,
-                          bandera_pais: imageUrl // Se actualiza la imagen con la nueva URL
-                        };
-            
-                        // Actualizar el documento en Firestore con la nueva URL de la imagen
-                        await this.firebaseSvc.updateDocument(`pais/${pais.id}`, { ...datoModificado });
-            
-                        // Mostrar un mensaje de éxito
-                        this.utilsSvc.presentToast({
-                          message: 'País modificado con éxito y bandera actualizada',
-                          duration: 1500,
-                          color: 'primary',
-                          position: 'middle',
-                          icon: 'checkmark-circle-outline'
-                        });
-            
-                        // Actualizar la lista de datos
-                        await this.getData();
-                      }
-                    }
-                  }
-                ]
-              });
-            
-              await confirmAlert.present();
-            
-            } catch (error) {
-              console.error('Error al modificar el país:', error);
-              this.utilsSvc.presentToast({
-                message: 'Hubo un error al modificar el país. Inténtalo de nuevo.',
-                duration: 1500,
-                color: 'danger',
-                position: 'middle',
-                icon: 'alert-circle-outline'
-              });
-            }finally {
-              // Cerrar pantalla de carga
-              loading.dismiss();
-            }
+            // Actualizar el documento en Firestore sin cambiar la imagen
+            await this.firebaseSvc.updateDocument(`pais/${pais.id}`, { ...datoModificado });
+
+            // Mostrar un mensaje de éxito
+            this.utilsSvc.presentToast({
+              message: 'País modificado con éxito',
+              duration: 1500,
+              color: 'primary',
+              position: 'middle',
+              icon: 'checkmark-circle-outline'
+            });
+
+            // Actualizar la lista de datos
+            await this.getData();
           },
         },
       ],
     });
 
     await alert.present();
+  }
+
+  async cambiarFoto(pais: any) {
+    // Preguntar si desea cambiar la imagen
+    const confirmAlert = await this.alertController.create({
+      header: 'Cambiar Imagen',
+      message: '¿Deseas cambiar la imagen asociada?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: async () => {
+            // Actualizar la lista de datos
+            await this.getData();
+          }
+        },
+        {
+          text: 'Sí',
+          role: 'confirm',
+          handler: async () => {
+            // Si el usuario selecciona "Sí", permite capturar la nueva imagen
+            const dataUrl = (await this.utilsSvc.takePicture('Bandera del País')).dataUrl;
+
+            if (dataUrl) {
+              let imagePath = await this.firebaseSvc.getFilePath(pais.bandera_pais);
+              let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
+
+              const datoModificado = {
+                bandera_pais: imageUrl // Se actualiza la imagen con la nueva URL
+              };
+
+              // Mostrar pantalla de carga
+              const loading = await this.utilsSvc.loading();
+              await loading.present();
+
+              try {
+                // Actualizar el documento en Firestore con la nueva URL de la imagen
+                await this.firebaseSvc.updateDocument(`pais/${pais.id}`, { ...datoModificado });
+                // Mostrar un mensaje de éxito
+                this.utilsSvc.presentToast({
+                  message: 'Imagen Asociada Actualizada',
+                  duration: 1500,
+                  color: 'primary',
+                  position: 'middle',
+                  icon: 'checkmark-circle-outline'
+                });
+
+                // Actualizar la lista de datos
+                await this.getData();
+              } catch (error) {
+                console.error('Error al modificar el dato:', error);
+                this.utilsSvc.presentToast({
+                  message: 'Hubo un error al modificar el dato. Inténtalo de nuevo.',
+                  duration: 1500,
+                  color: 'danger',
+                  position: 'middle',
+                  icon: 'alert-circle-outline'
+                });
+              } finally {
+                // Cerrar pantalla de carga
+                loading.dismiss();
+              }
+            }
+          }
+        }]
+    });
+
+    await confirmAlert.present();
   }
 
   async cambiarEstado(pais: any) {
@@ -477,10 +477,10 @@ export class PaisesPage implements OnInit {
 
   async verificarExistente(dato: string): Promise<boolean> {
     try {
-      if(this.paises.some(callback => callback.nombre_pais.toLowerCase() === dato.toLowerCase())){
+      if (this.paises.some(callback => callback.nombre_pais.toLowerCase() === dato.toLowerCase())) {
         return true;
       }
-      if(this.paises.some(callback => callback.nacionalidad_pais.toLowerCase() === dato.toLowerCase())){
+      if (this.paises.some(callback => callback.nacionalidad_pais.toLowerCase() === dato.toLowerCase())) {
         return true;
       }
       return false;

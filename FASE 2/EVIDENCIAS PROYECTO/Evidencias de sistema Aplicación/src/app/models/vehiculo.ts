@@ -10,4 +10,7 @@ export interface Vehiculo {
     coordenadas_vehiculo?: string; // Opcional
     usuario?: [];  // Cadena de los usuarios que manejan este vehículo
     central: string;
+
+    marca: string;
+    modelo: string;
 }

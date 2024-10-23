@@ -56,6 +56,11 @@
                 <ion-icon class="icon-option" slot="icon-only" name="pencil"></ion-icon>
               </ion-item-option>
 
+              
+              <ion-item-option expandable="true" (click)="cambiarFoto(item)">
+                <ion-icon class="icon-option" slot="icon-only" name="camera-outline"></ion-icon>        
+              </ion-item-option>
+
               <ion-item-option expandable="true" (click)="estado(item)">
                 <ion-icon *ngIf="item.estado"  class="icon-option" slot="icon-only" name="stop-circle"></ion-icon>
                 <ion-icon *ngIf="!item.estado"  class="icon-option" slot="icon-only" name="play-circle"></ion-icon>

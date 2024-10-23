@@ -244,6 +244,73 @@ export class ModelosVehiculosPage implements OnInit {
     await alert.present();
   }
 
+  async cambiarFoto(dato: any) {
+    // Preguntar si desea cambiar la imagen
+    const confirmAlert = await this.alertController.create({
+      header: 'Cambiar Imagen',
+      message: '¿Deseas cambiar la imagen asociada?',
+      buttons: [
+        {
+          text: 'No',
+          role: 'cancel',
+          handler: async () => {
+            // Actualizar la lista de datos
+            await this.getData();
+          }
+        },
+        {
+          text: 'Sí',
+          role: 'confirm',
+          handler: async () => {
+            // Si el usuario selecciona "Sí", permite capturar la nueva imagen
+            const dataUrl = (await this.utilsSvc.takePicture('Fotografía del Modelo')).dataUrl;
+
+            if (dataUrl) {
+              let imagePath = await this.firebaseSvc.getFilePath(dato.img_modelo);
+              let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
+
+              const datoModificado = {
+                img_modelo: imageUrl // Se actualiza la imagen con la nueva URL
+              };
+
+              // Mostrar pantalla de carga
+              const loading = await this.utilsSvc.loading();
+              await loading.present();
+
+              try {
+                // Actualizar el documento en Firestore con la nueva URL de la imagen
+                await this.firebaseSvc.updateDocument(`modelo_vehiculo/${dato.id}`, { ...datoModificado });
+                // Mostrar un mensaje de éxito
+                this.utilsSvc.presentToast({
+                  message: 'Imagen Asociada Actualizada',
+                  duration: 1500,
+                  color: 'primary',
+                  position: 'middle',
+                  icon: 'checkmark-circle-outline'
+                });
+
+                // Actualizar la lista de datos
+                await this.getData();
+              } catch (error) {
+                console.error('Error al modificar el dato:', error);
+                this.utilsSvc.presentToast({
+                  message: 'Hubo un error al modificar el dato. Inténtalo de nuevo.',
+                  duration: 1500,
+                  color: 'danger',
+                  position: 'middle',
+                  icon: 'alert-circle-outline'
+                });
+              } finally {
+                // Cerrar pantalla de carga
+                loading.dismiss();
+              }
+            }
+          }
+        }]
+    });
+
+    await confirmAlert.present();
+  }
 
   async modificar(modelo: any) {
     const alert = await this.alertController.create({
@@ -312,92 +379,25 @@ export class ModelosVehiculosPage implements OnInit {
               return;
             }
 
-            // Mostrar pantalla de carga
-            const loading = await this.utilsSvc.loading();
-            await loading.present();
-
-            try {
-              // Preguntar si desea cambiar la imagen
-              const confirmAlert = await this.alertController.create({
-                header: 'Cambiar Imagen',
-                message: '¿Deseas cambiar la imagen asociada?',
-                buttons: [
-                  {
-                    text: 'No',
-                    role: 'cancel',
-                    handler: async () => {
-                      // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
-                      const datoModificado = {
-                        nombre_modelo: dato.nombre_dato,
-                      }
-
-                      // Actualizar el documento en Firestore sin cambiar la imagen
-                      await this.firebaseSvc.updateDocument(`marca_vehiculo/${modelo.id}`, { ...datoModificado });
-
-                      // Mostrar un mensaje de éxito
-                      this.utilsSvc.presentToast({
-                        message: 'Modelo modificado con éxito',
-                        duration: 1500,
-                        color: 'primary',
-                        position: 'middle',
-                        icon: 'checkmark-circle-outline'
-                      });
-
-                      // Actualizar la lista de datos
-                      await this.getData();
-                    }
-                  },
-                  {
-                    text: 'Sí',
-                    role: 'confirm',
-                    handler: async () => {
-                      // Si el usuario selecciona "Sí", permite capturar la nueva imagen
-                      const dataUrl = (await this.utilsSvc.takePicture('Imagen del Modelo')).dataUrl;
-
-                      if (dataUrl) {
-                        let imagePath = await this.firebaseSvc.getFilePath(modelo.img_modelo);
-                        let imageUrl = await this.firebaseSvc.uploadImage(imagePath, dataUrl);
-
-                        const datoModificado = {
-                          nombre_modelo: dato.nombre_dato,
-                          img_modelo: imageUrl // Se actualiza la imagen con la nueva URL
-                        };
-
-                        // Actualizar el documento en Firestore con la nueva URL de la imagen
-                        await this.firebaseSvc.updateDocument(`modelo_vehiculo/${modelo.id}`, { ...datoModificado });
-
-                        // Mostrar un mensaje de éxito
-                        this.utilsSvc.presentToast({
-                          message: 'Modelo modificado con éxito e Imagen actualizada',
-                          duration: 1500,
-                          color: 'primary',
-                          position: 'middle',
-                          icon: 'checkmark-circle-outline'
-                        });
-
-                        // Actualizar la lista de datos
-                        await this.getData();
-                      }
-                    }
-                  }
-                ]
-              });
-
-              await confirmAlert.present();
-
-            } catch (error) {
-              console.error('Error al modificar el modelo:', error);
-              this.utilsSvc.presentToast({
-                message: 'Hubo un error al modificar el modelo. Inténtalo de nuevo.',
-                duration: 1500,
-                color: 'danger',
-                position: 'middle',
-                icon: 'alert-circle-outline'
-              });
-            } finally {
-              // Cerrar pantalla de carga
-              loading.dismiss();
+            // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
+            const datoModificado = {
+              nombre_modelo: dato.nombre_dato,
             }
+
+            // Actualizar el documento en Firestore sin cambiar la imagen
+            await this.firebaseSvc.updateDocument(`marca_vehiculo/${modelo.id}`, { ...datoModificado });
+
+            // Mostrar un mensaje de éxito
+            this.utilsSvc.presentToast({
+              message: 'Modelo modificado con éxito',
+              duration: 1500,
+              color: 'primary',
+              position: 'middle',
+              icon: 'checkmark-circle-outline'
+            });
+
+            // Actualizar la lista de datos
+            await this.getData();
           },
         },
       ],

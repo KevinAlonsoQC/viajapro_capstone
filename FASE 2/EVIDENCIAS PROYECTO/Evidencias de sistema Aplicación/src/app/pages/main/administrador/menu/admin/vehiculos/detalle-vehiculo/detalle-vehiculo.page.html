@@ -8,34 +8,95 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" [fullscreen]="true">
-  <div class="d-flex">
-    <ion-list>
-      <ion-item *ngIf="vehiculo">
-        <ion-avatar slot="start" *ngIf="vehiculo.img_vehiculo" slot="start">
-          <img alt="avatar" [src]=vehiculo.img_vehiculo />
-        </ion-avatar>
-        <ion-avatar slot="start" *ngIf="!vehiculo.img_vehiculo" slot="start">
-          <img alt="avatar" [src]="imagenDefault" />
-        </ion-avatar>
+<ion-content class="ion-padding" [fullscreen]="true" *ngIf="vehiculo">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="overlap">
+          <div class="overlap-group">
+            <div class="text-wrapper">{{vehiculo.nombre_modelo}}</div>
+            <img class="iris" [src]="vehiculo.img_vehiculo" />
+            <div class="text-wrapper-2">Nro. Vehículo:</div>
+            <div class="text-wrapper-3">{{ vehiculo.id }}</div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-        <ion-label>{{ vehiculo.patente_vehiculo }}</ion-label>
-      </ion-item>
+  <div class="car-page">
 
-      <ion-item>
-        <ion-icon aria-hidden="true" name="wifi" slot="start"></ion-icon>
-        <ion-label>Wi-Fi</ion-label>
-      </ion-item>
+    <div class="frame">
+      <div class="div-wrapper">
+        <div class="text-wrapper-4">Specs</div>
+      </div>
+      <div class="specs-wrapper">
+        <div class="specs">
+          <div class="frame-2">
+            <div class="text-wrapper-5">Power</div>
+            <p class="text-wrapper-6">429 hp 6,100 rpm</p>
+          </div>
+          <div class="frame-2">
+            <div class="text-wrapper-5">Max Speed</div>
+            <div class="text-wrapper-6">280 km/h</div>
+          </div>
+          <div class="frame-2">
+            <div class="text-wrapper-5">Acceleration</div>
+            <div class="text-wrapper-6">4.9 sec 0-60 mph</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <ion-item>
-        <ion-icon aria-hidden="true" name="bluetooth" slot="start"></ion-icon>
-        <ion-label>Bluetooth</ion-label>
-      </ion-item>
+    <div class="plans">
+      <div class="text-wrapper-4">Plan</div>
+      <div class="element-plans-wrapper">
+        <div class="element-plans">
+          <div class="element-plan">
+            <div class="frame-wrapper">
+              <div class="frame-3">
+                <img class="img-2" src="img/time-square.svg" />
+                <div class="text-wrapper-7">$80</div>
+              </div>
+            </div>
+            <div class="frame-4">
+              <div class="text-wrapper-8">Hourly Rent</div>
+              <div class="best-for-business">Best for business<br />appointments</div>
+            </div>
+          </div>
+          <div class="element-nd-plan">
+            <div class="overlap-2">
+              <div class="frame-5">
+                <img class="img-2" src="img/calendar.svg" />
+                <div class="text-wrapper-9">$400</div>
+              </div>
+            </div>
+            <div class="frame-6">
+              <div class="text-wrapper-10">Daily Rent</div>
+              <div class="text-wrapper-11">Best for travel</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <ion-item>
-        <ion-icon aria-hidden="true" name="call" slot="start"></ion-icon>
-        <ion-label>Cellular</ion-label>
-      </ion-item>
-    </ion-list>
+    <div class="frame-7">
+      <div class="text-wrapper-4">Location</div>
+      <div class="location">
+        <img class="img-2" src="img/location.svg" />
+        <p class="p">200-298 Clipper St San Francisco, CA 94114, USA</p>
+      </div>
+    </div>
+
+    <div class="frame-8">
+      <div class="price">
+        <div class="text-wrapper-12">$80</div>
+        <div class="text-wrapper-13">/ hour</div>
+      </div>
+      <button class="CTA">
+        <div class="text-wrapper-14">Pick Up</div>
+        <div class="iconly-light-arrow-4"></div>
+      </button>
+    </div>
   </div>
 </ion-content>

@@ -75,7 +75,6 @@ export class ProfilePage implements OnInit {
         // Reflejar los cambios en la variable `usuario` del componente
         this.usuario = updatedUser; // Actualiza la variable `usuario` para reflejar los cambios en la vista
 
-
         this.utilsSvc.presentToast({
           message: 'Perfil actualizado con éxito.',
           duration: 1500,
@@ -98,9 +97,8 @@ export class ProfilePage implements OnInit {
     }
   }
 
-
   backAdmin() {
-    this.utilsSvc.routerLink('/main/administrador');
+    this.utilsSvc.routerLink('/main/profile-menu');
   }
 
   async takeImage() {

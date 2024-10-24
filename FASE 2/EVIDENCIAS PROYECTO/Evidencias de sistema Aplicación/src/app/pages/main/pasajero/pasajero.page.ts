@@ -42,7 +42,7 @@ export class PasajeroPage implements OnInit {
       if (tipo_cuenta == "0") {
         this.utilsSvc.routerLink('/main/owner');
       } else if (tipo_cuenta == "1") {
-        this.utilsSvc.routerLink('/main/administrador');
+        this.utilsSvc.routerLink('/main/administrador/admin');
       } else if (tipo_cuenta == "2") {
         this.utilsSvc.routerLink('/main/chofer');
       } else if (tipo_cuenta == "3") {
@@ -72,7 +72,7 @@ export class PasajeroPage implements OnInit {
   }
 
   profile() {
-    this.utilsSvc.routerLink('/main/profile');
+    this.utilsSvc.routerLink('/main/profile-menu');
   }
 
   signOut() {

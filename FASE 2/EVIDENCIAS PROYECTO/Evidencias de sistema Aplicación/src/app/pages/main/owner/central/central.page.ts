@@ -25,7 +25,7 @@ export class CentralPage implements OnInit {
   }
 
   profile(){
-    this.utilsSvc.routerLink('/main/profile');
+    this.utilsSvc.routerLink('/main/profile-menu');
   }
 
   signOut() {

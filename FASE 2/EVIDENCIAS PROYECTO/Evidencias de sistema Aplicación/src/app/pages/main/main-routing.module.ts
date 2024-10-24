@@ -25,6 +25,10 @@ const routes: Routes = [
   },  {
     path: 'owner',
     loadChildren: () => import('./owner/owner.module').then( m => m.OwnerPageModule)
+  },
+  {
+    path: 'profile-menu',
+    loadChildren: () => import('./profile-menu/profile-menu.module').then( m => m.ProfileMenuPageModule)
   }
 
 

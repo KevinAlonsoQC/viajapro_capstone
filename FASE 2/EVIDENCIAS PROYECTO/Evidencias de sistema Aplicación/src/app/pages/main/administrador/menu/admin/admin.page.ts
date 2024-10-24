@@ -26,7 +26,7 @@ export class AdminPage implements OnInit {
   }
 
   profile(){
-    this.utilsSvc.routerLink('/main/profile');
+    this.utilsSvc.routerLink('/main/profile-menu');
   }
 
   signOut() {

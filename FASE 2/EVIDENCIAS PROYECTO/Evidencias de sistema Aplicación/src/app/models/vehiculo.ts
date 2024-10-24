@@ -13,4 +13,6 @@ export interface Vehiculo {
 
     marca: string;
     modelo: string;
+
+    en_ruta: boolean; //para saber si está en ruta el vehículo o no.
 }

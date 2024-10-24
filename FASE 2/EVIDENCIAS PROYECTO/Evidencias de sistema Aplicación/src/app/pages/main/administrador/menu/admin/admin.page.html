@@ -1,32 +1,5 @@
-<ion-menu menuId="adminMenu" contentId="admin-content">
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>
-        <strong>Menú</strong>
-        <div class="admin">
-          V I A J A <strong style="color: #000;">PRO</strong>
-        </div>
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content class="ion-padding">
-    <ion-list>
-      <ion-item>
-        <ion-button color="danger" (click)="signOut()" expand="block" mode="ios" class="submit" type="submit">
-          Cerrar Sesión
-          <ion-icon slot="end" name="exit-outline"></ion-icon>
-        </ion-button>
-      </ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu>
-
 <ion-header>
   <ion-toolbar class="toolbar-superior">
-    <ion-buttons slot="start">
-      <ion-menu-button menu="adminMenu"></ion-menu-button>
-    </ion-buttons>
-
     <app-logo-small></app-logo-small>
 
     <ion-buttons slot="end">
@@ -62,13 +35,10 @@
     <ion-grid [fixed]="true">
       <ion-row>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/administrador/admin" txt_icon="Administración" icon="settings-outline"></app-menu-master>
-        </ion-col>
-        <ion-col class="ion-text-center"> 
-          <app-menu-master url="main/administrador/colectivos" txt_icon="Colectivos" icon="car-outline" ></app-menu-master>
+          <app-menu-master url="main/administrador/personal" txt_icon="Personal" icon="person-outline"></app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/administrador/personal" txt_icon="Personal" icon="person-outline" ></app-menu-master>
+          <app-menu-master url="main/administrador/admin" txt_icon="Inicio" icon="home-outline"></app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
           <app-menu-master url="main/administrador/finanzas" txt_icon="Finanzas" icon="wallet-outline" ></app-menu-master>

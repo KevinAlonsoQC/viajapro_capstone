@@ -92,27 +92,6 @@
         </ion-item>
       </ion-list>
 
-      <ion-list>
-        <ion-item lines="none">
-          <ion-icon slot="start" name="people-circle-outline"></ion-icon>
-          <ion-select placeholder="¿Qué serás?" formControlName="tipo_usuario">
-            <div slot="label">Tipo de Cuenta</div>
-            <ion-select-option *ngFor="let item of tipo_usuario" [value]="item.id">
-              <ng-container *ngIf="item.id != '0'">
-                {{ item.tipo_usuario }}
-              </ng-container>
-            </ion-select-option>
-          </ion-select>
-
-
-          <div class="validators" *ngIf="form.controls.pais.errors && form.controls.pais.touched">
-            <div *ngIf="form.controls.pais.errors?.['required']">
-              Por favor selecciona tu País
-            </div>
-          </div>
-        </ion-item>
-      </ion-list>
-
       <ion-button expand="block" mode="ios" class="submit" type="submit" [disabled]="form.invalid">
         Registrate
         <ion-icon slot="end" name="person-add-outline"></ion-icon>

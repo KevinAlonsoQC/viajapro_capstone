@@ -27,7 +27,7 @@ export class CrearVehiculoPage implements OnInit {
 	public modelosFiltrados: any[] = [];
 
 	selectMarca = false;
-	selectModelo = '';
+	selectModelo: any;
 
 	choferes!: any;
 	usuario!: User;
@@ -72,10 +72,11 @@ export class CrearVehiculoPage implements OnInit {
 		);
 	}
 
-	onModeloChange(event: any){
+	onModeloChange(event: any) {
 		const modeloSeleccionado = event.detail.value;
 		console.log(modeloSeleccionado)
 		this.selectModelo = modeloSeleccionado;
+
 	}
 
 	async submit() {
@@ -94,7 +95,9 @@ export class CrearVehiculoPage implements OnInit {
 				const nuevoVehiculo = {
 					...this.form.value,
 					id: this.uniqueId, // Asigna el UID único aquí
-					nombre_modelo: this.selectModelo,
+					nombre_modelo: this.selectModelo.nombre_modelo,
+					modelo: this.selectModelo.id,
+					marca: this.selectModelo.id_marca,
 					central: this.usuario.central, // Agregar la central del usuario
 				};
 
@@ -130,7 +133,9 @@ export class CrearVehiculoPage implements OnInit {
 			const nuevoVehiculo = {
 				...this.form.value,
 				id: this.uniqueId, // Asigna el UID único aquí
-				nombre_modelo: this.selectModelo,
+				nombre_modelo: this.selectModelo.nombre_modelo,
+				modelo: this.selectModelo.id,
+				marca: this.selectModelo.id_marca,
 				central: this.usuario.central, // Agregar la central del usuario
 			};
 

@@ -8,95 +8,103 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" [fullscreen]="true" *ngIf="vehiculo">
+<ion-content class="ion-padding" [fullscreen]="true" *ngIf="vehiculo && marca && modelo">
   <ion-grid>
     <ion-row>
       <ion-col>
         <div class="overlap">
-          <div class="overlap-group">
-            <div class="text-wrapper">{{vehiculo.nombre_modelo}}</div>
-            <img class="iris" [src]="vehiculo.img_vehiculo" />
-            <div class="text-wrapper-2">Nro. Vehículo:</div>
-            <div class="text-wrapper-3">{{ vehiculo.id }}</div>
+          <div class="text-wrapper">{{vehiculo.nombre_modelo}}</div>
+          <img class="iris" [src]="vehiculo.img_vehiculo" />
+          <div class="text-wrapper-2">Patente del Vehículo</div>
+          <div class="text-wrapper-3">{{ vehiculo.patente_vehiculo }}</div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="div-wrapper">
+          <div class="text-wrapper-4">Documentación</div>
+        </div>
+        <div class="specs-wrapper">
+          <div class="specs">
+            <div class="frame-2">
+              <div class="text-wrapper-5">Permiso de Circulación</div>
+              <div class="text-wrapper-6">{{ vehiculo.cad_per_circulacion_vehiculo }}</div>
+            </div>
+            <div class="frame-2">
+              <div class="text-wrapper-5">SOAP</div>
+              <div class="text-wrapper-6">{{ vehiculo.cad_soap_vehiculo }}</div>
+            </div>
+            <div class="frame-2">
+              <div class="text-wrapper-5">Revisión Técnica</div>
+              <div class="text-wrapper-6">{{ vehiculo.cad_revision_tecnica_vehiculo }}</div>
+            </div>
           </div>
         </div>
       </ion-col>
     </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="text-wrapper-4">Marca del Modelo</div>
+        <div class="element-plans-wrapper">
+          <div class="element-plans">
+
+            <div class="element-nd-plan">
+              <div class="frame-wrapper-two">
+                <div class="frame-3">
+                  <img class="img-2" [src]="marca.img_marca"/>
+                </div>
+              </div>
+              <div class="frame-44">
+                <div class="text-wrapper-88">{{ marca.nombre_marca }}</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="text-wrapper-4">Modelo de Referencia</div>
+        <div class="location">
+          <img class="iris" [src]="modelo.img_modelo"/>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="text-wrapper-4">Choferes Vinculados</div>
+        <div class="element-plans-wrapper">
+          <div class="element-plans">
+
+            <div class="element-plan" *ngFor="let chofer of choferes">
+              <div class="frame-wrapper">
+                <div class="frame-3">
+                  <img class="img-2" [src]="chofer.img_usuario"/>
+                </div>
+              </div>
+              <div class="frame-4">
+                <div class="text-wrapper-8">{{ chofer.name }}</div>
+                <div class="text-down">{{ chofer.rut_usuario }}</div>          
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" mode="ios" class="submit" type="submit">
+          Modificar Vehículo
+          <ion-icon slot="end" name="car-outline"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
   </ion-grid>
-
-  <div class="car-page">
-
-    <div class="frame">
-      <div class="div-wrapper">
-        <div class="text-wrapper-4">Specs</div>
-      </div>
-      <div class="specs-wrapper">
-        <div class="specs">
-          <div class="frame-2">
-            <div class="text-wrapper-5">Power</div>
-            <p class="text-wrapper-6">429 hp 6,100 rpm</p>
-          </div>
-          <div class="frame-2">
-            <div class="text-wrapper-5">Max Speed</div>
-            <div class="text-wrapper-6">280 km/h</div>
-          </div>
-          <div class="frame-2">
-            <div class="text-wrapper-5">Acceleration</div>
-            <div class="text-wrapper-6">4.9 sec 0-60 mph</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="plans">
-      <div class="text-wrapper-4">Plan</div>
-      <div class="element-plans-wrapper">
-        <div class="element-plans">
-          <div class="element-plan">
-            <div class="frame-wrapper">
-              <div class="frame-3">
-                <img class="img-2" src="img/time-square.svg" />
-                <div class="text-wrapper-7">$80</div>
-              </div>
-            </div>
-            <div class="frame-4">
-              <div class="text-wrapper-8">Hourly Rent</div>
-              <div class="best-for-business">Best for business<br />appointments</div>
-            </div>
-          </div>
-          <div class="element-nd-plan">
-            <div class="overlap-2">
-              <div class="frame-5">
-                <img class="img-2" src="img/calendar.svg" />
-                <div class="text-wrapper-9">$400</div>
-              </div>
-            </div>
-            <div class="frame-6">
-              <div class="text-wrapper-10">Daily Rent</div>
-              <div class="text-wrapper-11">Best for travel</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="frame-7">
-      <div class="text-wrapper-4">Location</div>
-      <div class="location">
-        <img class="img-2" src="img/location.svg" />
-        <p class="p">200-298 Clipper St San Francisco, CA 94114, USA</p>
-      </div>
-    </div>
-
-    <div class="frame-8">
-      <div class="price">
-        <div class="text-wrapper-12">$80</div>
-        <div class="text-wrapper-13">/ hour</div>
-      </div>
-      <button class="CTA">
-        <div class="text-wrapper-14">Pick Up</div>
-        <div class="iconly-light-arrow-4"></div>
-      </button>
-    </div>
-  </div>
 </ion-content>

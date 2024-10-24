@@ -3,7 +3,7 @@ import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MarcaVehiculo } from 'src/app/models/marca-vehiculo';
+import { MarcaVehiculo, ModeloVehiculo } from 'src/app/models/marca-vehiculo';
 
 @Component({
   selector: 'app-detalle-vehiculo',
@@ -19,7 +19,9 @@ export class DetalleVehiculoPage implements OnInit {
   usuario!: User;
   vehiculo!: any;
   choferes!: any;
-  marca_vehiculo!: any;
+
+  marca!: any;
+  modelo!: any;
 
   constructor(private route: ActivatedRoute, private router: Router) { }
 
@@ -76,16 +78,19 @@ export class DetalleVehiculoPage implements OnInit {
     await loading.present();
 
     const marcaVehiculo = 'marca_vehiculo';
+    const modeloVehiculo = 'modelo_vehiculo';
     const usuarioPath = 'usuario'; // Ruta de la colección de usuarios
 
     try {
       // Ejecutar ambas promesas en paralelo
-      const [marca_vehiculo, usuarios] = await Promise.all([
+      const [marca_vehiculo, modelo_vehiculo, usuarios] = await Promise.all([
         this.firebaseSvc.getCollectionDocuments(marcaVehiculo) as Promise<MarcaVehiculo[]>,
+        this.firebaseSvc.getCollectionDocuments(modeloVehiculo) as Promise<ModeloVehiculo[]>,
         this.firebaseSvc.getCollectionDocuments(usuarioPath) as Promise<any[]> // Cambia 'any' por el tipo adecuado si lo tienes
       ]);
 
-      this.marca_vehiculo = marca_vehiculo;
+      this.marca = marca_vehiculo.filter(marca => marca.id === this.vehiculo.marca)[0]; // Toma el primer elemento
+      this.modelo = modelo_vehiculo.filter(modelo => modelo.id === this.vehiculo.modelo)[0]; // Toma el primer elemento
 
       // Verificar que this.usuario esté definido
       if (this.usuario && this.usuario.central) {

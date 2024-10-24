@@ -49,7 +49,7 @@
           <ion-icon slot="start" name="car-outline"></ion-icon>
           <ion-select placeholder="Modelo del Vehículo" (ionChange)="onModeloChange($event)">
             <div slot="label">Modelo</div>
-            <ion-select-option *ngFor="let item of modelosFiltrados" [value]="item.nombre_modelo">
+            <ion-select-option *ngFor="let item of modelosFiltrados" [value]="item">
               {{ item.nombre_modelo }}
             </ion-select-option>
           </ion-select>

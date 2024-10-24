@@ -15,8 +15,6 @@ import { AbstractControl } from '@angular/forms';
 export class SignUpPage implements OnInit {
 
   public pais: Pais[];
-  public tipo_usuario: TipoUsuario[];
-
   public imagenDefault = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMF8xNzY1XzcwNTUpIj4KPHBhdGggZD0iTTAgMEg1MTJWNTEySDBWMFoiIGZpbGw9IiMyMjJEM0EiLz4KPHBhdGggZD0iTTMzMC4wODUgMTEwLjk1NUMzMTEuMjk5IDkwLjY3MiAyODUuMDU5IDc5LjUwMjQgMjU2LjA5NyA3OS41MDI0QzIyNi45ODEgNzkuNTAyNCAyMDAuNjU1IDkwLjYwNDQgMTgxLjk1NSAxMTAuNzYyQzE2My4wNTMgMTMxLjE0MSAxNTMuODQzIDE1OC44MzggMTU2LjAwNSAxODguNzQ2QzE2MC4yOTIgMjQ3Ljc1MSAyMDUuMTkyIDI5NS43NSAyNTYuMDk3IDI5NS43NUMzMDcuMDAzIDI5NS43NSAzNTEuODI2IDI0Ny43NiAzNTYuMTggMTg4Ljc2NUMzNTguMzcxIDE1OS4xMjggMzQ5LjEwMyAxMzEuNDg5IDMzMC4wODUgMTEwLjk1NVoiIGZpbGw9IiNCM0JBQzAiLz4KPHBhdGggZD0iTTUzLjkyNzUgNTExLjk5N0g0NTguMzMzQzQ1OSA1MDMgNDU4LjIwNiA0ODMuNDk5IDQ1Ni4zMzMgNDczLjE0MUM0NDguMTg1IDQyNy45NDEgNDIyLjc1NyAzODkuOTcyIDM4Mi43ODkgMzYzLjMyN0MzNDcuMjgyIDMzOS42NzUgMzAyLjMwNSAzMjYuNjQyIDI1Ni4xMyAzMjYuNjQyQzIwOS45NTYgMzI2LjY0MiAxNjQuOTc4IDMzOS42NjYgMTI5LjQ3MSAzNjMuMzI3Qzg5LjUwMzggMzg5Ljk4MiA2NC4wNzU0IDQyNy45NTEgNTUuOTI3NSA0NzMuMTVDNTQuMDU0NiA0ODMuNTA5IDUzLjUwMDEgNTA0LjUgNTMuOTI3NSA1MTEuOTk3WiIgZmlsbD0iI0IzQkFDMCIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE3NjVfNzA1NSI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo=';
 
   //variable protegida para uso interno
@@ -31,7 +29,7 @@ export class SignUpPage implements OnInit {
     telefono_usuario: new FormControl(0, [Validators.required, Validators.maxLength(8), Validators.minLength(8)]),
     img_usuario: new FormControl(this.imagenDefault),
     coordenadas_usuario: new FormControl(''),
-    tipo_usuario: new FormControl('', [Validators.required]),
+    tipo_usuario: new FormControl('3'),
     pais: new FormControl('', [Validators.required]),
     central: new FormControl(''),
   })
@@ -126,7 +124,8 @@ export class SignUpPage implements OnInit {
       let path = `usuario/${uid}`
       let imagePath = `usuario/${uid}/${Date.now()}`;
       let imageUrl = await this.firebaseSvc.uploadImage(imagePath,  this.form.value.img_usuario);
-      this.form.controls.img_usuario.setValue(imageUrl)
+      this.form.controls.img_usuario.setValue(imageUrl);
+      this.form.controls.tipo_usuario.setValue('3');
       delete this.form.value.password;
 
       this.firebaseSvc.setDocument(path, this.form.value).then(async res => {
@@ -154,19 +153,15 @@ export class SignUpPage implements OnInit {
     await loading.present();
 
     const paisPath = 'pais';
-    const tipoUsuarioPath = 'tipo_usuario';
     const usuarioPath = 'usuario'; // Ruta de la colección de usuarios
 
     try {
       // Ejecutar ambas promesas en paralelo
-      const [pais, tipo_usuario, usuarios] = await Promise.all([
+      const [pais, usuarios] = await Promise.all([
         this.firebaseSvc.getCollectionDocuments(paisPath) as Promise<Pais[]>,
-        this.firebaseSvc.getCollectionDocuments(tipoUsuarioPath) as Promise<TipoUsuario[]>,
         this.firebaseSvc.getCollectionDocuments(usuarioPath) as Promise<any[]> // Cambia 'any' por el tipo adecuado si lo tienes
       ]);
 
-      // Filtrar los resultados para eliminar el tipo_usuario con id 0
-      this.tipo_usuario = tipo_usuario.filter(t => Number(t.id) !== 0);
       this.pais = pais;
       // Extraer ruts_usados de los documentos de usuarios
       this.ruts_usados = usuarios.map(user => user.rut_usuario).filter(rut => rut);

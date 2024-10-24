@@ -1,503 +1,371 @@
 :root {
-    --absolutestaticwhite-s: rgba(255, 255, 255, 1);
-    --oil-11: rgba(13, 13, 13, 1);
-    --sky-06: rgba(0, 123, 255, 1);
-    --oil-05: rgba(171, 171, 171, 1);
-    --oil-04: rgba(204, 204, 204, 1);
-    --sky-03: rgba(204, 228, 255, 1);
-    --oil-03: rgba(230, 230, 230, 1);
-    --oil-02: rgba(247, 247, 247, 1);
-  }
+  --absolutestaticwhite-s: #FFC300;
+  --oil-11: rgba(13, 13, 13, 1);
+  --sky-06: rgba(0, 123, 255, 1);
+  --oil-05: rgba(171, 171, 171, 1);
+  --oil-04: rgba(204, 204, 204, 1);
+  --sky-03: rgba(204, 228, 255, 1);
+  --oil-03: rgba(230, 230, 230, 1);
+  --oil-02: rgba(247, 247, 247, 1);
+}
 
-  
-  .car-page {
-    background-color: #ffffff;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-  }
+.overlap {
+  width: 100%;
+  background-color: #ffc400b7;
+  border-radius: 10px;
+  padding: 10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
 
-  
-  .car-page .overlap {
-    position: absolute;
-    width: 100%;
-    height: 370px;
-    top: 0;
-    left: 0;
-    background-color: #f2f2f2;
-  }
+.text-wrapper {
+  font-family: "Roboto-SemiBold", Helvetica;
+  font-weight: 600;
+  color: var(--oil-11);
+  font-size: 24px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
 
-  
-  .car-page .overlap-group {
-    position: absolute;
-    width: 343px;
-    height: 272px;
-    top: 96px;
-    left: 28px;
-  }
-  
-  .car-page .text-wrapper {
-    position: absolute;
-    top: 7px;
-    left: 8px;
-    font-family: "Roboto-SemiBold", Helvetica;
-    font-weight: 600;
-    color: var(--oil-11);
-    font-size: 24px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
+.iris {
+  width: 90%;
+  height: 80%;
+}
 
-  .car-page .iris {
-    position: absolute;
-    width: 337px;
-    height: 272px;
-    top: 0;
-    left: 0;
-    object-fit: cover;
-  }
-  
-  .text-wrapper-2{
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--oil-11);
-    font-size: 14px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
+.text-wrapper-2 {
+  font-family: "Roboto-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--oil-11);
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
 
-  .car-page .text-wrapper-2 {
-    position: absolute;
-    top: 47px;
-    left: 30px;
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--oil-11);
-    font-size: 14px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
+.text-wrapper-2 {
+  font-family: "Roboto-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--oil-11);
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
 
-  
-  .car-page .group {
-    position: absolute;
-    width: 24px;
-    height: 24px;
-    top: 230px;
-    left: 148px;
-    background-color: var(--absolutestaticwhite-s);
-    border-radius: 12px;
-  }
-  
-  
-  .car-page .img {
-    left: 4px;
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    top: 9px;
-  }
-  
-  .car-page .text-wrapper-3 {
-    position: absolute;
-    top: 48px;
-    left: 62px;
-    font-family: "Roboto-Regular", Helvetica;
-    font-weight: 400;
-    color: var(--oil-05);
-    font-size: 12px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .iconly-light-arrow-3 {
-    position: absolute;
-    top: 229px;
-    left: 4px;
-    width: 24px;
-    height: 24px;
-    //background-image: url(./img/arrow-left-2-2.svg);
-    background-size: 100% 100%;
-  }
-  
-  .car-page .frame {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    position: absolute;
-  }
-  
-  .car-page .div-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    position: relative;
-    align-self: stretch;
-    width: 100%;
-    flex: 0 0 auto;
-  }
-  
-  .car-page .text-wrapper-4 {
-    position: relative;
-    width: fit-content;
-    margin-top: -1.00px;
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--oil-11);
-    font-size: 18px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .specs-wrapper {
-    position: relative;
-    width: 311px;
-    overflow-x: scroll;
-  }
-  
-  .car-page .specs {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    position: relative;
-  }
-  
-  .car-page .frame-2 {
-    display: flex;
-    flex-direction: column;
-    width: 124px;
-    align-items: flex-start;
-    gap: 4px;
-    padding: 8px;
-    position: relative;
-    border-radius: 10px;
-    border: 1px solid;
-    border-color: var(--oil-03);
-  }
-  
-  .car-page .text-wrapper-5 {
-    position: relative;
-    width: fit-content;
-    margin-top: -1.00px;
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--oil-11);
-    font-size: 12px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .text-wrapper-6 {
-    position: relative;
-    width: fit-content;
-    font-family: "Roboto-Light", Helvetica;
-    font-weight: 300;
-    color: var(--oil-11);
-    font-size: 12px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .plans {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 17px;
-    position: absolute;
-    top: 503px;
-  }
-  
-  .car-page .element-plans-wrapper {
-    position: relative;
-    width: 311px;
-    height: 80px;
-    overflow-x: scroll;
-  }
-  
-  .car-page .element-plans {
-    display: inline-flex;
-    align-items: flex-start;
-    gap: 8px;
-    position: relative;
-  }
-  
-  .car-page .element-plan {
-    position: relative;
-    width: 180px;
-    height: 80px;
-    border-radius: 20px;
-    border: 2px solid;
-    border-color: var(--sky-06);
-    box-shadow: 0px 0px 12px #2f80ed40;
-  }
-  
-  .car-page .frame-wrapper {
-    position: absolute;
-    width: 44px;
-    height: 76px;
-    top: 2px;
-    left: 2px;
-    background-color: var(--sky-03);
-    border-radius: 18px 0px 0px 18px;
-  }
-  
-  .car-page .frame-3 {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    position: relative;
-    top: 17px;
-    left: 10px;
-  }
-  
-  .car-page .img-2 {
-    position: relative;
-    width: 24px;
-    height: 24px;
-  }
-  
-  .car-page .text-wrapper-7 {
-    position: relative;
-    width: fit-content;
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--sky-06);
-    font-size: 12px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .frame-4 {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    position: absolute;
-    top: 14px;
-    left: 52px;
-  }
-  
-  .car-page .text-wrapper-8 {
-    position: relative;
-    width: fit-content;
-    margin-top: -1.00px;
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--oil-11);
-    font-size: 14px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .best-for-business {
-    position: relative;
-    width: fit-content;
-    font-family: "Roboto-Regular", Helvetica;
-    font-weight: 400;
-    color: var(--oil-05);
-    font-size: 12px;
-    letter-spacing: 0;
-    line-height: normal;
-  }
-  
-  .car-page .element-nd-plan {
-    position: relative;
-    width: 180px;
-    height: 80px;
-    border-radius: 20px;
-    border: 1px solid;
-    border-color: var(--oil-03);
-  }
-  
-  .car-page .overlap-2 {
-    position: absolute;
-    width: 44px;
-    height: 78px;
-    top: 1px;
-    left: 1px;
-    background-color: var(--oil-02);
-    border-radius: 18px 0px 0px 18px;
-  }
-  
-  .car-page .frame-5 {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    position: relative;
-    top: 18px;
-    left: 8px;
-  }
-  
-  .car-page .text-wrapper-9 {
-    position: relative;
-    width: fit-content;
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--oil-04);
-    font-size: 12px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .frame-6 {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    position: absolute;
-    top: 18px;
-    left: 52px;
-  }
-  
-  .car-page .text-wrapper-10 {
-    position: relative;
-    width: fit-content;
-    margin-top: -1.00px;
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--oil-04);
-    font-size: 14px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .text-wrapper-11 {
-    position: relative;
-    width: fit-content;
-    font-family: "Roboto-Regular", Helvetica;
-    font-weight: 400;
-    color: var(--oil-04);
-    font-size: 12px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .frame-7 {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-    position: absolute;
-    top: 645px;
-  }
-  
-  .car-page .location {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 8px;
-    position: relative;
-    flex: 0 0 auto;
-    border-radius: 10px;
-    border: 1px solid;
-    border-color: var(--oil-03);
-  }
-  
-  .car-page .p {
-    font-family: "Roboto-Regular", Helvetica;
-    font-weight: 400;
-    position: relative;
-    width: fit-content;
-    color: var(--oil-11);
-    font-size: 12px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .frame-8 {
-    display: flex;
-    width: 308px;
-    align-items: center;
-    justify-content: space-between;
-    position: absolute;
-    top: 738px;
-  }
-  
-  .car-page .price {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    position: relative;
-    flex: 0 0 auto;
-  }
-  
-  .car-page .text-wrapper-12 {
-    position: relative;
-    width: fit-content;
-    margin-top: -1.00px;
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--oil-11);
-    font-size: 24px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .text-wrapper-13 {
-    position: relative;
-    width: fit-content;
-    font-family: "Roboto-Regular", Helvetica;
-    font-weight: 400;
-    color: var(--oil-05);
-    font-size: 18px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .CTA {
-    all: unset;
-    box-sizing: border-box;
-    display: flex;
-    width: 150px;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 10px;
-    position: relative;
-    background-color: var(--sky-06);
-    border-radius: 10px;
-  }
-  
-  .car-page .text-wrapper-14 {
-    position: relative;
-    width: fit-content;
-    font-family: "Roboto-Bold", Helvetica;
-    font-weight: 700;
-    color: var(--absolutestaticwhite-s);
-    font-size: 18px;
-    letter-spacing: 0;
-    line-height: normal;
-    white-space: nowrap;
-  }
-  
-  .car-page .iconly-light-arrow-4 {
-    position: relative;
-    width: 24px;
-    height: 24px;
-    //background-image: url(./img/image.svg);
-    background-size: 100% 100%;
-  }
-  
+.text-wrapper-3 {
+  font-family: "Roboto-Regular", Helvetica;
+  font-weight: 400;
+  color: var(--oil-05);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.div-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.text-wrapper-4 {
+  position: relative;
+  width: fit-content;
+  margin-top: -1px;
+  font-family: "Roboto-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--oil-11);
+  font-size: 18px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.specs-wrapper {
+  overflow-x: scroll;
+}
+
+.specs {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+}
+
+.frame-2 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 8px;
+  position: relative;
+  border-radius: 10px;
+  border: 1px solid;
+  border-color: var(--oil-03);
+  height: 50px;
+}
+
+.text-wrapper-5 {
+  position: relative;
+  width: fit-content;
+  margin-top: -1px;
+  font-family: "Roboto-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--oil-11);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.text-wrapper-6 {
+  position: relative;
+  width: fit-content;
+  font-family: "Roboto-Light", Helvetica;
+  font-weight: 300;
+  color: var(--oil-11);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.element-plans-wrapper {
+  position: relative;
+  overflow-x: scroll;
+}
+
+.element-plans {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 8px;
+  position: relative;
+}
+
+.element-plan {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px; /* Añadir un poco de espacio interno */
+  border-radius: 20px;
+  border: 2px solid;
+  border-color: var(--sky-06);
+  box-shadow: 0px 0px 12px #2f80ed40;
+  width: auto; /* Quitar el ancho fijo */
+  height: auto; /* Ajustar la altura según el contenido */
+}
+
+.frame-wrapper-two {
+  position: absolute;
+  width: 44px;
+  height: 76px;
+  top: 2px;
+  left: 2px;
+  background-color: var(--sky-03);
+  border-radius: 18px 0px 0px 18px;
+}
+
+.frame-wrapper {
+  width: 44px;
+  height: 76px;
+  background-color: var(--sky-03);
+  border-radius: 18px 0px 0px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frame-3 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 10px;
+  left: 10px;
+}
+
+.img-2 {
+  width: 50px;
+  height: 50px;
+}
+
+.text-wrapper-7 {
+  position: relative;
+  width: fit-content;
+  font-family: "Roboto-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--sky-06);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.frame-44 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  position: absolute;
+  top: 15px;
+  left: 80px;
+}
+
+.frame-4 {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px; /* Espacio entre imagen y texto */
+}
+
+.text-wrapper-8 {
+  font-family: "Roboto-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--oil-11);
+  font-size: 14px;
+  white-space: nowrap; /* Mantiene el texto en una línea */
+}
+
+
+.text-wrapper-88 {
+  position: relative;
+  width: fit-content;
+  margin-top: 12px;
+  font-family: "Roboto-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--oil-11);
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+
+.text-down {
+  position: relative;
+  width: 100%;
+  font-family: "Roboto-Regular", Helvetica;
+  font-weight: 400;
+  color: var(--oil-05);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.element-nd-plan {
+  position: relative;
+  height: 80px;
+  border-radius: 20px;
+  border: 1px solid;
+  border-color: var(--oil-03);
+}
+
+.overlap-2 {
+  position: absolute;
+  width: 44px;
+  height: 78px;
+  top: 1px;
+  left: 1px;
+  background-color: var(--oil-02);
+  border-radius: 18px 0px 0px 18px;
+}
+
+.frame-5 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  position: relative;
+  top: 18px;
+  left: 8px;
+}
+
+.text-wrapper-9 {
+  position: relative;
+  width: fit-content;
+  font-family: "Roboto-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--oil-04);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.frame-6 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  position: absolute;
+  top: 18px;
+  left: 52px;
+}
+
+.text-wrapper-10 {
+  position: relative;
+  width: fit-content;
+  margin-top: -1px;
+  font-family: "Roboto-Bold", Helvetica;
+  font-weight: 700;
+  color: var(--oil-04);
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.text-wrapper-11 {
+  position: relative;
+  width: fit-content;
+  font-family: "Roboto-Regular", Helvetica;
+  font-weight: 400;
+  color: var(--oil-04);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+
+.frame-7 {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  position: absolute;
+  top: 645px;
+}
+
+.location {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px;
+  position: relative;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  border: 1px solid;
+  border-color: var(--oil-03);
+}
+
+.p {
+  font-family: "Roboto-Regular", Helvetica;
+  font-weight: 400;
+  position: relative;
+  width: fit-content;
+  color: var(--oil-11);
+  font-size: 12px;
+  letter-spacing: 0;
+  line-height: normal;
+  white-space: nowrap;
+}
+

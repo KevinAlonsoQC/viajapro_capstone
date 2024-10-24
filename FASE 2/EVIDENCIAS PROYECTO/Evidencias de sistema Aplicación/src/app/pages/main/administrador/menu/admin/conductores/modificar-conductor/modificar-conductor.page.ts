@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -20,7 +20,8 @@ export class ModificarConductorPage implements OnInit {
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     telefono_usuario: new FormControl(0, [Validators.required, Validators.maxLength(8), Validators.minLength(8)]),
-    img_usuario: new FormControl('')
+    img_usuario: new FormControl(''),
+    token: new FormControl('', [Validators.required])
   });
 
   constructor(private route: ActivatedRoute) { }
@@ -53,7 +54,8 @@ export class ModificarConductorPage implements OnInit {
             name: usuarioObtenido['name'],
             email: usuarioObtenido['email'],
             telefono_usuario: usuarioObtenido['telefono_usuario'],
-            img_usuario: usuarioObtenido['img_usuario']
+            img_usuario: usuarioObtenido['img_usuario'],
+            token: usuarioObtenido['token']
           });
         } else {
           console.error('Error: El usuario no tiene los permisos necesarios o no pertenece a la misma central.');
@@ -109,7 +111,8 @@ export class ModificarConductorPage implements OnInit {
           name: this.chofer.name,
           email: this.chofer.email,
           telefono_usuario: this.chofer.telefono_usuario,
-          img_usuario: this.chofer.img_usuario
+          img_usuario: this.chofer.img_usuario,
+          token: this.chofer.token
         });
 
         this.utilsSvc.presentToast({

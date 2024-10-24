@@ -40,7 +40,7 @@ export class PasajeroPage implements OnInit {
       const tipo_cuenta = this.usuario.tipo_usuario;
 
       if (tipo_cuenta == "0") {
-        this.utilsSvc.routerLink('');
+        this.utilsSvc.routerLink('/main/owner');
       } else if (tipo_cuenta == "1") {
         this.utilsSvc.routerLink('/main/administrador');
       } else if (tipo_cuenta == "2") {

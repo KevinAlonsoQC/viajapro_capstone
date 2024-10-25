@@ -17,13 +17,8 @@
 
 <!-- Contenido principal / Cuerpo sector amarillo-->
 <ion-content id="admin-content">
-  <div id="khipu-web-root"></div>
+  <app-map-pasajero class="capacitor-google-map" id="map"></app-map-pasajero>
   <ion-grid>
-    <ion-row>
-      <ion-col>
-        <app-boton-large texto="Pago" color="#FF8811" id="open-modal" mode="ios" ></app-boton-large>
-      </ion-col>
-    </ion-row>
     <ion-modal
     trigger="open-modal"
     [initialBreakpoint]="0.25"

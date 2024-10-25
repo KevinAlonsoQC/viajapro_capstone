@@ -9,6 +9,10 @@ import { PasajeroPageRoutingModule } from './pasajero-routing.module';
 import { PasajeroPage } from './pasajero.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 
+import { MapPasajeroComponent } from 'src/app/maps/component/map-pasajero/map-pasajero.component';
+
+
+
 @NgModule({
   imports: [
     CommonModule,
@@ -17,6 +21,6 @@ import { SharedModule } from 'src/app/shared/shared.module';
     PasajeroPageRoutingModule,
     SharedModule
   ],
-  declarations: [PasajeroPage]
+  declarations: [PasajeroPage,MapPasajeroComponent]
 })
 export class PasajeroPageModule {}

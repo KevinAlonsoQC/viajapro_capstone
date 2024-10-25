@@ -25,6 +25,10 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
+body{
+    background: transparent !important;
+}
+
 ion-button {
     text-transform: none;
 }
@@ -169,3 +173,4 @@ ion-button {
    
     
 }
+

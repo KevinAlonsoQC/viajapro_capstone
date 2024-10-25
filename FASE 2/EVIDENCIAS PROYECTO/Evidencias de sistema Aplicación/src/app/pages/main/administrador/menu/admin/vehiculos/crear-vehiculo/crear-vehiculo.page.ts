@@ -49,6 +49,7 @@ export class CrearVehiculoPage implements OnInit {
 		usuario: new FormControl(''),
 		central: new FormControl(''),
 		en_ruta: new FormControl(false),
+		chofer_actual: new FormControl(''),
 
 	})
 
@@ -100,7 +101,8 @@ export class CrearVehiculoPage implements OnInit {
 					modelo: this.selectModelo.id,
 					marca: this.selectModelo.id_marca,
 					central: this.usuario.central, // Agregar la central del usuario
-					en_ruta: false
+					en_ruta: false,
+					chofer_actual: '',
 				};
 
 				// Guardar el nuevo vehículo en Firebase
@@ -139,7 +141,8 @@ export class CrearVehiculoPage implements OnInit {
 				modelo: this.selectModelo.id,
 				marca: this.selectModelo.id_marca,
 				central: this.usuario.central, // Agregar la central del usuario
-				en_ruta: false
+				en_ruta: false,
+				chofer_actual: '',
 			};
 
 			this.firebaseSvc.setDocument(path, nuevoVehiculo).then(async res => {

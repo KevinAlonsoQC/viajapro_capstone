@@ -54,7 +54,7 @@ export class VehiculosPage implements OnInit {
 
 			if (this.vehiculos.length > 0) {
 				this.utilsSvc.presentToast({
-					message: 'Conductores Cargados con Éxito',
+					message: 'Vehículos Cargados con Éxito',
 					duration: 1500,
 					color: 'success',
 					position: 'middle',

@@ -1,17 +1,52 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
-      <strong>Inicio</strong>
-      <div class="admin">
-        V I A J A <strong style="color: #FFC300;">PRO</strong>
-      </div>
-    </ion-title>
+  <ion-toolbar class="toolbar-superior">
+    <app-logo-small></app-logo-small>
 
-    <app-avatar slot="end" [img]="usuario.img_usuario"></app-avatar>
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <!-- Contenido principal / Cuerpo sector amarillo-->
-<ion-content id="chofer-content">
-
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="overlap-group">
+          <div class="group">
+            <img class="bmw-coupe" src="assets/chofer/duty.svg"/>
+          </div>
+          <div class="group-2">
+            <div class="text-wrapper-2">¡Es hora de Trabajar!</div>
+            <ion-button color="primary" expand="block" mode="ios">
+              Entrar en Servicio
+              <ion-icon slot="end" name="exit-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid [fixed]="true">
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/chofer/ajustes" txt_icon="Ajustes" icon="settings-outline"></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/chofer" txt_icon="Inicio" icon="home-outline"></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/chofer/finanzas" txt_icon="Mis Finanzas" icon="wallet-outline"></app-menu-master>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

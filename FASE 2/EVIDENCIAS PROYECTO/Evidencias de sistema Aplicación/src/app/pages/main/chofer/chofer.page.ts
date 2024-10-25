@@ -1,19 +1,20 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
+
 @Component({
   selector: 'app-chofer',
   templateUrl: './chofer.page.html',
   styleUrls: ['./chofer.page.scss'],
 })
 export class ChoferPage implements OnInit {
-
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
-
-  usuario: any;
-
+  usuario: User;
+  userId: string;
   constructor() { }
+
 
   async ngOnInit() {
     // Suscribirse al observable del usuario
@@ -66,9 +67,12 @@ export class ChoferPage implements OnInit {
     }
   }
 
+  profile() {
+    this.utilsSvc.routerLink('/main/profile-menu');
+  }
+
   signOut() {
     this.firebaseSvc.signOut();
   }
-
 
 }

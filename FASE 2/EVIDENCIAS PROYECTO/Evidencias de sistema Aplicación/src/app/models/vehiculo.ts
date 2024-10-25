@@ -15,4 +15,5 @@ export interface Vehiculo {
     modelo: string;
 
     en_ruta: boolean; //para saber si está en ruta el vehículo o no.
+    chofer_actual: string; //para saber qué chofer lo está manejando
 }

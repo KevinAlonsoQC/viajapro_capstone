@@ -1,42 +1,48 @@
-ion-content {
-    --background: #FFC300; 
+.overlap-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%; /* Restringe el ancho al tamaño de la pantalla en dispositivos pequeños */
+    padding: 10px;
+    background-color: #ffcc00;
+    border-radius: 15px;
+    box-shadow: 0px 29px 15px -20px #00000040;
+    margin: auto; /* Centra el contenedor en la pantalla */
 }
 
-ion-menu::part(backdrop) {
-    background-color: #000814;
-}
-  
-ion-menu::part(container) {
-    border-radius: 0 20px 20px 0;
-    box-shadow: 4px 0px 16px #000814;
+.group {
+    display: flex;
+    justify-content: left;
+    align-items: left;
 }
 
-ion-menu{
-    ion-header, ion-toolbar{
-        --background: #FFC300;
-        --color: #fff;
-    }
-    ion-content, ion-item, ion-list{
-        --background:#000814;
-        --color: #fff;
-        background-color: #000814;
-        color: #fff;
-    }
+.bmw-coupe {
+    width: 120px;
+    max-width: 100%; /* Permite que la imagen se ajuste en dispositivos pequeños */
+    height: auto; /* Mantiene la proporción de la imagen */
+    padding: 10px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+.group-2 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+    border-radius: 10px;
 }
 
-.admin{
-    font-size: 13px;
-}
-
-ion-toolbar{
-    --color: #fff;
-    --background: #000814;
-}
-
-ion-icon {
-    --color: #000;
+.text-wrapper-2 {
+    font-family: "SF Pro Display-Bold", Helvetica;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 18px;
+    text-align: center;
+    line-height: normal;
+    padding: 5px;
 }
 
 ion-button{
-    --background: #000814;
+    font-size: 15px;
 }

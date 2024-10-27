@@ -27,6 +27,19 @@ export class PasajeroPage implements OnInit {
   userMarker: any;
   userMarkerId: any;
 
+  routePoints: { lat: number; lng: number }[] = [];
+
+  markers = [
+    {
+      lat: -33.601034, lng: -70.673802 
+      
+    },
+    {
+      lat: -33.594130, lng: -70.697319
+      
+    }
+  ];
+
 
   constructor(private paymentService: PaymentService) {
 
@@ -168,6 +181,9 @@ export class PasajeroPage implements OnInit {
     await this.setUserMarker();  // Marcador inicial del usuario
   
     this.startTrackingUserLocation();  // Comienza a rastrear la ubicación del usuario
+
+    this.map.setOnMapClickListener((event) => this.addPointToRoute(event));
+    
   }
 
   async startTrackingUserLocation() {
@@ -289,6 +305,60 @@ export class PasajeroPage implements OnInit {
     });
   }
 
+  async addPointToRoute(event:any) {
+    const lat = event.latitude;
+    const lng = event.longitude;
 
+    // Agrega el punto al array de puntos de la ruta
+    this.routePoints.push({ lat, lng });
 
+    // Dibuja un marcador en el punto seleccionado
+    await this.map.addMarker({
+      coordinate: event,
+      title: `Punto ${this.routePoints.length}`,
+    });
+
+    // Dibuja la línea de la ruta en el mapa
+    this.drawRoute();
+  }
+
+  drawRoute() {
+
+    let smoothRoutePoints: { lat: number, lng: number }[] = [];
+
+    // Interpolación entre cada punto
+    for (let i = 0; i < this.routePoints.length - 1; i++) {
+      const interpolatedPoints = this.interpolatePoints(this.routePoints[i], this.routePoints[i + 1], 10); // Ajusta el número de pasos
+      smoothRoutePoints = smoothRoutePoints.concat(interpolatedPoints);
+    }
+
+    console.log(this.routePoints)
+    this.map.addPolylines([
+      { 
+        path: this.routePoints,
+        strokeColor: '#1A1528',
+        strokeOpacity: 1.0,
+        strokeWeight: 5,
+        geodesic: true,
+        clickable: false,
+        tag: 'route',
+        
+      }
+      
+    ])
+      
+   
+  }
+
+  interpolatePoints(pointA: { lat: number, lng: number }, pointB: { lat: number, lng: number }, steps: number) {
+    const points = [];
+    for (let i = 0; i <= steps; i++) {
+      const lat = pointA.lat + (pointB.lat - pointA.lat) * (i / steps);
+      const lng = pointA.lng + (pointB.lng - pointA.lng) * (i / steps);
+      points.push({ lat, lng });
+    }
+    return points;
+  }
+
+  
 }

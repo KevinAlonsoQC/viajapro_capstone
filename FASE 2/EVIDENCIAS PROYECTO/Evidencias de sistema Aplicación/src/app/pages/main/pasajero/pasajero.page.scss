@@ -8,3 +8,11 @@ ion-content{
     --background: 'transparent';
     height: 100%;
 }
+
+.boton-ubicacion {
+    position: absolute;
+    bottom: 20px; /* Ajusta esta posición según prefieras */
+    left: 0px; /* Puedes cambiar a 'right' o ajustar la posición */
+    z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
+    --background:#FFCE48;
+}

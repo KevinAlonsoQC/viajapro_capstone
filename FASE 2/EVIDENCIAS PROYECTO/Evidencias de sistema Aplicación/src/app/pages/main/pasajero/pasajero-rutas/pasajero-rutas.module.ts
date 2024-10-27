@@ -4,22 +4,20 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PasajeroPageRoutingModule } from './pasajero-routing.module';
+import { PasajeroRutasPageRoutingModule } from './pasajero-rutas-routing.module';
 
-import { PasajeroPage } from './pasajero.page';
+import { PasajeroRutasPage } from './pasajero-rutas.page';
 import { SharedModule } from 'src/app/shared/shared.module';
-
-
-
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PasajeroPageRoutingModule,
-    SharedModule,
+    PasajeroRutasPageRoutingModule,
+    SharedModule
+
   ],
-  declarations: [PasajeroPage]
+  declarations: [PasajeroRutasPage]
 })
-export class PasajeroPageModule {}
+export class PasajeroRutasPageModule {}

@@ -24,6 +24,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/main/main.module').then(m => m.MainPageModule),
     canActivate: [AuthGuard]
   },
+  
+
 
 
 ];

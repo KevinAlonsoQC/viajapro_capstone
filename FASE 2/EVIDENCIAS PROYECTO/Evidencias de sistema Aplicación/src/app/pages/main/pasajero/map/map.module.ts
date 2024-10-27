@@ -4,22 +4,19 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { PasajeroPageRoutingModule } from './pasajero-routing.module';
+import { MapPageRoutingModule } from './map-routing.module';
 
-import { PasajeroPage } from './pasajero.page';
+import { MapPage } from './map.page';
 import { SharedModule } from 'src/app/shared/shared.module';
-
-
-
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    PasajeroPageRoutingModule,
-    SharedModule,
+    MapPageRoutingModule,
+    SharedModule
   ],
-  declarations: [PasajeroPage]
+  declarations: [MapPage]
 })
-export class PasajeroPageModule {}
+export class MapPageModule {}

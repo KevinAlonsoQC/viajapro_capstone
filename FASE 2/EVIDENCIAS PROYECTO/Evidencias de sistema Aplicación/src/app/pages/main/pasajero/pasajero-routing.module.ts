@@ -7,7 +7,16 @@ const routes: Routes = [
   {
     path: '',
     component: PasajeroPage
+  },
+  {
+    path: 'pasajero-rutas',
+    loadChildren: () => import('./pasajero-rutas/pasajero-rutas.module').then( m => m.PasajeroRutasPageModule)
+  },
+  {
+    path: 'map/:id',
+    loadChildren: () => import('./map/map.module').then( m => m.MapPageModule)
   }
+
 ];
 
 @NgModule({

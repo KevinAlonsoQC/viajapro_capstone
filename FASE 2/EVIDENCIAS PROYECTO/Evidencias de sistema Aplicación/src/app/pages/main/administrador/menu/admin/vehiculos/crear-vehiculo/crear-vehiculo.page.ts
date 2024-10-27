@@ -90,9 +90,6 @@ export class CrearVehiculoPage implements OnInit {
 				// Generar un UID único
 				this.uniqueId = uuidv4();
 				console.log('uid', this.uniqueId);
-
-
-
 				// Crear el objeto del nuevo vehículo
 				const nuevoVehiculo = {
 					...this.form.value,

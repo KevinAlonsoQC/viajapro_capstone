@@ -10,5 +10,8 @@ export interface User {
     tipo_usuario: string;  // Referencia a TipoUsuario
     pais: string;  // Referencia a Pais
     central: string;
+
+    en_ruta?: boolean;
+    vehiculo_actual?: string;
 }
 

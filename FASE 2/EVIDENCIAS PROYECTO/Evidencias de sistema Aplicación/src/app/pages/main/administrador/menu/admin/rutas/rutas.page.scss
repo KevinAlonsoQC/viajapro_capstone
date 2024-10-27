@@ -1,0 +1,35 @@
+
+.capacitor-google-map {
+    display: inline-block;
+    width: 100%;
+    height:100%;
+}
+
+ion-content{
+    --background: 'transparent';
+    height: 100%;
+}
+
+.boton-guardar {
+    position: absolute;
+    bottom: 20px; /* Ajusta esta posición según prefieras */
+    left: 50%; /* Puedes cambiar a 'right' o ajustar la posición */
+    z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
+    --background:#95e356;
+    transform: translateX(-50%);
+}
+
+.boton-borrar {
+    position: absolute;
+    bottom: 25%; /* Ajusta esta posición según prefieras */
+    right: 10px; /* Puedes cambiar a 'right' o ajustar la posición */
+    z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
+    --background:#ff6648;
+}
+.boton-volver{
+    position: absolute;
+    bottom: 20px; /* Ajusta esta posición según prefieras */
+    left: 0px; /* Puedes cambiar a 'right' o ajustar la posición */
+    z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
+    --background:#4891ff;
+}

@@ -16,6 +16,7 @@ import { ProfileBotonEditComponent } from './components/profile-boton-edit/profi
 import { HeaderFuntionComponent } from './components/header-funtion/header-funtion.component';
 import { FunctionItemComponent } from './components/function-item/function-item.component';
 import { ConductorItemComponent } from './components/conductor-item/conductor-item.component';
+import { MapPasajeroComponent } from '../maps/component/map-pasajero/map-pasajero.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { ConductorItemComponent } from './components/conductor-item/conductor-it
     ProfileBotonEditComponent,
     HeaderFuntionComponent,
     FunctionItemComponent,
-    ConductorItemComponent
+    ConductorItemComponent,
+    MapPasajeroComponent
   ],
   exports: [
     HeaderComponent,
@@ -50,7 +52,8 @@ import { ConductorItemComponent } from './components/conductor-item/conductor-it
     ProfileBotonEditComponent,
     HeaderFuntionComponent,
     FunctionItemComponent,
-    ConductorItemComponent
+    ConductorItemComponent,
+    MapPasajeroComponent
 
   ],
   imports: [

@@ -9,7 +9,6 @@ import { PasajeroPageRoutingModule } from './pasajero-routing.module';
 import { PasajeroPage } from './pasajero.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 
-import { MapPasajeroComponent } from 'src/app/maps/component/map-pasajero/map-pasajero.component';
 
 
 
@@ -21,6 +20,6 @@ import { MapPasajeroComponent } from 'src/app/maps/component/map-pasajero/map-pa
     PasajeroPageRoutingModule,
     SharedModule
   ],
-  declarations: [PasajeroPage,MapPasajeroComponent]
+  declarations: [PasajeroPage]
 })
 export class PasajeroPageModule {}

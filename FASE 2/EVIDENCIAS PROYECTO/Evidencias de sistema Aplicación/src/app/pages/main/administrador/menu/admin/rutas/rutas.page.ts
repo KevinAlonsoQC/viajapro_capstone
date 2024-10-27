@@ -6,6 +6,8 @@ import { UtilsService } from 'src/app/services/utils.service';
 import { environment } from 'src/environments/environment';
 import { GoogleMap } from '@capacitor/google-maps';
 import { Geolocation } from '@capacitor/geolocation';
+import { AlertController } from '@ionic/angular';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-rutas',
@@ -13,16 +15,18 @@ import { Geolocation } from '@capacitor/geolocation';
   styleUrls: ['./rutas.page.scss'],
 })
 export class RutasPage implements OnInit {
+  private uniqueId = '';
+
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
   usuario: User;
   userId: string;
 
-  apiKey:string = environment.firebaseConfig.apiKey;
-  map:GoogleMap;
+  apiKey: string = environment.firebaseConfig.apiKey;
+  map: GoogleMap;
 
-  latitude:number;
-  longitude:number;
+  latitude: number;
+  longitude: number;
   userMarker: any;
   userMarkerId: any;
 
@@ -30,25 +34,24 @@ export class RutasPage implements OnInit {
   currentPolyline: any;
   currentPolylineId: string | null = null; // ID de la polilínea actual
 
-  markers = [
-    {
-      lat: -33.601034, lng: -70.673802 
-      
-    },
-    {
-      lat: -33.594130, lng: -70.697319
-      
-    }
-  ];
+  marcandoInicio = false; //esto manejará si el admin presiona el botón que dejé en el html, de lo contrario, trazará las líneas
+  marcandoFinal = false; //lo mismo que la variable marcandoInicio, pero para el botón final.
 
+  PuntoInicio = false; //esto marcará cuando ya exista el punto escogido
+  PuntoFinal = false; //lo mismo que la variable puntoinicio
 
-  constructor() { }
+  coordenadaInicio: any;
+  coordenadaFinal: any;
+
+  constructor(private alertController: AlertController) { }
 
   ngOnInit() {
+    // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
+    this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
   }
 
   profile() {
@@ -56,7 +59,7 @@ export class RutasPage implements OnInit {
   }
 
   backAdmin() {
-    this.utilsSvc.routerLink('/main/administrador/admin');
+    this.utilsSvc.routerLink('/main/administrador/admin/rutas/ver-rutas');
   }
 
   async ionViewWillEnter() {
@@ -108,111 +111,145 @@ export class RutasPage implements OnInit {
       },
     });
 
-    await this.setMarkest();
-    await this.setUserMarker();  // Marcador inicial del usuario
-  
-    this.startTrackingUserLocation();  // Comienza a rastrear la ubicación del usuario
-
     this.map.setOnMapClickListener((event) => this.addPointToRoute(event));
-
   }
-
-  async startTrackingUserLocation() {
-    const updateLocation = async () => {
-      try {
-        const coordinates = await Geolocation.getCurrentPosition();
-        const { latitude, longitude } = coordinates.coords;
   
-        // Verificar si el mapa está inicializado
-        if (this.map) {
-          // Elimina solo el marcador del usuario antes de agregar uno nuevo
-          if (this.userMarkerId) {
-            await this.map.removeMarkers([this.userMarkerId]);
-          }
-  
-          // Agrega un nuevo marcador en la nueva ubicación y guarda el ID del marcador
-          const ids = await this.map.addMarkers([{
-            coordinate: {
-              lat: latitude,
-              lng: longitude,
-            },
-            iconUrl: "../../../../assets/icon/icon_user2.png",
-          }]);
-  
-          this.userMarkerId = ids[0]; // Guarda el ID del nuevo marcador del usuario
-        } else {
-          console.error('El mapa no está disponible en este momento.');
-        }
-  
-        // Llama a la función de actualización de nuevo después de un intervalo
-        setTimeout(updateLocation, 5000); // Actualiza cada 5 segundos
-      } catch (error) {
-        console.error('Error obteniendo la ubicación', error);
+  async marcarInicio() {
+    if (!this.PuntoInicio) {
+      if (!this.marcandoInicio) {
+        this.marcandoInicio = true;
+        this.marcandoFinal = false;
+        this.utilsSvc.presentToast({
+          message: '¡Presiona en el mapa el Punto de Inicio!',
+          duration: 1500,
+          color: 'primary',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
+      } else {
+        this.marcandoInicio = false;
+        this.utilsSvc.presentToast({
+          message: '¡Cancelaste la acción de escoger el Punto de Inicio!',
+          duration: 3500,
+          color: 'warning',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
       }
-    };
-  
-    updateLocation(); // Inicia el seguimiento
+    } else {
+      const confirmAlert = await this.alertController.create({
+        header: 'Ya tienes un Punto de Inicio, ¿quieres eliminarlo?',
+        message: '¡Si lo eliminas, se borrará todo el trazado y los puntos en el mapa!',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+          },
+          {
+            text: 'Sí',
+            role: 'confirm',
+            handler: async () => {
+              await this.clearAllRoute();
+              this.utilsSvc.presentToast({
+                message: '¡Has eliminado toda la ruta con éxito!',
+                duration: 3500,
+                color: 'warning',
+                position: 'middle',
+                icon: 'alert-circle-outline'
+              });
+              this.PuntoFinal = false;
+              this.PuntoInicio = false;
+              this.marcandoFinal = false;
+              this.marcandoInicio = false;
+            }
+          }]
+      });
+
+      await confirmAlert.present();
+    }
   }
 
-  async setUserMarker() {
-    // Inicializa el marcador del usuario en una posición por defecto
-    const ids = await this.map.addMarkers([{
-      coordinate: {
-        lat: this.latitude,
-        lng: this.longitude,
-      },
-      iconUrl: "../../../../assets/icon/icon_user2.png",
-     
-    }]);
-  
-    this.userMarkerId = ids[0]; // Guarda el ID del marcador para actualizarlo más tarde
-  }
+  async marcarFinal() {
+    if (!this.PuntoFinal) {
+      if (!this.marcandoFinal) {
+        this.marcandoFinal = true;
+        this.marcandoInicio = false;
+        this.utilsSvc.presentToast({
+          message: '¡Presiona en el mapa el Punto Final!',
+          duration: 1500,
+          color: 'primary',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
+      } else {
+        this.marcandoFinal = false;
+        this.utilsSvc.presentToast({
+          message: '¡Cancelaste la acción de escoger el Punto Final!',
+          duration: 3500,
+          color: 'warning',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
+      }
+    } else {
+      const confirmAlert = await this.alertController.create({
+        header: 'Ya tienes un Punto Final, ¿quieres eliminarlo?',
+        message: '¡Si lo eliminas, se borrará todo el trazado y los puntos en el mapa!',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+          },
+          {
+            text: 'Sí',
+            role: 'confirm',
+            handler: async () => {
+              await this.clearAllRoute();
+              this.utilsSvc.presentToast({
+                message: '¡Has eliminado toda la ruta con éxito!',
+                duration: 3500,
+                color: 'warning',
+                position: 'middle',
+                icon: 'alert-circle-outline'
+              });
+              this.PuntoFinal = false;
+              this.PuntoInicio = false;
+              this.marcandoFinal = false;
+              this.marcandoInicio = false;
+            }
+          }]
+      });
 
-  async setMarkest() { // Configura otros marcadores
-    
-    const markers = [
-      {
-        coordinate: {
-          lat: -33.601034,
-          lng: -70.673802,
-        },
-        iconUrl: "../../../../assets/icon/icon_inicio.png",
-      },
-      {
-        coordinate: {
-          lat: -33.594130,
-          lng: -70.697319,
-        },
-        iconUrl: "../../../../assets/icon/icono_fin.png",
-      },
-    ];
-    
-    await this.map.addMarkers(markers); // Agrega los marcadores al mapa
+      await confirmAlert.present();
+    }
   }
 
   async checkGeolocationPermission() {
     return new Promise<void>((resolve, reject) => {
-      // Comprueba si el navegador soporta geolocalización
       if ('geolocation' in navigator) {
-        // Usa Permissions API para verificar el estado de la geolocalización
         navigator.permissions.query({ name: 'geolocation' }).then((result) => {
           if (result.state === 'granted') {
             console.log('Permiso concedido');
-            this.getLocation().then(() => resolve()); // Llama a getLocation y espera a que obtenga las coordenadas
+            this.getLocation().then(() => resolve()).catch((error) => {
+              console.error('No se pudo obtener la ubicación al tener permiso concedido', error);
+              reject(error);
+            });
           } else if (result.state === 'prompt') {
-            console.log('El permiso debe solicitarse');
-            this.getLocation().then(() => resolve()); // Pide la ubicación y espera las coordenadas
-          } else if (result.state === 'denied') {
-            console.log('Permiso denegado');
+            console.log('Solicitud de permiso para obtener ubicación');
+            this.getLocation().then(() => resolve()).catch((error) => {
+              console.error('No se pudo obtener la ubicación después de solicitar permiso', error);
+              reject(error);
+            });
+          } else {
+            console.log('Permiso de geolocalización denegado');
             reject('Permiso de geolocalización denegado');
           }
-
-          result.onchange = () => {
-            console.log(`El estado del permiso ha cambiado a: ${result.state}`);
-          };
+        }).catch(error => {
+          console.error('Error al verificar el permiso de geolocalización', error);
+          reject(error);
         });
       } else {
-        console.log('Geolocalización no es soportada por este navegador');
+        console.error('Geolocalización no es soportada por este navegador');
         reject('Geolocalización no soportada');
       }
     });
@@ -220,31 +257,109 @@ export class RutasPage implements OnInit {
 
   getLocation(): Promise<void> {
     return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('Ubicación obtenida:', position.coords.latitude, position.coords.longitude);
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
-          resolve();  // Resuelve la promesa cuando tienes las coordenadas
-        },
-        (error) => {
-          console.error('Error obteniendo la ubicación', error);
-          reject(error);
-        }
-      );
+      const options = {
+        enableHighAccuracy: true,
+        timeout: 15000,             // Tiempo máximo de espera de 15 segundos
+        maximumAge: 0
+      };
+
+      const attemptLocation = (retryCount = 5) => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log('Ubicación obtenida:', position.coords.latitude, position.coords.longitude);
+            this.latitude = position.coords.latitude;
+            this.longitude = position.coords.longitude;
+            resolve();
+          },
+          (error) => {
+            console.error('Error obteniendo la ubicación', error);
+            if (error.code === 2) {
+              console.error("Posición no disponible. Reintentando...");
+              if (retryCount > 0) {
+                setTimeout(() => attemptLocation(retryCount - 1), 5000); // Reintenta después de 5 segundos
+              } else {
+                console.error("Número máximo de intentos alcanzado. Verifica la conexión de red o la configuración del GPS.");
+                reject(error);
+              }
+            } else if (error.code === 1) {
+              console.error("Permiso denegado por el usuario.");
+              reject(error);
+            } else if (error.code === 3) {
+              console.error("Solicitud de geolocalización expiró.");
+              reject(error);
+            } else {
+              reject(error);
+            }
+          },
+          options
+        );
+      };
+
+      attemptLocation();
     });
   }
 
-  async addPointToRoute(event:any) {
-    const lat = event.latitude;
-    const lng = event.longitude;
+  async addPointToRoute(event: any) {
+    if (this.PuntoInicio && this.PuntoFinal) {
+      const lat = event.latitude;
+      const lng = event.longitude;
 
-    // Agrega el punto al array de puntos de la ruta
-    this.routePoints.push({ lat, lng });
-    
+      // Agrega el punto al array de puntos de la ruta
+      this.routePoints.push({ lat, lng });
 
-    // Dibuja la línea de la ruta en el mapa
-    this.drawRoute();
+      // Dibuja la línea de la ruta en el mapa
+      this.drawRoute();
+    } else {
+
+      if (this.marcandoInicio && !this.marcandoFinal) {
+        const lat = event.latitude;
+        const lng = event.longitude;
+        this.routePoints.push({ lat, lng });
+        this.coordenadaInicio = { lat, lng };
+        const markers = [
+          {
+            coordinate: {
+              lat: event.latitude,
+              lng: event.longitude,
+            },
+            iconUrl: "../../../../assets/icon/icon_inicio.png",
+          }
+        ]
+        await this.map.addMarkers(markers); // Agregará el punto de inicio
+        this.marcandoInicio = false;
+        this.PuntoInicio = true;
+        return;
+      }
+
+      if (!this.marcandoInicio && this.marcandoFinal) {
+        const lat = event.latitude;
+        const lng = event.longitude;
+        this.routePoints.push({ lat, lng });
+        this.coordenadaFinal = { lat, lng };
+        const markers = [
+          {
+            coordinate: {
+              lat: event.latitude,
+              lng: event.longitude,
+            },
+            iconUrl: "../../../../assets/icon/icono_fin.png",
+          }
+        ]
+        await this.map.addMarkers(markers); // Agregará el punto de inicio
+        this.marcandoFinal = false;
+        this.PuntoFinal = true;
+        return;
+      }
+
+      this.utilsSvc.presentToast({
+        message: 'Debes poner un punto de inicio y final para trazar líneas de la ruta',
+        duration: 1500,
+        color: 'warning',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+    }
+
   }
 
   async drawRoute() {
@@ -256,7 +371,7 @@ export class RutasPage implements OnInit {
 
     // Dibuja la nueva polilínea usando los puntos
     const polyline = await this.map.addPolylines([
-      { 
+      {
         path: this.routePoints,
         strokeColor: '#1A1528',
         strokeOpacity: 1.0,
@@ -278,6 +393,12 @@ export class RutasPage implements OnInit {
     }
   }
 
+  async clearAllRoute() { //esto eliminará todo el trazado y los puntos
+    await this.clearRoute();
+    await this.initMap();
+    console.log('¡Eliminado TODO!')
+  }
+
   async clearRoute() {
     if (this.currentPolylineId) {
       await this.map.removePolylines([this.currentPolylineId]); // Elimina la polilínea actual
@@ -287,6 +408,101 @@ export class RutasPage implements OnInit {
     await this.drawRoute(); // Dibuja la ruta nuevamente (vacía)
   }
 
-  
- 
+  async guardarRuta() {
+    if (this.PuntoFinal && this.PuntoInicio && !this.marcandoFinal && !this.marcandoInicio && this.routePoints.length > 0) {
+      const alert = await this.alertController.create({
+        header: 'Agregando Nueva Ruta',
+        message: 'Ingresa el Nombre de la Ruta.',
+        inputs: [
+          {
+            name: 'nombre_ruta',
+            type: 'text',
+            min: 3,
+            max: 50,
+            placeholder: 'Nombre de la Ruta',
+          },
+          {
+            name: 'tarifa_diurna',
+            type: 'number',
+            min: 1,
+            max: 9999,
+            placeholder: 'Tarifa Diurna de Ruta',
+          },
+          {
+            name: 'tarifa_nocturna',
+            type: 'number',
+            min: 1,
+            max: 9999,
+            placeholder: 'Tarifa Nocturna de Ruta',
+          },
+        ],
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+          },
+          {
+            text: 'Agregar',
+            role: 'confirm',
+            handler: async (ruta) => {
+              if (ruta.nombre_ruta == "") {
+                this.utilsSvc.presentToast({
+                  message: 'Debes agregar un nombre a la Ruta',
+                  duration: 1500,
+                  color: 'danger',
+                  position: 'middle',
+                  icon: 'alert-circle-outline'
+                });
+                return;
+              }
+              // Mostrar pantalla de carga
+              const loading = await this.utilsSvc.loading();
+              await loading.present();
+
+              try {
+                // Generar un UID único
+                this.uniqueId = uuidv4();
+
+                const datoNuevo = {
+                  id: this.uniqueId,
+                  central: this.usuario.central,
+                  nombre_ruta: ruta.nombre_ruta,
+                  coordenada_ruta: this.routePoints,
+                  punto_inicio: this.coordenadaInicio,
+                  punto_final: this.coordenadaFinal,
+                  tarifa_diurna: ruta.tarifa_diurna,
+                  tarifa_nocturna: ruta.tarifa_nocturna,
+                  estado: true,
+                }
+                await this.firebaseSvc.addDocumentWithId('ruta_central', datoNuevo, this.uniqueId);
+                this.utilsSvc.routerLink('/main/administrador/admin/rutas/ver-rutas');
+              } catch (error) {
+                console.error('Error al crear la ruta:', error);
+                this.utilsSvc.presentToast({
+                  message: 'Error al crear la ruta. Inténtalo de nuevo.',
+                  duration: 1500,
+                  color: 'danger',
+                  position: 'middle',
+                  icon: 'alert-circle-outline',
+                });
+              } finally {
+                // Cerrar pantalla de carga
+                loading.dismiss();
+              }
+            },
+          },
+        ],
+      });
+
+      await alert.present();
+    } else {
+      this.utilsSvc.presentToast({
+        message: '¡Añade un punto de inicio, final y traza líneas para guardar!.',
+        duration: 3500,
+        color: 'danger',
+        position: 'middle',
+        icon: 'alert-circle-outline',
+      });
+    }
+  }
 }

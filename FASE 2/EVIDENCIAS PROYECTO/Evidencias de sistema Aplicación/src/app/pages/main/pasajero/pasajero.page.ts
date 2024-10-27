@@ -19,11 +19,11 @@ export class PasajeroPage implements OnInit {
   usuario: User;
   userId: string;
 
-  apiKey:string = environment.firebaseConfig.apiKey;
-  map:GoogleMap;
+  apiKey: string = environment.firebaseConfig.apiKey;
+  map: GoogleMap;
 
-  latitude:number;
-  longitude:number;
+  latitude: number;
+  longitude: number;
   userMarker: any;
   userMarkerId: any;
 
@@ -31,12 +31,12 @@ export class PasajeroPage implements OnInit {
 
   markers = [
     {
-      lat: -33.601034, lng: -70.673802 
-      
+      lat: -33.601034, lng: -70.673802
+
     },
     {
       lat: -33.594130, lng: -70.697319
-      
+
     }
   ];
 
@@ -56,7 +56,7 @@ export class PasajeroPage implements OnInit {
     this.utilsSvc.getFromLocalStorage('usuario');
     await this.getInfoAndTipoCuenta();
 
-    
+
   }
 
   async ionViewWillEnter() {
@@ -65,7 +65,7 @@ export class PasajeroPage implements OnInit {
       await this.initMap();
     }
   }
-  
+
   ionViewDidLeave() {
     if (this.map) {
       this.map.destroy();
@@ -175,15 +175,15 @@ export class PasajeroPage implements OnInit {
         ]
       },
     });
-  
+
     // Inicializa los marcadores
     await this.setMarkest();
     await this.setUserMarker();  // Marcador inicial del usuario
-  
+
     this.startTrackingUserLocation();  // Comienza a rastrear la ubicación del usuario
 
     this.map.setOnMapClickListener((event) => this.addPointToRoute(event));
-    
+
   }
 
   async startTrackingUserLocation() {
@@ -191,38 +191,39 @@ export class PasajeroPage implements OnInit {
       try {
         const coordinates = await Geolocation.getCurrentPosition();
         const { latitude, longitude } = coordinates.coords;
-  
+
         // Verificar si el mapa está inicializado
         if (this.map) {
           // Elimina solo el marcador del usuario antes de agregar uno nuevo
           if (this.userMarkerId) {
             await this.map.removeMarkers([this.userMarkerId]);
           }
-  
+
           // Agrega un nuevo marcador en la nueva ubicación y guarda el ID del marcador
           const ids = await this.map.addMarkers([{
             coordinate: {
               lat: latitude,
               lng: longitude,
             },
-            iconUrl: "../../../../assets/icon/icon_user2.png",
+            iconUrl: "../../../../assets/icon/user_icon.png",
+            iconSize: { width: 30, height: 30 }  // Ajusta el tamaño de la imagen acá tio cristian, se verá en el mapa.
           }]);
-  
+
           this.userMarkerId = ids[0]; // Guarda el ID del nuevo marcador del usuario
         } else {
           console.error('El mapa no está disponible en este momento.');
         }
-  
+
         // Llama a la función de actualización de nuevo después de un intervalo
         setTimeout(updateLocation, 5000); // Actualiza cada 5 segundos
       } catch (error) {
         console.error('Error obteniendo la ubicación', error);
       }
     };
-  
+
     updateLocation(); // Inicia el seguimiento
   }
-  
+
   async setUserMarker() {
     // Inicializa el marcador del usuario en una posición por defecto
     const ids = await this.map.addMarkers([{
@@ -230,15 +231,16 @@ export class PasajeroPage implements OnInit {
         lat: this.latitude,
         lng: this.longitude,
       },
-      iconUrl: "../../../../assets/icon/icon_user2.png",
-     
+      iconUrl: "../../../../assets/icon/user_icon.png",
+      iconSize: { width: 30, height: 30 }  // Ajusta el tamaño de la imagen acá tio cristian.
+
     }]);
-  
+
     this.userMarkerId = ids[0]; // Guarda el ID del marcador para actualizarlo más tarde
   }
-  
+
   async setMarkest() { // Configura otros marcadores
-    
+
     const markers = [
       {
         coordinate: {
@@ -255,7 +257,7 @@ export class PasajeroPage implements OnInit {
         iconUrl: "../../../../assets/icon/icono_fin.png",
       },
     ];
-    
+
     await this.map.addMarkers(markers); // Agrega los marcadores al mapa
   }
 
@@ -305,7 +307,7 @@ export class PasajeroPage implements OnInit {
     });
   }
 
-  async addPointToRoute(event:any) {
+  async addPointToRoute(event: any) {
     const lat = event.latitude;
     const lng = event.longitude;
 
@@ -334,7 +336,7 @@ export class PasajeroPage implements OnInit {
 
     console.log(this.routePoints)
     this.map.addPolylines([
-      { 
+      {
         path: this.routePoints,
         strokeColor: '#1A1528',
         strokeOpacity: 1.0,
@@ -342,12 +344,12 @@ export class PasajeroPage implements OnInit {
         geodesic: true,
         clickable: false,
         tag: 'route',
-        
+
       }
-      
+
     ])
-      
-   
+
+
   }
 
   interpolatePoints(pointA: { lat: number, lng: number }, pointB: { lat: number, lng: number }, steps: number) {
@@ -360,5 +362,5 @@ export class PasajeroPage implements OnInit {
     return points;
   }
 
-  
+
 }

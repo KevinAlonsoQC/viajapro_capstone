@@ -33,19 +33,3 @@ ion-content{
     z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
     --background:#4891ff;
 }
-
-.boton-inicio{
-    position: absolute;
-    bottom: 250px; /* Ajusta esta posición según prefieras */
-    left: 0px; /* Puedes cambiar a 'right' o ajustar la posición */
-    z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
-    --background:#95e356;
-}
-
-.boton-final{
-    position: absolute;
-    bottom: 200px; /* Ajusta esta posición según prefieras */
-    left: 0px; /* Puedes cambiar a 'right' o ajustar la posición */
-    z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
-    --background:#ff6648;
-}

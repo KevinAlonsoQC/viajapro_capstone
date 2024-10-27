@@ -8,7 +8,16 @@ const routes: Routes = [
   {
     path: '',
     component: RutasPage
+  },
+  {
+    path: 'ver-rutas',
+    loadChildren: () => import('./ver-rutas/ver-rutas.module').then( m => m.VerRutasPageModule)
+  },
+  {
+    path: 'modificar-ruta/:id',
+    loadChildren: () => import('./modificar-ruta/modificar-ruta.module').then( m => m.ModificarRutaPageModule)
   }
+
 ];
 
 @NgModule({

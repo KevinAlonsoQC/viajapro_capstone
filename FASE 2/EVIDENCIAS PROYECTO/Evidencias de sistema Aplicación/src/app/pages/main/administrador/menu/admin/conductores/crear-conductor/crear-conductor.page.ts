@@ -36,7 +36,9 @@ export class CrearConductorPage implements OnInit {
     tipo_usuario: new FormControl('2'),
     pais: new FormControl('', [Validators.required]),
     central: new FormControl(''),
-    token: new FormControl('', [Validators.required])
+    token: new FormControl('', [Validators.required]),
+    en_ruta: new FormControl(false),
+    vehiculo_actual: new FormControl('')
   })
 
   constructor() { }

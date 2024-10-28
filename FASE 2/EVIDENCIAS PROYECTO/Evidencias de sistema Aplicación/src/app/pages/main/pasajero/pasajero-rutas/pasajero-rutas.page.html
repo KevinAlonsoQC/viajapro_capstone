@@ -25,7 +25,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-searchbar></ion-searchbar>
+        <ion-searchbar (ionInput)="searchRoutes($event)" ></ion-searchbar>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -33,7 +33,7 @@
         <ion-list lines="full">
           <!-- Para listar conductores -->
           
-            <ion-item [button]="true" *ngFor="let item of routePoints" [routerLink]="['/main/pasajero/map', item.id]">
+            <ion-item [button]="true" *ngFor="let item of filteredRoutes" [routerLink]="['/main/pasajero/map', item.id]">
               <ion-avatar aria-hidden="true" slot="start">
                 <img src="assets/icon/ruta_img.svg" alt="Rutas_Imagen">
               </ion-avatar>
@@ -41,9 +41,12 @@
                 <strong>Nombre de Ruta:</strong> {{ item.nombre_ruta }}
                 <p>Estacion San Bernardo, Plaza San Bernardo</p>
               </ion-label>
-              <ion-chip class="tarifa">
-                $900
+              <ion-chip class="tarifa" *ngIf="!isNightTime()">
+               ${{item.tarifa_diurna}}
               </ion-chip>
+              <ion-chip class="tarifa" *ngIf="isNightTime()">
+                ${{item.tarifa_nocturna}}
+               </ion-chip>
             </ion-item>      
        </ion-list>
       </ion-col>

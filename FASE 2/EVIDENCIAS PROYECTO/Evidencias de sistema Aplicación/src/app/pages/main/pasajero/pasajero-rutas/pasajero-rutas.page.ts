@@ -13,6 +13,9 @@ export class PasajeroRutasPage implements OnInit {
   usuario: User;
   routePoints:any = [];
 
+  filteredRoutes: any[] = [];   // Lista de rutas filtradas
+  searchTerm: string = '';      // Término de búsqueda actual
+
   constructor() { }
 
   async ngOnInit() {
@@ -42,7 +45,9 @@ export class PasajeroRutasPage implements OnInit {
 			]);
 
 			this.routePoints = ruta;
-      		console.log(this.routePoints)
+      		
+			this.filteredRoutes = [...this.routePoints];
+
 			if (this.routePoints.length > 0) {
 				this.utilsSvc.presentToast({
 					message: 'Rutas Cargadas con Éxito',
@@ -73,6 +78,18 @@ export class PasajeroRutasPage implements OnInit {
 		} finally {
 			loading.dismiss();
 		}
+	}
+
+	searchRoutes(event: any) {
+		this.searchTerm = event.target.value.toLowerCase(); // Convierte el término de búsqueda a minúsculas
+		this.filteredRoutes = this.routePoints.filter(ruta => {
+		  return ruta.nombre_ruta.toLowerCase().includes(this.searchTerm);
+		});
+	}
+
+	isNightTime(): boolean {
+		const horaActual = new Date().getHours();
+		return horaActual >= 20 || horaActual < 6;
 	}
 
 }

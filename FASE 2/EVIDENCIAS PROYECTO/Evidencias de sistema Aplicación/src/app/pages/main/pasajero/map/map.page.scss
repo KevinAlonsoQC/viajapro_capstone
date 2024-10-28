@@ -11,11 +11,10 @@ ion-content{
 
 .tarifa{
     position: absolute;
-    top: 0px; /* Ajusta esta posición según prefieras */
-    left: 50%; /* Puedes cambiar a 'right' o ajustar la posición */
+    top: 50px; /* Ajusta esta posición según prefieras */
+    right:7px; /* Puedes cambiar a 'right' o ajustar la posición */
     z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
     --background:#FFCE48;
     border-radius: 0px;
-    transform: translateX(-50%);
 }
 

@@ -21,6 +21,7 @@ export class MapPage implements OnInit {
   usuario: User;
   userId: string;
 
+
   apiKey: string = environment.firebaseConfig.apiKey;
   map: GoogleMap;
 
@@ -31,6 +32,11 @@ export class MapPage implements OnInit {
 
   routePoints: any = [];
   rutas!: any;
+  timeoutId :any;
+  updateInterval: any; // ID del intervalo de actualización
+
+  filteredRoutes: any[] = [];   // Lista de rutas filtradas
+  searchTerm: string = '';      // Término de búsqueda actual
 
   markers = [
     {
@@ -57,17 +63,19 @@ export class MapPage implements OnInit {
 
     // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
+    
   }
 
   
 
   async ionViewWillEnter() {
-    
+
     await this.getData();
     await this.checkGeolocationPermission();
     if (!this.map) {
       await this.initMap();
     }
+    
   }
 
   ionViewDidLeave() {
@@ -155,7 +163,8 @@ export class MapPage implements OnInit {
   }
 
   async startTrackingUserLocation() {
-    const updateLocation = async () => {
+    // Establece un intervalo que actualiza la ubicación cada 5 segundos
+    this.updateInterval = setInterval(async () => {
       try {
         const coordinates = await Geolocation.getCurrentPosition();
         const { latitude, longitude } = coordinates.coords;
@@ -174,23 +183,19 @@ export class MapPage implements OnInit {
               lng: longitude,
             },
             iconUrl: "../../../../assets/icon/user_icon.png",
-            iconSize: { width: 30, height: 30 }  // Ajusta el tamaño de la imagen acá tio cristian, se verá en el mapa.
+            iconSize: { width: 30, height: 30 }
           }]);
 
           this.userMarkerId = ids[0]; // Guarda el ID del nuevo marcador del usuario
         } else {
           console.error('El mapa no está disponible en este momento.');
         }
-
-        // Llama a la función de actualización de nuevo después de un intervalo
-        setTimeout(updateLocation, 5000); // Actualiza cada 5 segundos
       } catch (error) {
         console.error('Error obteniendo la ubicación', error);
       }
-    };
-
-    updateLocation(); // Inicia el seguimiento
+    }, 5000); // Actualiza cada 5 segundos
   }
+
 
   async setUserMarker() {
     // Inicializa el marcador del usuario en una posición por defecto
@@ -331,5 +336,12 @@ export class MapPage implements OnInit {
 			loading.dismiss();
 		}
 	}
+
+  ngOnDestroy() {
+    // Limpia el intervalo al salir de la página
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
+  }
 
 }

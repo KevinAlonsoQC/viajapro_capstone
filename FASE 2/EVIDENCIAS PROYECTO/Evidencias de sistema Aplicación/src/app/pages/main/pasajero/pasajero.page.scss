@@ -4,15 +4,25 @@
     height:100%;
 }
 
-ion-content{
-    --background: 'transparent';
-    height: 100%;
-}
-
 .boton-ubicacion {
     position: absolute;
     bottom: 20px; /* Ajusta esta posición según prefieras */
     left: 0px; /* Puedes cambiar a 'right' o ajustar la posición */
     z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
     --background:#FFCE48;
+}
+
+.tarifa{
+    --background:#FF8811;
+}
+
+.info{
+    margin: 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+ion-chip{
+    color: #ffff;
 }

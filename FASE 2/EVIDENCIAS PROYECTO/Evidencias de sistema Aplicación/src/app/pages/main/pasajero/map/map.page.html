@@ -6,7 +6,7 @@
 <ion-header>
   <ion-toolbar class="toolbar-superior">
     <ion-buttons slot="start" class="back-button">
-      <ion-button  class="back-button ion-text-center" [routerLink]="['/main/pasajero/pasajero-rutas']">
+      <ion-button  class="back-button ion-text-center" [routerLink]="['/main/pasajero']">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -78,16 +78,3 @@
   </ion-modal>
   </ion-grid>
 </ion-content>
-
-
-<ion-footer>
-  <ion-toolbar>
-    <ion-grid [fixed]="true">
-      <ion-row>
-        <ion-col class="ion-text-center">
-          <app-menu-master url="main/pasajero/pasajero-rutas" txt_icon="Rutas" icon="map-outline"></app-menu-master>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ion-toolbar>
-</ion-footer>

@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start" class="back-button">
+      <ion-button (click)="backAdmin()" class="back-button ion-text-center">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="capacitor-google-map" id="map"></div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid [fixed]="true">
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/chofer/asientos" txt_icon="Asientos" icon="settings-outline"></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center"> 
+          <app-menu-master url="main/chofer" txt_icon="Inicio" icon="home-outline" ></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/chofer/en-ruta" txt_icon="Rutas" icon="map-outline" ></app-menu-master>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

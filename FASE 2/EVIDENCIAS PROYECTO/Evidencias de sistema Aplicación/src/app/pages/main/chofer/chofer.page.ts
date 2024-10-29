@@ -3,7 +3,6 @@ import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { AlertController } from '@ionic/angular';
-import { Vehiculo } from 'src/app/models/vehiculo';
 
 @Component({
   selector: 'app-chofer',
@@ -30,7 +29,6 @@ export class ChoferPage implements OnInit {
     // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
     await this.getInfoAndTipoCuenta();
-    await this.getData();
   }
 
   async getData() {
@@ -124,37 +122,8 @@ export class ChoferPage implements OnInit {
     this.utilsSvc.routerLink('/main/profile-menu');
   }
 
-  async entrarEnServicio(){
-    const loading = await this.utilsSvc.loading();
-    await loading.present();
-
-    try{
-      if (this.vehiculos.length <= 0) {
-        this.utilsSvc.presentToast({
-          message: '¡No hay Vehículos Asignados para ti!',
-          duration: 1500,
-          color: 'danger',
-          position: 'middle',
-          icon: 'alert-circle-outline'
-        });
-        return;
-      }
-      this.elegirVeh();
-    }catch (error) {
-      console.log(error);
-      this.utilsSvc.presentToast({
-        message: '¡Hubo un error al entrar en servicio!',
-        duration: 1500,
-        color: 'danger',
-        position: 'middle',
-        icon: 'alert-circle-outline'
-      });
-    } finally {
-      loading.dismiss();
-    }
-  }
-
-  async elegirVeh() {
+  async entrarEnServicio() {
+    await this.getData();
     const alert = await this.alertController.create({
       header: '¿En qué vehículos Comenzarás tu Servicio?',
       message: 'Si el vehículo que utilizas lo maneja +2 conductores y está en uso, no podrás utilizarlo..',
@@ -185,11 +154,20 @@ export class ChoferPage implements OnInit {
             await this.firebaseSvc.updateDocument(`vehiculo/${vehId}`, {...{en_ruta:true,  chofer_actual:this.usuario.uid}});
             await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, {...{en_ruta:true,  vehiculo_actual:vehId}});
 
+            this.utilsSvc.routerLink('/main/chofer/en-ruta');
           },
         },
       ],
     });
 
     await alert.present();
+  }
+
+  verAsientos(){
+    this.utilsSvc.routerLink('/main/chofer/asientos');
+  }
+
+  verRutas(){
+    this.utilsSvc.routerLink('/main/chofer/en-ruta');
   }
 }

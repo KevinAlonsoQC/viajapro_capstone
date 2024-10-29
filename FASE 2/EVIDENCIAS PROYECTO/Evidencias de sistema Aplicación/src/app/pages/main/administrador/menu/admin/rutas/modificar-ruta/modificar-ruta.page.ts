@@ -5,9 +5,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 
 import { environment } from 'src/environments/environment';
 import { GoogleMap } from '@capacitor/google-maps';
-import { Geolocation } from '@capacitor/geolocation';
 import { AlertController } from '@ionic/angular';
-import { v4 as uuidv4 } from 'uuid';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -93,7 +91,7 @@ export class ModificarRutaPage implements OnInit {
   }
   async initMap() {
     this.map = await GoogleMap.create({
-      id: 'my-map', // Identificador único para esta instancia del mapa
+      id: 'admin-modificar-map', // Identificador único para esta instancia del mapa
       element: document.getElementById('map'), // Referencia al elemento del mapa
       apiKey: this.apiKey, // Tu clave de API de Google Maps
       config: {

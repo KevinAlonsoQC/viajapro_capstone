@@ -78,7 +78,7 @@ export class RutasPage implements OnInit {
 
   async initMap() {
     this.map = await GoogleMap.create({
-      id: 'my-map', // Identificador único para esta instancia del mapa
+      id: 'admin-map', // Identificador único para esta instancia del mapa
       element: document.getElementById('map'), // Referencia al elemento del mapa
       apiKey: this.apiKey, // Tu clave de API de Google Maps
       config: {

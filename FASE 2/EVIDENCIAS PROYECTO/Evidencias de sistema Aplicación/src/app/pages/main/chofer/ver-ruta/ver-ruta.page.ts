@@ -10,11 +10,11 @@ import { Geolocation } from '@capacitor/geolocation';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.page.html',
-  styleUrls: ['./map.page.scss'],
+  selector: 'app-ver-ruta',
+  templateUrl: './ver-ruta.page.html',
+  styleUrls: ['./ver-ruta.page.scss'],
 })
-export class MapPage implements OnInit {
+export class VerRutaPage implements OnInit {
   idRouter: string;
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
@@ -64,27 +64,14 @@ export class MapPage implements OnInit {
     this.utilsSvc.routerLink('/main/profile-menu');
   }
 
-  startKhipuPayment() {
-    const amountt = 900; // Monto del pago
-    const currency = 'CLP'; // Monto del pago
-    const subject = 'Prueba'; // Monto del pago
-    const api_key = "49c65a51-5874-4471-beaa-a2891b385026";
-
-    this.paymentService.createPayment(amountt, currency, subject, api_key).subscribe(
-      (response) => {
-        this.openExternalLink(response.payment_url);
-      }
-    );
-  }
-
-  openExternalLink(url: string) {
-    window.open(url, '_blank');
+  backAdmin() {
+    this.utilsSvc.routerLink('/main/chofer/en-ruta');
   }
 
   // Lógica para mapa
   async initMap() {
     this.map = await GoogleMap.create({
-      id: 'pasajero-map',
+      id: 'chofer-map',
       element: document.getElementById('map'),
       apiKey: this.apiKey,
       config: {
@@ -136,7 +123,7 @@ export class MapPage implements OnInit {
               lat: latitude,
               lng: longitude,
             },
-            iconUrl: "../../../../assets/icon/user_icon.png",
+            iconUrl: "../../../../assets/icon/icono_vp.png",
             iconSize: { width: 30, height: 30 }
           }]);
 
@@ -154,7 +141,7 @@ export class MapPage implements OnInit {
         lat: this.latitude,
         lng: this.longitude,
       },
-      iconUrl: "../../../../assets/icon/user_icon.png",
+      iconUrl: "../../../../assets/icon/icono_vp.png",
       iconSize: { width: 30, height: 30 }
     }]);
 

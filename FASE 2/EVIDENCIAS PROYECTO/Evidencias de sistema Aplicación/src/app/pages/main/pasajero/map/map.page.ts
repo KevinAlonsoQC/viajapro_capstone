@@ -15,11 +15,50 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./map.page.scss'],
 })
 export class MapPage implements OnInit {
+  isModalOpen = false;
+
   idRouter: string;
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
   usuario: User;
   userId: string;
+  carDetail:any;
+  cars:any = [
+    {
+      nombreChofer: "Jorgue C.",
+      patente: "XSJ-11 55",
+      marker:
+      {
+        coordinate: {
+          lat: -33.597125,
+          lng: -70.672415,
+        },
+        iconUrl: "../../../../assets/icon/icon_car.png",
+        iconSize: { width: 30, height: 35 },
+        iconAnchor: { x: 15, y: 35 } // Punto de anclaje en el centro inferior
+        
+      }
+    },
+    {
+      nombreChofer: "Bastian L.",
+      patente: "XWJ-12 55",
+      marker:
+      {
+        
+        coordinate: {
+          lat: -33.594948,
+          lng: -70.674538,
+        },
+        iconUrl: "../../../../assets/icon/icon_car.png",
+        iconSize: { width: 30, height: 35 },
+        iconAnchor: { x: 15, y: 35 } // Punto de anclaje en el centro inferior
+      }
+      
+      
+    }
+  
+    
+  ];
 
   apiKey: string = environment.firebaseConfig.apiKey;
   map: GoogleMap;
@@ -113,6 +152,7 @@ export class MapPage implements OnInit {
 
     await this.setMarkers();
     await this.setUserMarker();  // Marcador inicial del usuario
+    await this.setMarkersCars();
     this.startTrackingUserLocation();  // Comienza a rastrear la ubicación del usuario
     this.drawRoute();
   }
@@ -155,7 +195,8 @@ export class MapPage implements OnInit {
         lng: this.longitude,
       },
       iconUrl: "../../../../assets/icon/user_icon.png",
-      iconSize: { width: 30, height: 30 }
+      iconSize: { width: 30, height: 30 },
+      iconAnchor: { x: 15, y: 15 }
     }]);
 
     this.userMarkerId = ids[0]; // Guarda el ID del marcador para actualizarlo más tarde
@@ -169,6 +210,8 @@ export class MapPage implements OnInit {
           lng: this.routePoints[0].punto_inicio.lng,
         },
         iconUrl: "../../../../assets/icon/icon_inicio.png",
+        iconSize: { width: 25, height: 25 },
+        iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
       {
         coordinate: {
@@ -176,10 +219,37 @@ export class MapPage implements OnInit {
           lng: this.routePoints[0].punto_final.lng,
         },
         iconUrl: "../../../../assets/icon/icono_fin.png",
+        iconSize: { width: 30, height: 30 },
+        iconAnchor: { x: 15, y: 15 } // Punto de anclaje en el centro inferior
       },
     ];
 
     await this.map.addMarkers(markers); // Agrega los marcadores al mapa
+  }
+
+  async setMarkersCars() { // Marcadores de los autos
+
+    this.cars.forEach(async (element) => { //Agrega los marcadores
+      const id  = await this.map.addMarker(element.marker);
+      element.id = id
+    });
+
+    this.map.setOnMarkerClickListener( marker => { //Identifica a que marcador click
+      
+      const exist = this.cars.find( cars => cars.id == marker.markerId);
+      if(exist){
+        
+        this.showDetailCar(exist);
+       
+     
+        
+      }else{
+        
+      }
+
+    })
+
+    // Agrega los marcadores al mapa
   }
 
   // Probar la localización en la web
@@ -281,6 +351,18 @@ export class MapPage implements OnInit {
       loading.dismiss();
     }
   }
+
+  showDetailCar(car:any){
+    this.carDetail = {
+      id : car.id,
+      nombreChofer: car.nombreChofer,
+      patente: car.patente
+
+    }
+    this.isModalOpen = true;
+  }
+
+    
 
   ngOnDestroy() {
     this.clearUpdateInterval();

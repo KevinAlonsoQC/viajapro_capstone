@@ -96,8 +96,8 @@ export class ModificarRutaPage implements OnInit {
       apiKey: this.apiKey, // Tu clave de API de Google Maps
       config: {
         center: {
-          lat: this.latitude,
-          lng: this.longitude,
+          lat: this.ruta.punto_inicio.lat,
+          lng: this.ruta.punto_inicio.lng,
         },
         zoom: 15,
         styles: [ // Estilos para ocultar locales y etiquetas
@@ -138,6 +138,8 @@ export class ModificarRutaPage implements OnInit {
           lng: this.ruta.punto_inicio.lng,
         },
         iconUrl: "../../../../assets/icon/icon_inicio.png",
+        iconSize: { width: 25, height: 25 },
+        iconAnchor: { x: 12.5, y: 12.5 }
       },
       {
         coordinate: {
@@ -145,6 +147,8 @@ export class ModificarRutaPage implements OnInit {
           lng: this.ruta.punto_final.lng,
         },
         iconUrl: "../../../../assets/icon/icono_fin.png",
+        iconSize: { width: 30, height: 30 },
+        iconAnchor: { x: 15, y: 15 }
       },
     ];
 

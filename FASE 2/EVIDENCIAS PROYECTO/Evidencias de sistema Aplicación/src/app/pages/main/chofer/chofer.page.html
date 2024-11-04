@@ -6,13 +6,54 @@
       <app-campana [notifica]="true"></app-campana>
       <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
     </ion-buttons>
-
   </ion-toolbar>
 </ion-header>
 
 <!-- Contenido principal / Cuerpo sector amarillo-->
 <ion-content>
   <ion-grid>
+
+    <ion-row>
+      <ion-col>
+        <div class="overlap-group">
+          <div class="group">
+            <img class="bmw-coupe" src="assets/chofer/duty.svg" />
+          </div>
+          <div class="group-2" *ngIf="!usuario.en_ruta">
+            <div class="text-wrapper-2">¡Comienza a Trabajar!</div>
+            <ion-button color="primary" expand="block" mode="ios" (click)="entrarEnServicio()">
+              Entrar en Servicio
+              <ion-icon slot="end" name="enter-outline"></ion-icon>
+            </ion-button>
+          </div>
+          <div class="group-2" *ngIf="usuario.en_ruta">
+            <div class="text-wrapper-2">¡Termina tu Jornada!</div>
+            <ion-button color="danger" expand="block" mode="ios" (click)="salirServicio()">
+              Salir de Servicio
+              <ion-icon slot="end" name="exit-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    
+    <hr>
+    <ion-row *ngIf="usuario.en_ruta">
+      <ion-col>
+        <div class="overlap-group" (click)="backRuta()">
+          <div class="group">
+            <img class="bmw-coupe" src="assets/chofer/ruta.svg" />
+          </div>
+          <div class="group-2">
+            <div class="text-wrapper-2">¿No conoces la ruta?, mírala</div>
+            <ion-button color="primary" expand="block" mode="ios">
+              Ver Ruta
+              <ion-icon slot="end" name="map-outline"></ion-icon>
+            </ion-button>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
     <ion-row *ngIf="usuario.en_ruta">
       <ion-col>
         <div class="overlap-group" (click)="verAsientos()">
@@ -29,45 +70,26 @@
         </div>
       </ion-col>
     </ion-row>
+
     <ion-row *ngIf="usuario.en_ruta">
       <ion-col>
         <div class="overlap-group" (click)="verRutas()">
           <div class="group">
-            <img class="bmw-coupe" src="assets/chofer/ruta.svg" />
+            <img class="bmw-coupe" src="assets/chofer/opcion.svg" />
           </div>
           <div class="group-2">
-            <div class="text-wrapper-2">¿No conoces la ruta?, mírala</div>
+            <div class="text-wrapper-2">¿Quieres Cambiar de Ruta?</div>
             <ion-button color="primary" expand="block" mode="ios">
-              Ver Rutas
-              <ion-icon slot="end" name="map-outline"></ion-icon>
+              Cambiar Ruta
+              <ion-icon slot="end" name="apps-outline"></ion-icon>
             </ion-button>
           </div>
         </div>
       </ion-col>
     </ion-row>
-    <ion-row>
-      <ion-col>
-        <div class="overlap-group">
-          <div class="group">
-            <img class="bmw-coupe" src="assets/chofer/duty.svg" />
-          </div>
-          <div class="group-2" *ngIf="!usuario.en_ruta">
-            <div class="text-wrapper-2">¡Comienza a Trabajar!</div>
-            <ion-button color="primary" expand="block" mode="ios" (click)="entrarEnServicio()">
-              Entrar en Servicio
-              <ion-icon slot="end" name="enter-outline"></ion-icon>
-            </ion-button>
-          </div>
-          <div class="group-2" *ngIf="usuario.en_ruta">
-            <div class="text-wrapper-2">¡Termina tu Jornada!</div>
-            <ion-button color="danger" expand="block" mode="ios">
-              Salir de Servicio
-              <ion-icon slot="end" name="exit-outline"></ion-icon>
-            </ion-button>
-          </div>
-        </div>
-      </ion-col>
-    </ion-row>
+
+    <hr>
+
     <ion-row>
       <ion-col>
         <div class="overlap-group">

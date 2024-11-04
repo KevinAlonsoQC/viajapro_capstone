@@ -1,11 +1,5 @@
 <ion-header>
   <ion-toolbar class="toolbar-superior">
-    <ion-buttons slot="start" class="back-button">
-      <ion-button (click)="backAdmin()" class="back-button ion-text-center">
-        <ion-icon name="chevron-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-
     <app-logo-small></app-logo-small>
 
     <ion-buttons slot="end">
@@ -20,43 +14,39 @@
   <ion-grid class="no-scroll">
     <ion-row class="row-height">
       <ion-col size="6">
-        <!-- Primer Asiento (arriba a la izquierda) -->
-        <div class="content">Asiento 1</div>
+        <div [ngClass]="asientos[0] ? 'content_d' : 'content_o'" (click)="cambiarAsiento(1)">
+        </div>
       </ion-col>
       <ion-col size="6">
-        <!-- Segundo Asiento (arriba a la derecha) -->
-        <div class="content">Asiento 2</div>
+        <div [ngClass]="asientos[1] ? 'content_d' : 'content_o'" (click)="cambiarAsiento(2)">
+        </div>
       </ion-col>
     </ion-row>
     <ion-row class="row-height">
       <ion-col size="6">
-        <!-- Tercer Asiento (abajo a la izquierda) -->
-        <div class="content">Asiento 3</div>
+        <div [ngClass]="asientos[2] ? 'content_d' : 'content_o'" (click)="cambiarAsiento(3)">
+        </div>
       </ion-col>
       <ion-col size="6">
-        <!-- Cuarto Asiento (abajo a la derecha) -->
-        <div class="content">Asiento 4</div>
-  
+        <div [ngClass]="asientos[3] ? 'content_d' : 'content_o'" (click)="cambiarAsiento(4)">
+        </div>
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
-
-
-
 
 <ion-footer>
   <ion-toolbar>
     <ion-grid [fixed]="true">
       <ion-row>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/chofer/asientos" txt_icon="Asientos" icon="settings-outline"></app-menu-master>
+          <app-menu-master url="main/chofer/asientos" txt_icon="Asientos" icon="bed-outline"></app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
           <app-menu-master url="main/chofer" txt_icon="Inicio" icon="home-outline"></app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/chofer/en-ruta" txt_icon="Rutas" icon="map-outline"></app-menu-master>
+          <app-menu-master (click)="backRuta()"txt_icon="Mapa" icon="map-outline"></app-menu-master>
         </ion-col>
       </ion-row>
     </ion-grid>

@@ -26,7 +26,29 @@ export class ProfileMenuPage implements OnInit {
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
   }
 
-  signOut() {
+  async signOut() {
+    if (this.usuario.tipo_usuario == '2') {
+      const asientos = [true, true, true, true];
+      for (let i = 0; i < asientos.length; i++) {
+        const asientoKey = `asiento${i + 1}`;
+        this.utilsSvc.saveInLocalStorage(asientoKey, true);
+      }
+
+      const [veh] = await Promise.all([
+        this.firebaseSvc.getCollectionDocuments('vehiculo') as Promise<any>
+      ]);
+      const vehRuta = veh.filter(veh => {
+        return veh.central == this.usuario.central && this.usuario.uid == veh.chofer_actual && veh.en_ruta == true
+      });
+      if (vehRuta.length > 0) {
+        await this.firebaseSvc.updateDocument(`vehiculo/${vehRuta.id}`, { ...{ en_ruta: false, chofer_actual: '', asientos_dispo_vehiculo: 4, ruta_actual: false } });
+        await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '' } });
+        this.usuario.en_ruta = false;
+        this.usuario.vehiculo_actual = '';
+        this.utilsSvc.saveInLocalStorage('usuario', this.usuario);
+      }
+    }
+
     this.firebaseSvc.signOut();
   }
 

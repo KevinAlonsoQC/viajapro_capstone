@@ -3,6 +3,8 @@ import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { Router } from '@angular/router';
+import { Geolocation } from '@capacitor/geolocation';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-en-ruta',
@@ -15,11 +17,11 @@ export class EnRutaPage implements OnInit {
   usuario: User;
   userId: string;
 
-  vehiculos: any;
   rutas: any;
+  updateInterval: any; // ID del intervalo de actualización
+  vehRuta: any;
 
-  constructor(private router: Router) { }
-
+  constructor(private router: Router, private alertController: AlertController) { }
 
   async ngOnInit() {
     // Suscribirse al observable del usuario
@@ -44,20 +46,25 @@ export class EnRutaPage implements OnInit {
       // Ejecutar ambas promesas en paralelo
       const [callback, callback2] = await Promise.all([
         this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<any>,
-        this.firebaseSvc.getCollectionDocuments(urlPath2) as Promise<any[]>
+        this.firebaseSvc.getCollectionDocuments(urlPath2) as Promise<any[]>,
 
       ]);
 
       // Filtrar los resultados para obtener solo los choferes de la misma central
-			this.rutas = callback2.filter(ruta =>
-				ruta.central == this.usuario.central
-			);
+      this.rutas = callback2.filter(ruta =>
+        ruta.central == this.usuario.central
+      );
       // Filtrar los resultados para obtener solo los choferes de la misma central
-      this.vehiculos = callback.filter(veh => {
+      this.vehRuta = callback.filter(veh => {
         return veh.central == this.usuario.central && this.usuario.uid == veh.chofer_actual && veh.en_ruta == true
       });
-  
-      if (this.vehiculos.length <= 0) {
+
+      if (this.vehRuta[0].ruta_actual) {
+        console.log('Vehículo en ruta!')
+        await this.startTrackingUserLocation();
+      }
+
+      if (this.vehRuta.length <= 0) {
         this.utilsSvc.presentToast({
           message: '¡No hay Vehículos Asignados para ti!',
           duration: 1500,
@@ -65,7 +72,7 @@ export class EnRutaPage implements OnInit {
           position: 'middle',
           icon: 'alert-circle-outline'
         });
-        await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, {...{en_ruta:false,  vehiculo_actual:''}});
+        await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '' } });
         this.utilsSvc.routerLink('/main/chofer');
       }
 
@@ -83,12 +90,63 @@ export class EnRutaPage implements OnInit {
     }
   }
 
+  async startTrackingUserLocation() {
+    // Establece un intervalo que actualiza la ubicación cada 5 segundos
+    this.updateInterval = setInterval(async () => {
+      if (this.vehRuta[0].ruta_actual) {
+        try {
+          const coordinates = await Geolocation.getCurrentPosition();
+          const { latitude, longitude } = coordinates.coords;
+
+          this.firebaseSvc.updateDocument(`vehiculo/${this.vehRuta[0].id}`, { coordenadas_vehiculo: { lat: latitude, lng: longitude } })
+          console.log('Coordenadas Vehículo Actualizadas', latitude, longitude)
+        } catch (error) {
+          console.error('Error obteniendo la ubicación [chofer', error);
+        }
+      }
+    }, 15000); // Actualiza cada 15 segundos
+  }
+
   profile() {
     this.utilsSvc.routerLink('/main/profile-menu');
   }
 
-  viewRuta(ruta: any){
-		this.router.navigate(['/main/chofer/ver-ruta', ruta.id]);
+  async viewRuta(ruta: any) {
+    const alert = await this.alertController.create({
+      header: `¿Seguro de trabajar en la ruta ${ruta.nombre_ruta}?`,
+      message: 'Si la seleccionas, puedes cambiarla si lo deseas más tarde. Recuerda que los pasajeros que seleccionen esta ruta podrán verte en el mapa.',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          role: 'confirm',
+          handler: async () => {
+            await this.firebaseSvc.updateDocument(`vehiculo/${this.vehRuta[0].id}`, { ...{ ruta_actual: ruta.id } });
+            await this.startTrackingUserLocation();
+            this.router.navigate(['/main/chofer/ver-ruta', ruta.id]);
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  ngOnDestroy() {
+    this.clearUpdateInterval();
+  }
+
+  ionViewWillLeave() {
+    this.clearUpdateInterval();
+  }
+
+  clearUpdateInterval() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
   }
 
 }

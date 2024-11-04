@@ -3,6 +3,7 @@ import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { AlertController } from '@ionic/angular';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-chofer',
@@ -12,10 +13,15 @@ import { AlertController } from '@ionic/angular';
 export class ChoferPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
-  usuario: User;
-  userId: string;
 
+  usuario: User;
   vehiculos: any;
+  vehRuta: any;
+  asientos: boolean[];
+  updateInterval: any; // ID del intervalo de actualización
+
+  ruta_actual: any;
+
   constructor(private alertController: AlertController) { }
 
 
@@ -29,6 +35,7 @@ export class ChoferPage implements OnInit {
     // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
     await this.getInfoAndTipoCuenta();
+    await this.getData();
   }
 
   async getData() {
@@ -47,22 +54,19 @@ export class ChoferPage implements OnInit {
       // Filtrar los resultados para obtener solo los choferes de la misma central
       this.vehiculos = callback.filter(veh => {
         // Recorre la lista de usuarios asociados al vehículo
-        for(let item in veh.usuario){
+        for (let item in veh.usuario) {
           if (veh.central === this.usuario.central && this.usuario.uid === veh.usuario[item] && veh.chofer_actual == '' && veh.en_ruta == false) {
             return true;  // Si encuentra coincidencia, lo incluye en el resultado del filtro
           }
         }
         return false;  // Si no encuentra coincidencias, lo excluye
       });
-  
-      if (this.vehiculos.length <= 0) {
-        this.utilsSvc.presentToast({
-          message: '¡No hay Vehículos Asignados para ti!',
-          duration: 1500,
-          color: 'danger',
-          position: 'middle',
-          icon: 'alert-circle-outline'
+
+      if(this.usuario.en_ruta){
+        this.vehRuta = callback.filter(veh => {
+          return veh.central == this.usuario.central && this.usuario.uid == veh.chofer_actual && veh.en_ruta == true
         });
+        console.log(this.vehRuta)
       }
 
     } catch (error) {
@@ -122,11 +126,28 @@ export class ChoferPage implements OnInit {
     this.utilsSvc.routerLink('/main/profile-menu');
   }
 
+  async startTrackingUserLocation() {
+    // Establece un intervalo que actualiza la ubicación cada 5 segundos
+    this.updateInterval = setInterval(async () => {
+      if (this.vehRuta[0].ruta_actual) {
+        try {
+          const coordinates = await Geolocation.getCurrentPosition();
+          const { latitude, longitude } = coordinates.coords;
+
+          this.firebaseSvc.updateDocument(`vehiculo/${this.vehRuta[0].id}`, { coordenadas_vehiculo: { lat: latitude, lng: longitude } })
+          console.log('Coordenadas Vehículo Actualizadas', latitude, longitude)
+        } catch (error) {
+          console.error('Error obteniendo la ubicación [chofer', error);
+        }
+      }
+    }, 15000); // Actualiza cada 15 segundos
+  }
+
   async entrarEnServicio() {
     await this.getData();
     const alert = await this.alertController.create({
       header: '¿En qué vehículos Comenzarás tu Servicio?',
-      message: 'Si el vehículo que utilizas lo maneja +2 conductores y está en uso, no podrás utilizarlo..',
+      message: 'Si el vehículo que utilizas lo maneja +2 conductores y está en uso, no podrás utilizarlo. También, una vez estés en servicio, los pasajeros y otros choferes podrán ver tu ubicación actual.',
       inputs: this.vehiculos.map(veh => ({
         type: 'radio',
         label: `Patente: ${veh.patente_vehiculo} | Modelo: ${veh.nombre_modelo}`,
@@ -151,9 +172,22 @@ export class ChoferPage implements OnInit {
               });
               return;
             }
-            await this.firebaseSvc.updateDocument(`vehiculo/${vehId}`, {...{en_ruta:true,  chofer_actual:this.usuario.uid}});
-            await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, {...{en_ruta:true,  vehiculo_actual:vehId}});
+            await this.firebaseSvc.updateDocument(`vehiculo/${vehId}`, { ...{ en_ruta: true, chofer_actual: this.usuario.uid } });
+            await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: true, vehiculo_actual: vehId } });
+            this.usuario.en_ruta = true;
+            this.usuario.vehiculo_actual = vehId;
+            this.utilsSvc.saveInLocalStorage('usuario', this.usuario);
+            const [veh] = await Promise.all([
+              this.firebaseSvc.getCollectionDocuments('vehiculo') as Promise<any>
+            ]);
+            this.vehRuta = veh.filter(veh => {
+              return veh.central == this.usuario.central && this.usuario.uid == veh.chofer_actual && veh.en_ruta == true
+            });
+            this.ruta_actual = true;
 
+            console.log('Vehículo Afiliado:', this.vehRuta[0].id);
+
+            await this.startTrackingUserLocation();
             this.utilsSvc.routerLink('/main/chofer/en-ruta');
           },
         },
@@ -163,11 +197,87 @@ export class ChoferPage implements OnInit {
     await alert.present();
   }
 
-  verAsientos(){
+  async salirServicio() {
+    const alert = await this.alertController.create({
+      header: '¿Seguro de acabar tu ruta?',
+      message: '¿Estás seguro de finalizar tu turno?, procura no tener clientes en tu vehículo',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Confirmar',
+          role: 'confirm',
+          handler: async () => {
+            const loading = await this.utilsSvc.loading();
+            await loading.present();
+            try {
+              const [veh] = await Promise.all([
+                this.firebaseSvc.getCollectionDocuments('vehiculo') as Promise<any>
+              ]);
+
+              this.vehRuta = veh.filter(veh => {
+                return veh.central == this.usuario.central && this.usuario.uid == veh.chofer_actual && veh.en_ruta == true
+              });
+
+              console.log('Vehículo Afiliado:', this.vehRuta[0].id);
+              this.asientos = [true, true, true, true]; // Puedes ajustar según la cantidad de asientos
+              for (let i = 0; i < this.asientos.length; i++) {
+                const asientoKey = `asiento${i + 1}`;
+                this.utilsSvc.saveInLocalStorage(asientoKey, true);
+              }
+
+              const disponibles = this.asientos.filter(asiento => asiento).length;
+              await this.firebaseSvc.updateDocument(`vehiculo/${this.vehRuta[0].id}`, { ...{ en_ruta: false, chofer_actual: '', asientos_dispo_vehiculo: disponibles, ruta_actual: false } });
+              await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '' } });
+              this.usuario.en_ruta = false;
+              this.usuario.vehiculo_actual = '';
+              this.utilsSvc.saveInLocalStorage('usuario', this.usuario);
+              this.ruta_actual = false;
+              this.utilsSvc.routerLink('/main/chofer');
+
+            } catch (error) {
+              console.error(error)
+            } finally {
+              loading.dismiss();
+            }
+
+          },
+        },
+      ],
+    });
+
+    await alert.present();
+  }
+
+  verAsientos() {
     this.utilsSvc.routerLink('/main/chofer/asientos');
   }
 
-  verRutas(){
+  verRutas() {
     this.utilsSvc.routerLink('/main/chofer/en-ruta');
+  }
+
+  ngOnDestroy() {
+    this.clearUpdateInterval();
+  }
+
+  ionViewWillLeave() {
+    this.clearUpdateInterval();
+  }
+
+  clearUpdateInterval() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
+  }
+
+  backRuta() {
+    if (this.vehRuta[0].ruta_actual) {
+      this.utilsSvc.routerLink(`/main/chofer/ver-ruta/${this.vehRuta[0].ruta_actual}`);
+    } else {
+      this.utilsSvc.routerLink('/main/chofer/en-ruta');
+    }
   }
 }

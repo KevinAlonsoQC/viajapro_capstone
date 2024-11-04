@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { GoogleMap } from '@capacitor/google-maps';
 import { Geolocation } from '@capacitor/geolocation';
 import { ActivatedRoute } from '@angular/router';
+import { Vehiculo } from 'src/app/models/vehiculo';
 
 @Component({
   selector: 'app-ver-ruta',
@@ -29,6 +30,7 @@ export class VerRutaPage implements OnInit {
   routePoints: any = [];
   updateInterval: any; // ID del intervalo de actualización
 
+  vehiculo: any;
   constructor(private paymentService: PaymentService, private route: ActivatedRoute) { }
 
   async ngOnInit() {
@@ -128,10 +130,12 @@ export class VerRutaPage implements OnInit {
           }]);
 
           this.userMarkerId = ids[0]; // Guarda el ID del nuevo marcador del usuario
+          this.firebaseSvc.updateDocument(`vehiculo/${this.vehiculo[0].id}`, { coordenadas_vehiculo: { lat: latitude, lng: longitude } })
+          console.log('Coordenadas Vehículo Actualizadas', latitude, longitude)
         } catch (error) {
           console.error('Error obteniendo la ubicación', error);
         }
-      }, 5000); // Actualiza cada 5 segundos
+      }, 15000); // Actualiza cada 15 segundos
     }
   }
 
@@ -229,13 +233,20 @@ export class VerRutaPage implements OnInit {
     const loading = await this.utilsSvc.loading();
     await loading.present();
     const urlPath = 'ruta_central'; // Ruta de la colección de usuarios
+    const urlPath2 = 'vehiculo';
 
     try {
-      const [ruta] = await Promise.all([
-        this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<any[]>
+      const [ruta, veh] = await Promise.all([
+        this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<any[]>,
+        this.firebaseSvc.getCollectionDocuments(urlPath2) as Promise<any>
       ]);
 
       this.routePoints = ruta.filter(ruta => ruta.id == this.idRouter);
+      this.vehiculo = veh.filter(veh => {
+        return veh.central == this.usuario.central && this.usuario.uid == veh.chofer_actual && veh.en_ruta == true
+      });
+
+      console.log('Vehículo Afiliado:', this.vehiculo[0].id);
 
       if (this.routePoints.length > 0) {
         this.utilsSvc.presentToast({
@@ -281,5 +292,9 @@ export class VerRutaPage implements OnInit {
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
     }
+  }
+
+  backRuta(){
+    this.utilsSvc.routerLink(`/main/chofer/ver-ruta/${this.vehiculo[0].ruta_actual}`);
   }
 }

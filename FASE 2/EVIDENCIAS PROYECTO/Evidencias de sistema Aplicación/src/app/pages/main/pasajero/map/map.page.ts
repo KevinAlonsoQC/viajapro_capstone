@@ -30,8 +30,8 @@ export class MapPage implements OnInit {
       marker:
       {
         coordinate: {
-          lat: -33.597125,
-          lng: -70.672415,
+          lat: -33.597087,
+          lng: -70.700540,
         },
         iconUrl: "../../../../assets/icon/icon_car.png",
         iconSize: { width: 30, height: 35 },
@@ -46,8 +46,8 @@ export class MapPage implements OnInit {
       {
         
         coordinate: {
-          lat: -33.594948,
-          lng: -70.674538,
+          lat: -33.597502,
+          lng: -70.705559,
         },
         iconUrl: "../../../../assets/icon/icon_car.png",
         iconSize: { width: 30, height: 35 },

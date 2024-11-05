@@ -21,7 +21,7 @@ export class VehiculosPage implements OnInit {
 
   constructor() { }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;

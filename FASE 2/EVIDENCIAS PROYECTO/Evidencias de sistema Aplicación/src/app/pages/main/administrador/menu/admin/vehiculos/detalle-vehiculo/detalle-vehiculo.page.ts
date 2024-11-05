@@ -30,11 +30,10 @@ export class DetalleVehiculoPage implements OnInit {
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
     });
-
-    // Obtener usuario del local storage
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
+
     // Obtener el ID de la URL
-    await this.route.params.subscribe(async params => {
+    this.route.params.subscribe(async params => {
       const id = params['id'];
       try {
         // Obtener el usuario con el ID desde Firebase

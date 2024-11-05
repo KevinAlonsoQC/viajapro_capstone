@@ -16,7 +16,7 @@ export class AdministradorPage implements OnInit {
   constructor() { }
 
 
-  async ngOnInit() {
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
@@ -25,6 +25,10 @@ export class AdministradorPage implements OnInit {
 
     // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
+  }
+
+  async ionViewWillEnter() {
+    //Realiza el get info para ver el tipo de cuenta
     await this.getInfoAndTipoCuenta();
   }
 

@@ -16,15 +16,16 @@ export class OwnerPage implements OnInit {
   constructor() { }
   
 
-  async ngOnInit() {
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
-
-    // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
+  }
+
+  async ionViewWillEnter() {
     await this.getInfoAndTipoCuenta();
   }
 

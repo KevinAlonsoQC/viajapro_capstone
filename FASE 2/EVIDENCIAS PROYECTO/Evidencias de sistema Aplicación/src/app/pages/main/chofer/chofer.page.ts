@@ -25,17 +25,36 @@ export class ChoferPage implements OnInit {
   constructor(private alertController: AlertController) { }
 
 
-  async ngOnInit() {
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
-
-    // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
+  }
+
+  async ionViewWillEnter() {
     await this.getInfoAndTipoCuenta();
     await this.getData();
+  }
+
+  async ionViewDidLeave() {
+    this.clearUpdateInterval();
+  }
+
+  ngOnDestroy() {
+    this.clearUpdateInterval();
+  }
+
+  ionViewWillLeave() {
+    this.clearUpdateInterval();
+  }
+
+  clearUpdateInterval() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
   }
 
   async getData() {
@@ -43,12 +62,10 @@ export class ChoferPage implements OnInit {
     await loading.present();
     const urlPath = 'vehiculo'; // Ruta de la colección de usuarios
 
-
     try {
       // Ejecutar ambas promesas en paralelo
       const [callback] = await Promise.all([
         this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<any>,
-
       ]);
 
       // Filtrar los resultados para obtener solo los choferes de la misma central
@@ -62,11 +79,12 @@ export class ChoferPage implements OnInit {
         return false;  // Si no encuentra coincidencias, lo excluye
       });
 
-      if(this.usuario.en_ruta){
+      if (this.usuario.en_ruta) {
         this.vehRuta = callback.filter(veh => {
           return veh.central == this.usuario.central && this.usuario.uid == veh.chofer_actual && veh.en_ruta == true
         });
         console.log(this.vehRuta)
+        await this.startTrackingUserLocation();
       }
 
     } catch (error) {
@@ -172,8 +190,8 @@ export class ChoferPage implements OnInit {
               });
               return;
             }
-            await this.firebaseSvc.updateDocument(`vehiculo/${vehId}`, { ...{ en_ruta: true, chofer_actual: this.usuario.uid } });
-            await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: true, vehiculo_actual: vehId } });
+            await this.firebaseSvc.updateDocument(`vehiculo/${vehId}`, { ...{ en_ruta: true, chofer_actual: this.usuario.uid, nombre_chofer: this.usuario.name } });
+            await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: true, vehiculo_actual: vehId, nombre_chofer: ''} });
             this.usuario.en_ruta = true;
             this.usuario.vehiculo_actual = vehId;
             this.utilsSvc.saveInLocalStorage('usuario', this.usuario);
@@ -229,12 +247,13 @@ export class ChoferPage implements OnInit {
               }
 
               const disponibles = this.asientos.filter(asiento => asiento).length;
-              await this.firebaseSvc.updateDocument(`vehiculo/${this.vehRuta[0].id}`, { ...{ en_ruta: false, chofer_actual: '', asientos_dispo_vehiculo: disponibles, ruta_actual: false } });
+              await this.firebaseSvc.updateDocument(`vehiculo/${this.vehRuta[0].id}`, { ...{ en_ruta: false, chofer_actual: '',  nombre_chofer: '',asientos_dispo_vehiculo: disponibles, ruta_actual: false } });
               await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '' } });
               this.usuario.en_ruta = false;
               this.usuario.vehiculo_actual = '';
               this.utilsSvc.saveInLocalStorage('usuario', this.usuario);
               this.ruta_actual = false;
+              this.clearUpdateInterval();
               this.utilsSvc.routerLink('/main/chofer');
 
             } catch (error) {
@@ -259,21 +278,15 @@ export class ChoferPage implements OnInit {
     this.utilsSvc.routerLink('/main/chofer/en-ruta');
   }
 
-  ngOnDestroy() {
-    this.clearUpdateInterval();
-  }
+  async backRuta() {
+    const [veh] = await Promise.all([
+      this.firebaseSvc.getCollectionDocuments('vehiculo') as Promise<any>
+    ]);
 
-  ionViewWillLeave() {
-    this.clearUpdateInterval();
-  }
+    this.vehRuta = veh.filter(veh => {
+      return veh.central == this.usuario.central && this.usuario.uid == veh.chofer_actual && veh.en_ruta == true
+    });
 
-  clearUpdateInterval() {
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-    }
-  }
-
-  backRuta() {
     if (this.vehRuta[0].ruta_actual) {
       this.utilsSvc.routerLink(`/main/chofer/ver-ruta/${this.vehRuta[0].ruta_actual}`);
     } else {

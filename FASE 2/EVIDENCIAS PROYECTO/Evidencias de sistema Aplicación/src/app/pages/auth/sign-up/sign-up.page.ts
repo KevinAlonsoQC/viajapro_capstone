@@ -37,9 +37,12 @@ export class SignUpPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
-  async ngOnInit() {
-    await this.getInfoAndTipoCuenta();
+  ngOnInit() {
     this.form.controls.img_usuario.setValue(this.imagenDefault);
+  }
+
+  async ionViewWillEnter() {
+    await this.getInfoAndTipoCuenta();
   }
 
   async submit() {

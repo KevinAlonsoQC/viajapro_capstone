@@ -23,16 +23,36 @@ export class EnRutaPage implements OnInit {
 
   constructor(private router: Router, private alertController: AlertController) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
 
-    // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
+  }
+
+  async ionViewWillEnter() {
     await this.getData();
+  }
+
+  async ionViewDidLeave() {
+    this.clearUpdateInterval();
+  }
+
+  ngOnDestroy() {
+    this.clearUpdateInterval();
+  }
+
+  ionViewWillLeave() {
+    this.clearUpdateInterval();
+  }
+
+  clearUpdateInterval() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
   }
 
   async getData() {
@@ -133,20 +153,6 @@ export class EnRutaPage implements OnInit {
     });
 
     await alert.present();
-  }
-
-  ngOnDestroy() {
-    this.clearUpdateInterval();
-  }
-
-  ionViewWillLeave() {
-    this.clearUpdateInterval();
-  }
-
-  clearUpdateInterval() {
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-    }
   }
 
 }

@@ -32,11 +32,8 @@ export class ProfilePage implements OnInit {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
-
-    // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
 
-    // Rellenar el formulario con los datos del usuario
     this.form.patchValue({
       name: this.usuario.name,
       email: this.usuario.email,

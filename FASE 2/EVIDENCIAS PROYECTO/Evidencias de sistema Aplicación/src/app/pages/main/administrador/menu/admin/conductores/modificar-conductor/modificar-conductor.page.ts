@@ -27,29 +27,27 @@ export class ModificarConductorPage implements OnInit {
   constructor(private route: ActivatedRoute) { }
 
   async ngOnInit() {
-    // Suscribirse al observable del usuario
+    // Suscribirse al observable del usuario para recibir actualizaciones en tiempo real
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
     });
-
-    // Obtener usuario del local storage
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-
-    // Obtener el ID de la URL
-    await this.route.params.subscribe(async params => {
+  
+    // Obtener el ID de la URL y manejar la lógica correspondiente
+    this.route.params.subscribe(async params => {
       const id = params['id'];
       console.log('ID recibido:', id);
-
+  
       try {
-        // Obtener el usuario con el ID desde Firebase
+        // Obtener el usuario desde Firebase con el ID
         const usuarioObtenido = await this.firebaseSvc.getDocument(`usuario/${id}`);
-
-        // Verificar si el usuario obtenido pertenece a la misma "central" y si es un chofer
+  
+        // Verificar si el usuario obtenido es válido y pertenece a la misma "central"
         if (usuarioObtenido && usuarioObtenido['central'] === this.usuario.central && usuarioObtenido['tipo_usuario'] === '2') {
           console.log('Usuario válido:', usuarioObtenido);
           this.chofer = usuarioObtenido;
-
-          // Aquí puedes hacer lo que necesites con el usuario obtenido, por ejemplo, mostrarlo en el formulario
+  
+          // Actualizar el formulario con los datos del usuario
           this.form.patchValue({
             name: usuarioObtenido['name'],
             email: usuarioObtenido['email'],
@@ -58,6 +56,7 @@ export class ModificarConductorPage implements OnInit {
             token: usuarioObtenido['token']
           });
         } else {
+          // Mostrar un mensaje de error si el usuario no tiene permisos
           console.error('Error: El usuario no tiene los permisos necesarios o no pertenece a la misma central.');
           this.utilsSvc.presentToast({
             message: 'No tienes permiso para acceder a este usuario.',
@@ -68,6 +67,7 @@ export class ModificarConductorPage implements OnInit {
           });
         }
       } catch (error) {
+        // Manejar errores al obtener los datos del usuario
         console.error('Error al obtener el usuario desde Firebase:', error);
         this.utilsSvc.presentToast({
           message: 'Error al obtener los datos del usuario.',
@@ -79,6 +79,7 @@ export class ModificarConductorPage implements OnInit {
       }
     });
   }
+  
 
   async submit() {
     if (this.form.valid) {

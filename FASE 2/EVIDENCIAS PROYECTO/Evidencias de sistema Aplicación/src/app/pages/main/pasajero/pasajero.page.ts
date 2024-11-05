@@ -22,25 +22,42 @@ export class PasajeroPage implements OnInit {
 
   constructor() { }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
-
-    // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
-    await this.getInfoAndTipoCuenta();
+  }
+
+  async ionViewWillEnter() {
     await this.getData();
+    await this.getInfoAndTipoCuenta();
   }
 
   ionViewDidEnter() {
     this.startUpdatingNearbyRoutes(); // Inicia el intervalo cuando la vista se presenta
   }
 
+  async ionViewDidLeave() {
+    this.clearUpdateInterval();
+  }
+
+  ngOnDestroy() {
+    this.clearUpdateInterval();
+  }
+
   ionViewWillLeave() {
-    this.clear(); // Limpiar el intervalo cuando se deja la vista
+    this.clearUpdateInterval();
+  }
+
+  clearUpdateInterval() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+      this.updateInterval = null; // Limpia la referencia
+      this.isUpdatingNearbyRoutes = false; // Reinicia el flag    
+    }
   }
 
   startUpdatingNearbyRoutes() {
@@ -52,15 +69,7 @@ export class PasajeroPage implements OnInit {
     this.updateInterval = setInterval(() => {
       console.log('Actualizando Rutas!!');
       this.updateNearbyRoutes();
-    }, 30000); // Cambia a 20 segundos
-  }
-
-  clear() {
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-      this.updateInterval = null; // Limpia la referencia
-      this.isUpdatingNearbyRoutes = false; // Reinicia el flag
-    }
+    }, 60000); // cada 60segundos se actualizarán las rutas cercanas!
   }
 
 

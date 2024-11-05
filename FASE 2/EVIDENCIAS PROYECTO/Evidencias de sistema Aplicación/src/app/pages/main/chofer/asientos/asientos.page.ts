@@ -20,16 +20,34 @@ export class AsientosPage implements OnInit {
 
   constructor() { }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
     });
-
-    // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
+  }
 
+  async ionViewWillEnter() {
     await this.getData();
+  }
+
+  async ionViewDidLeave() {
+    this.clearUpdateInterval();
+  }
+
+  ngOnDestroy() {
+    this.clearUpdateInterval();
+  }
+
+  ionViewWillLeave() {
+    this.clearUpdateInterval();
+  }
+
+  clearUpdateInterval() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
   }
 
   async getData() {
@@ -145,7 +163,7 @@ export class AsientosPage implements OnInit {
     this.utilsSvc.routerLink('/main/profile-menu');
   }
 
-  backRuta(){
+  backRuta() {
     this.utilsSvc.routerLink(`/main/chofer/ver-ruta/${this.vehiculo[0].ruta_actual}`);
   }
 

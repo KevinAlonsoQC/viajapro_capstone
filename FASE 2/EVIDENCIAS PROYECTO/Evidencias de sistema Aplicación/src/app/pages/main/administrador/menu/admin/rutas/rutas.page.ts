@@ -113,7 +113,7 @@ export class RutasPage implements OnInit {
 
     this.map.setOnMapClickListener((event) => this.addPointToRoute(event));
   }
-  
+
   async marcarInicio() {
     if (!this.PuntoInicio) {
       if (!this.marcandoInicio) {
@@ -323,6 +323,8 @@ export class RutasPage implements OnInit {
               lng: event.longitude,
             },
             iconUrl: "../../../../assets/icon/icon_inicio.png",
+            iconSize: { width: 25, height: 25 },
+            iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
           }
         ]
         await this.map.addMarkers(markers); // Agregará el punto de inicio
@@ -343,6 +345,8 @@ export class RutasPage implements OnInit {
               lng: event.longitude,
             },
             iconUrl: "../../../../assets/icon/icono_fin.png",
+            iconSize: { width: 25, height: 25 },
+            iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
           }
         ]
         await this.map.addMarkers(markers); // Agregará el punto de inicio

@@ -25,17 +25,18 @@ export class BancosPage implements OnInit {
 
   constructor(private router: Router, private alertController: AlertController) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    
-    await this.getBancos();
   }
 
+  async ionViewWillEnter() {
+    await this.getBancos();
+  }
 
   async getBancos() {
     const loading = await this.utilsSvc.loading();
@@ -309,8 +310,8 @@ export class BancosPage implements OnInit {
               });
               return;
             }
-             // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
-             const datoModificado = {
+            // Si el usuario selecciona "No", solo se actualizan los datos sin cambiar la imagen
+            const datoModificado = {
               nombre_banco: bancoNuevo.nombre_banco,
             }
 

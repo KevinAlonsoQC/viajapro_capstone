@@ -25,16 +25,18 @@ export class VehiculosPage implements OnInit {
 
 	constructor(private router: Router, private alertController: AlertController) { }
 
-	async ngOnInit() {
+	ngOnInit() {
 		// Suscribirse al observable del usuario
 		this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
 			this.usuario = user;
 			// Aquí puedes realizar más acciones si es necesario
 		});
 		this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-		await this.getVehiculos();
 	}
 
+	async ionViewWillEnter() {
+		await this.getVehiculos();
+	}
 
 	async getVehiculos() {
 		const loading = await this.utilsSvc.loading();

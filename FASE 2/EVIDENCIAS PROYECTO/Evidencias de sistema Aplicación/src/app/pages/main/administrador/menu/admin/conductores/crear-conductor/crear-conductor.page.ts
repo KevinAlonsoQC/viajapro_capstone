@@ -43,15 +43,18 @@ export class CrearConductorPage implements OnInit {
 
   constructor() { }
 
-  async ngOnInit() {
-    await this.getInfoAndTipoCuenta();
-
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
+  }
+
+  async ionViewWillEnter() {
+    // Llamar a getInfoAndTipoCuenta() para actualizar la información del usuario
+    await this.getInfoAndTipoCuenta();
   }
 
   async submit() {
@@ -91,7 +94,7 @@ export class CrearConductorPage implements OnInit {
         });
         return;
       }
-  
+
       if (this.form.valid) {
         this.form.value.coordenadas_usuario = '';
         this.form.controls.central.setValue(this.usuario.central);
@@ -135,7 +138,7 @@ export class CrearConductorPage implements OnInit {
 
       let path = `usuario/${uid}`
       let imagePath = `usuario/${uid}/${Date.now()}`;
-      let imageUrl = await this.firebaseSvc.uploadImage(imagePath,  this.form.value.img_usuario);
+      let imageUrl = await this.firebaseSvc.uploadImage(imagePath, this.form.value.img_usuario);
       this.form.controls.img_usuario.setValue(imageUrl)
       delete this.form.value.password;
 
@@ -243,7 +246,7 @@ export class CrearConductorPage implements OnInit {
     }
   }
 
-  async takeImage(){
+  async takeImage() {
     const dataUrl = (await this.utilsSvc.takePicture('Foto de Perfil')).dataUrl;
     this.form.controls.img_usuario.setValue(dataUrl);
   }

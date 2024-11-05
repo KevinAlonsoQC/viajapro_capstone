@@ -19,16 +19,18 @@ export class VerRutasPage implements OnInit {
 
 	constructor(private router: Router, private alertController: AlertController) { }
 
-	async ngOnInit() {
+	ngOnInit() {
 		// Suscribirse al observable del usuario
 		this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
 			this.usuario = user;
 			// Aquí puedes realizar más acciones si es necesario
 		});
 		this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-		await this.getData();
 	}
 
+	async ionViewWillEnter() {
+		await this.getData();
+	}
 
 	async getData() {
 		const loading = await this.utilsSvc.loading();
@@ -128,8 +130,8 @@ export class VerRutasPage implements OnInit {
 							ruta.tarifa_diurna = data.tarifa_diurna;
 							ruta.tarifa_nocturna = data.tarifa_nocturna;
 
-							await this.firebaseSvc.updateDocument(`ruta_central/${ruta.id}`, {...ruta});
-					
+							await this.firebaseSvc.updateDocument(`ruta_central/${ruta.id}`, { ...ruta });
+
 							this.utilsSvc.presentToast({
 								message: `Cambio realizado para la ruta ${ruta.nombre_ruta}`,
 								duration: 1500,

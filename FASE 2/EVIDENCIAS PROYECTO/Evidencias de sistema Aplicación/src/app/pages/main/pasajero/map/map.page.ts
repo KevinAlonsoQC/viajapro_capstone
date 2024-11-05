@@ -22,43 +22,8 @@ export class MapPage implements OnInit {
   utilsSvc = inject(UtilsService);
   usuario: User;
   userId: string;
-  carDetail:any;
-  cars:any = [
-    {
-      nombreChofer: "Jorgue C.",
-      patente: "XSJ-11 55",
-      marker:
-      {
-        coordinate: {
-          lat: -33.597087,
-          lng: -70.700540,
-        },
-        iconUrl: "../../../../assets/icon/icon_car.png",
-        iconSize: { width: 30, height: 35 },
-        iconAnchor: { x: 15, y: 35 } // Punto de anclaje en el centro inferior
-        
-      }
-    },
-    {
-      nombreChofer: "Bastian L.",
-      patente: "XWJ-12 55",
-      marker:
-      {
-        
-        coordinate: {
-          lat: -33.597502,
-          lng: -70.705559,
-        },
-        iconUrl: "../../../../assets/icon/icon_car.png",
-        iconSize: { width: 30, height: 35 },
-        iconAnchor: { x: 15, y: 35 } // Punto de anclaje en el centro inferior
-      }
-      
-      
-    }
-  
-    
-  ];
+  vehiculos: any;
+  carDetail: any;
 
   apiKey: string = environment.firebaseConfig.apiKey;
   map: GoogleMap;
@@ -67,10 +32,15 @@ export class MapPage implements OnInit {
   userMarkerId: any;
   routePoints: any = [];
   updateInterval: any; // ID del intervalo de actualización
+  updateData: any; //ID del intervalo de actualización de la data.
 
+  tarifaDiurna: boolean;
+  tarifaNocturna: boolean;
+
+  tarifa: number;
   constructor(private paymentService: PaymentService, private route: ActivatedRoute) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.idRouter = params.get('id');
     });
@@ -79,12 +49,82 @@ export class MapPage implements OnInit {
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
     });
-
-    // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
   }
 
   async ionViewWillEnter() {
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
+    const urlPath = 'ruta_central'; // Ruta de la colección de usuarios
+    const urlPath2 = 'vehiculo'; // Ruta de la colección de usuarios
+
+    try {
+      const [ruta, veh] = await Promise.all([
+        this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<any[]>,
+        this.firebaseSvc.getCollectionDocuments(urlPath2) as Promise<any[]>
+      ]);
+
+      this.routePoints = ruta.filter(ruta => ruta.id == this.idRouter);
+      this.vehiculos = veh.filter(veh => {
+        return veh.ruta_actual == this.idRouter && veh.chofer_actual != '' && veh.en_ruta == true
+      });
+
+      // Obtén la hora actual
+      const currentDate = new Date();
+      const currentHours = currentDate.getHours();
+      // Verifica si la hora actual es 21:00
+      if (currentHours >= 21 || currentHours <= 6) {
+        this.tarifaDiurna = false;
+        this.tarifaNocturna = true;
+
+        this.tarifa = this.routePoints[0].tarifa_nocturna;
+      } else {
+        this.tarifaDiurna = true;
+        this.tarifaNocturna = false;
+
+        this.tarifa = this.routePoints[0].tarifa_diurna;
+      }
+
+      if (this.vehiculos.length <= 0) {
+        this.utilsSvc.presentToast({
+          message: '¡No hay choferes en servicio en esta ruta!',
+          duration: 4000,
+          color: 'warning',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
+      }
+
+      if (this.routePoints.length > 0) {
+        this.utilsSvc.presentToast({
+          message: 'Actualizando Ruta',
+          duration: 1500,
+          color: 'primary',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
+      } else {
+        this.utilsSvc.presentToast({
+          message: 'No se pudo obtener la ruta :(',
+          duration: 1500,
+          color: 'danger',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
+      }
+
+    } catch (error) {
+      console.log(error);
+      this.utilsSvc.presentToast({
+        message: 'No se pudo obtener los datos :(',
+        duration: 1500,
+        color: 'primary',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+    } finally {
+      loading.dismiss();
+    }
     await this.getData();
     await this.checkGeolocationPermission();
     if (!this.map) {
@@ -93,9 +133,28 @@ export class MapPage implements OnInit {
   }
 
   async ionViewDidLeave() {
+    this.clearUpdateInterval();
     if (this.map) {
       await this.map.destroy();
       this.map = null;
+    }
+  }
+
+  ngOnDestroy() {
+    this.clearUpdateInterval();
+  }
+
+  ionViewWillLeave() {
+    this.clearUpdateInterval();
+  }
+
+  clearUpdateInterval() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
+    }
+
+    if (this.updateData) {
+      clearInterval(this.updateData);
     }
   }
 
@@ -164,6 +223,8 @@ export class MapPage implements OnInit {
         try {
           const coordinates = await Geolocation.getCurrentPosition();
           const { latitude, longitude } = coordinates.coords;
+          this.latitude = latitude;
+          this.longitude = longitude;
 
           // Elimina solo el marcador del usuario antes de agregar uno nuevo
           if (this.userMarkerId) {
@@ -177,14 +238,15 @@ export class MapPage implements OnInit {
               lng: longitude,
             },
             iconUrl: "../../../../assets/icon/user_icon.png",
-            iconSize: { width: 30, height: 30 }
+            iconSize: { width: 25, height: 25 },
+            iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
           }]);
 
           this.userMarkerId = ids[0]; // Guarda el ID del nuevo marcador del usuario
         } catch (error) {
           console.error('Error obteniendo la ubicación', error);
         }
-      }, 5000); // Actualiza cada 5 segundos
+      }, 15000); // Actualiza cada 5 segundos
     }
   }
 
@@ -225,31 +287,60 @@ export class MapPage implements OnInit {
     ];
 
     await this.map.addMarkers(markers); // Agrega los marcadores al mapa
+    await this.centerMap(this.routePoints[0].punto_inicio.lat, this.routePoints[0].punto_inicio.lng); // Usa las coordenadas que prefieras
+
   }
 
   async setMarkersCars() { // Marcadores de los autos
+    if (this.vehiculos.length > 0) {
+      for (let veh of this.vehiculos) {
+        // Verificar si el marcador ya existe
+        if (!veh.markerId) {
+          const id = await this.map.addMarker({
+            coordinate: {
+              lat: veh.coordenadas_vehiculo.lat,
+              lng: veh.coordenadas_vehiculo.lng,
+            },
+            iconUrl: "../../../../assets/icon/icon_car.png",
+            iconSize: { width: 30, height: 35 },
+            iconAnchor: { x: 15, y: 35 } // Punto de anclaje en el centro inferior
+          });
+          veh.markerId = id;
 
-    this.cars.forEach(async (element) => { //Agrega los marcadores
-      const id  = await this.map.addMarker(element.marker);
-      element.id = id
-    });
+          // Calcula la distancia a cada vehículo
+          if (this.vehiculos && this.vehiculos.length > 0) {
+            for (let veh of this.vehiculos) {
+              const vehicleLat = veh.coordenadas_vehiculo.lat;
+              const vehicleLng = veh.coordenadas_vehiculo.lng;
+              veh.distance = Math.trunc(this.calculateDistance(this.latitude, this.longitude, vehicleLat, vehicleLng));
+              console.log(`Distancia al vehículo ${veh.id}: ${veh.distance} metros`);
 
-    this.map.setOnMarkerClickListener( marker => { //Identifica a que marcador click
-      
-      const exist = this.cars.find( cars => cars.id == marker.markerId);
-      if(exist){
-        
-        this.showDetailCar(exist);
-       
-     
-        
-      }else{
-        
+              // Velocidad en metros por segundo (30 km/h)
+              const speed = 30 * 1000 / 3600; // 30 km/h a m/s
+              const timeInSeconds = veh.distance / speed + 60; // Tiempo en segundos
+              const arrivalTime = new Date(Date.now() + timeInSeconds * 1000); // Hora de llegada
+
+              // Formato de la hora de llegada
+              const options: Intl.DateTimeFormatOptions = {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false, // Cambia a true si deseas el formato de 12 horas
+              };
+
+              veh.calculo = arrivalTime.toLocaleTimeString([], options); // Retorna la hora de llegada en formato "HH:MM"
+            }
+          }
+        }
       }
+    }
 
-    })
-
-    // Agrega los marcadores al mapa
+    this.map.setOnMarkerClickListener(marker => {
+      // Identificar el marcador al que se hizo clic
+      const exist = this.vehiculos.find(car => car.markerId === marker.markerId);
+      if (exist) {
+        this.showDetailCar(exist);
+      }
+    });
   }
 
   // Probar la localización en la web
@@ -309,72 +400,109 @@ export class MapPage implements OnInit {
   }
 
   async getData() {
-    const loading = await this.utilsSvc.loading();
-    await loading.present();
-    const urlPath = 'ruta_central'; // Ruta de la colección de usuarios
+    this.updateData = setInterval(async () => {
+      const loading = await this.utilsSvc.loading();
+      await loading.present();
+      const urlPath = 'ruta_central'; // Ruta de la colección de usuarios
+      const urlPath2 = 'vehiculo'; // Ruta de la colección de usuarios
 
-    try {
-      const [ruta] = await Promise.all([
-        this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<any[]>
-      ]);
+      try {
+        this.isModalOpen = false;
+        const markerIdsToRemove = this.vehiculos.map(veh => veh.markerId).filter(id => id != null);
+        if (markerIdsToRemove.length > 0) {
+          await this.map.removeMarkers(markerIdsToRemove); // Elimina los marcadores existentes
+        }
 
-      this.routePoints = ruta.filter(ruta => ruta.id == this.idRouter);
+        const [ruta, veh] = await Promise.all([
+          this.firebaseSvc.getCollectionDocuments(urlPath) as Promise<any[]>,
+          this.firebaseSvc.getCollectionDocuments(urlPath2) as Promise<any[]>
+        ]);
 
-      if (this.routePoints.length > 0) {
+        this.routePoints = ruta.filter(ruta => ruta.id == this.idRouter);
+        this.vehiculos = veh.filter(veh => {
+          return veh.ruta_actual == this.idRouter && veh.chofer_actual != '' && veh.en_ruta == true
+        });
+        await this.setMarkersCars();
+
+        // Obtén la hora actual
+        const currentDate = new Date();
+        const currentHours = currentDate.getHours();
+        // Verifica si la hora actual es 21:00
+        if (currentHours >= 21 || currentHours <= 6) {
+          this.tarifaDiurna = false;
+          this.tarifaNocturna = true;
+
+          this.tarifa = this.routePoints[0].tarifa_nocturna;
+        } else {
+          this.tarifaDiurna = true;
+          this.tarifaNocturna = false;
+
+          this.tarifa = this.routePoints[0].tarifa_diurna;
+        }
+
+        if (this.vehiculos.length <= 0) {
+          this.utilsSvc.presentToast({
+            message: '¡No hay choferes en servicio en esta ruta!',
+            duration: 4000,
+            color: 'warning',
+            position: 'middle',
+            icon: 'alert-circle-outline'
+          });
+        }
+      } catch (error) {
+        console.log(error);
         this.utilsSvc.presentToast({
-          message: 'Visualizando Ruta',
+          message: 'No se pudo obtener los datos :(',
           duration: 1500,
           color: 'primary',
           position: 'middle',
           icon: 'alert-circle-outline'
         });
-      } else {
-        this.utilsSvc.presentToast({
-          message: 'No se pudo obtener la ruta :(',
-          duration: 1500,
-          color: 'primary',
-          position: 'middle',
-          icon: 'alert-circle-outline'
-        });
+      } finally {
+        loading.dismiss();
       }
-
-    } catch (error) {
-      console.log(error);
-      this.utilsSvc.presentToast({
-        message: 'No se pudo obtener los datos :(',
-        duration: 1500,
-        color: 'primary',
-        position: 'middle',
-        icon: 'alert-circle-outline'
-      });
-    } finally {
-      loading.dismiss();
-    }
+    }, 30000); // Actualiza cada 30 segundos
   }
 
-  showDetailCar(car:any){
+  showDetailCar(car: any) {
     this.carDetail = {
-      id : car.id,
-      nombreChofer: car.nombreChofer,
-      patente: car.patente
-
+      id: car.id,
+      nombreChofer: car.nombre_chofer,
+      patente: car.patente_vehiculo,
+      modelo: car.nombre_modelo,
+      distancia: car.distance,
+      calculo: car.calculo,
+      asientos: car.asientos_dispo_vehiculo
     }
     this.isModalOpen = true;
   }
 
-    
-
-  ngOnDestroy() {
-    this.clearUpdateInterval();
-  }
-
-  ionViewWillLeave() {
-    this.clearUpdateInterval();
-  }
-
-  clearUpdateInterval() {
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
+  async centerMap(lat: number, lng: number) {
+    if (this.map) {
+      await this.map.setCamera({
+        coordinate: {
+          lat: lat,
+          lng: lng
+        },
+        zoom: 15, // Puedes ajustar el nivel de zoom según lo que necesites
+        animate: true // Opción para que la transición sea suave
+      });
     }
+  }
+
+  // Función para calcular la distancia entre dos coordenadas
+  calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+    const R = 6371e3; // Radio de la Tierra en metros
+    const φ1 = (lat1 * Math.PI) / 180;
+    const φ2 = (lat2 * Math.PI) / 180;
+    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+    const a =
+      Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+      Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Distancia en metros
   }
 }

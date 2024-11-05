@@ -33,16 +33,18 @@ export class ComunasPage implements OnInit {
 
   constructor(private router: Router, private alertController: AlertController) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    await this.getData();
   }
 
+  async ionViewWillEnter() {
+    await this.getData();
+  }
 
   async getData() {
     const loading = await this.utilsSvc.loading();

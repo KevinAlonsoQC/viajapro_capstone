@@ -50,10 +50,8 @@ export class ModificarVehiculoPage implements OnInit {
 
     // Obtener usuario del local storage
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    await this.getChoferesAndMarcas();
-
     // Obtener el ID de la URL
-    await this.route.params.subscribe(async params => {
+    this.route.params.subscribe(async params => {
       const id = params['id'];
       console.log('ID recibido:', id);
 
@@ -95,6 +93,10 @@ export class ModificarVehiculoPage implements OnInit {
       }
     });
   }
+
+  async ionViewWillEnter() {
+		await this.getChoferesAndMarcas();
+	}
 
   onMarcaChange(event: any) {
 		const marcaSeleccionada = event.detail.value;

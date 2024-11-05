@@ -32,29 +32,34 @@ export class ModificarRutaPage implements OnInit {
   constructor(private route: ActivatedRoute, private alertController: AlertController) { }
 
   async ngOnInit() {
+    // Suscribirse al observable del usuario para recibir actualizaciones en tiempo real
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
-      // Aquí puedes realizar más acciones si es necesario
     });
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-
+  
     // Obtener el ID de la URL
-    await this.route.params.subscribe(async params => {
+    this.route.params.subscribe(async params => {
       const id = params['id'];
       console.log('ID recibido:', id);
-
+  
       try {
-        // Obtener el usuario con el ID desde Firebase
-        const ruta_Obtenida = await this.firebaseSvc.getDocument(`ruta_central/${id}`);
-
-        // Verificar si el usuario obtenido pertenece a la misma "central" y si es un chofer
-        if (ruta_Obtenida && ruta_Obtenida['central'] === this.usuario.central) {
-          this.ruta = ruta_Obtenida;
+        // Obtener los datos de la ruta con el ID desde Firebase
+        const rutaObtenida = await this.firebaseSvc.getDocument(`ruta_central/${id}`);
+  
+        // Verificar si la ruta obtenida pertenece a la misma "central"
+        if (rutaObtenida && rutaObtenida['central'] === this.usuario.central) {
+          this.ruta = rutaObtenida;
+  
+          // Verificar permisos de geolocalización
           await this.checkGeolocationPermission();
+  
+          // Inicializar el mapa si aún no se ha creado
           if (!this.map) {
             await this.initMap();
           }
         } else {
+          // Mostrar mensaje de error si el usuario no tiene permisos
           console.error('Error: El usuario no tiene los permisos necesarios o no pertenece a la misma central.');
           this.utilsSvc.presentToast({
             message: 'No tienes permiso para acceder a este usuario.',
@@ -65,6 +70,7 @@ export class ModificarRutaPage implements OnInit {
           });
         }
       } catch (error) {
+        // Manejar errores al obtener los datos desde Firebase
         console.error('Error al obtener la central desde Firebase:', error);
         this.utilsSvc.presentToast({
           message: 'Error al obtener los datos del usuario.',
@@ -76,6 +82,8 @@ export class ModificarRutaPage implements OnInit {
       }
     });
   }
+  
+
   profile() {
     this.utilsSvc.routerLink('/main/profile-menu');
   }
@@ -139,7 +147,7 @@ export class ModificarRutaPage implements OnInit {
         },
         iconUrl: "../../../../assets/icon/icon_inicio.png",
         iconSize: { width: 25, height: 25 },
-        iconAnchor: { x: 12.5, y: 12.5 }
+        iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
       {
         coordinate: {
@@ -147,12 +155,13 @@ export class ModificarRutaPage implements OnInit {
           lng: this.ruta.punto_final.lng,
         },
         iconUrl: "../../../../assets/icon/icono_fin.png",
-        iconSize: { width: 30, height: 30 },
-        iconAnchor: { x: 15, y: 15 }
+        iconSize: { width: 25, height: 25 },
+        iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
     ];
 
     await this.map.addMarkers(markers); // Agrega los marcadores al mapa
+    await this.centerMap(this.ruta.punto_inicio.lat, this.ruta.punto_inicio.lng); // Usa las coordenadas que prefieras
   }
 
   async checkGeolocationPermission() {
@@ -297,5 +306,18 @@ export class ModificarRutaPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  async centerMap(lat: number, lng: number) {
+    if (this.map) {
+      await this.map.setCamera({
+        coordinate: {
+          lat: lat,
+          lng: lng
+        },
+        zoom: 15, // Puedes ajustar el nivel de zoom según lo que necesites
+        animate: true // Opción para que la transición sea suave
+      });
+    }
   }
 }

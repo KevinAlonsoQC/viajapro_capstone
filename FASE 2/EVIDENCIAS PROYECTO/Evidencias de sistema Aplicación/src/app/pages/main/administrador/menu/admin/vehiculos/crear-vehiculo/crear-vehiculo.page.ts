@@ -55,15 +55,18 @@ export class CrearVehiculoPage implements OnInit {
 
 	constructor() { }
 
-	async ngOnInit() {
+	ngOnInit() {
 		// Suscribirse al observable del usuario
 		this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
 			this.usuario = user;
 			// Aquí puedes realizar más acciones si es necesario
 		});
 		this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-		await this.getChoferesAndMarcas();
 
+	}
+
+	async ionViewWillEnter() {
+		await this.getChoferesAndMarcas();
 	}
 
 	onMarcaChange(event: any) {

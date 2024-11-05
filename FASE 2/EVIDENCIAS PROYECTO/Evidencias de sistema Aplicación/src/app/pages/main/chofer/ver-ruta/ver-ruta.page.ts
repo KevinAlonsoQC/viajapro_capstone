@@ -33,7 +33,7 @@ export class VerRutaPage implements OnInit {
   vehiculo: any;
   constructor(private paymentService: PaymentService, private route: ActivatedRoute) { }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.idRouter = params.get('id');
     });
@@ -43,11 +43,11 @@ export class VerRutaPage implements OnInit {
       this.usuario = user;
     });
 
-    // Cargar el usuario inicialmente
     this.utilsSvc.getFromLocalStorage('usuario');
   }
 
   async ionViewWillEnter() {
+
     await this.getData();
     await this.checkGeolocationPermission();
     if (!this.map) {
@@ -56,9 +56,24 @@ export class VerRutaPage implements OnInit {
   }
 
   async ionViewDidLeave() {
+    this.clearUpdateInterval();
     if (this.map) {
       await this.map.destroy();
       this.map = null;
+    }
+  }
+
+  ngOnDestroy() {
+    this.clearUpdateInterval();
+  }
+
+  ionViewWillLeave() {
+    this.clearUpdateInterval();
+  }
+
+  clearUpdateInterval() {
+    if (this.updateInterval) {
+      clearInterval(this.updateInterval);
     }
   }
 
@@ -126,7 +141,8 @@ export class VerRutaPage implements OnInit {
               lng: longitude,
             },
             iconUrl: "../../../../assets/icon/icono_vp.png",
-            iconSize: { width: 30, height: 30 }
+            iconSize: { width: 25, height: 25 },
+            iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
           }]);
 
           this.userMarkerId = ids[0]; // Guarda el ID del nuevo marcador del usuario
@@ -146,7 +162,8 @@ export class VerRutaPage implements OnInit {
         lng: this.longitude,
       },
       iconUrl: "../../../../assets/icon/icono_vp.png",
-      iconSize: { width: 30, height: 30 }
+      iconSize: { width: 25, height: 25 },
+      iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
     }]);
 
     this.userMarkerId = ids[0]; // Guarda el ID del marcador para actualizarlo más tarde
@@ -160,6 +177,8 @@ export class VerRutaPage implements OnInit {
           lng: this.routePoints[0].punto_inicio.lng,
         },
         iconUrl: "../../../../assets/icon/icon_inicio.png",
+        iconSize: { width: 25, height: 25 },
+        iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
       {
         coordinate: {
@@ -167,10 +186,14 @@ export class VerRutaPage implements OnInit {
           lng: this.routePoints[0].punto_final.lng,
         },
         iconUrl: "../../../../assets/icon/icono_fin.png",
+        iconSize: { width: 25, height: 25 },
+        iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
     ];
 
     await this.map.addMarkers(markers); // Agrega los marcadores al mapa
+    await this.centerMap(this.routePoints[0].punto_inicio.lat, this.routePoints[0].punto_inicio.lng); // Usa las coordenadas que prefieras
+
   }
 
   // Probar la localización en la web
@@ -280,21 +303,20 @@ export class VerRutaPage implements OnInit {
     }
   }
 
-  ngOnDestroy() {
-    this.clearUpdateInterval();
-  }
-
-  ionViewWillLeave() {
-    this.clearUpdateInterval();
-  }
-
-  clearUpdateInterval() {
-    if (this.updateInterval) {
-      clearInterval(this.updateInterval);
-    }
-  }
-
-  backRuta(){
+  backRuta() {
     this.utilsSvc.routerLink(`/main/chofer/ver-ruta/${this.vehiculo[0].ruta_actual}`);
+  }
+
+  async centerMap(lat: number, lng: number) {
+    if (this.map) {
+      await this.map.setCamera({
+        coordinate: {
+          lat: lat,
+          lng: lng
+        },
+        zoom: 15, // Puedes ajustar el nivel de zoom según lo que necesites
+        animate: true // Opción para que la transición sea suave
+      });
+    }
   }
 }

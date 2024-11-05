@@ -42,10 +42,9 @@ export class DetalleCentralPage implements OnInit {
 
     // Obtener usuario del local storage
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-    await this.getPresidentes();
 
     // Obtener el ID de la URL
-    await this.route.params.subscribe(async params => {
+    this.route.params.subscribe(async params => {
       const id = params['id'];
       console.log('ID recibido:', id);
 
@@ -82,6 +81,11 @@ export class DetalleCentralPage implements OnInit {
     });
   }
 
+
+  async ionViewWillEnter() {
+    await this.getPresidentes();
+  }
+
   async submit() {
     if (this.form.valid) {
       const loading = await this.utilsSvc.loading();
@@ -105,14 +109,14 @@ export class DetalleCentralPage implements OnInit {
           this.central.img_central = this.form.value.img_central
         }
 
-        if(this.form.value.presidente !== this.presidente.uid){
+        if (this.form.value.presidente !== this.presidente.uid) {
           await this.firebaseSvc.updateDocument(`usuario/${this.presidente.uid}`, { central: '' });
           const presidenteObtenido = await this.firebaseSvc.getDocument(`usuario/${this.form.value.presidente}`);
           this.presidente = presidenteObtenido
         }
 
         await this.firebaseSvc.updateDocument(`central_colectivo/${this.central.id}`, this.form.value);
-        this.central = {...this.central, ...this.form.value}
+        this.central = { ...this.central, ...this.form.value }
 
         // Rellenar el formulario con los datos del usuario autenticado
         this.form.patchValue({
@@ -125,7 +129,7 @@ export class DetalleCentralPage implements OnInit {
         });
 
         await this.firebaseSvc.updateDocument(`usuario/${this.central.presidente}`, { central: this.central.id });
-        
+
         this.utilsSvc.routerLink('main/owner/central');
         this.utilsSvc.presentToast({
           message: 'Central actualizada con éxito.',

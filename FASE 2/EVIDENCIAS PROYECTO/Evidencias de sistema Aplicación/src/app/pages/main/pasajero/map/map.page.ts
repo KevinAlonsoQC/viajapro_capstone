@@ -273,7 +273,8 @@ export class MapPage implements OnInit {
         },
         iconUrl: "../../../../assets/icon/icon_inicio.png",
         iconSize: { width: 25, height: 25 },
-        iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
+        iconAnchor: { x: 12.5, y: 12.5 }, // Punto de anclaje en el centro inferior
+        title: "Central",
       },
       {
         coordinate: {
@@ -282,7 +283,8 @@ export class MapPage implements OnInit {
         },
         iconUrl: "../../../../assets/icon/icono_fin.png",
         iconSize: { width: 30, height: 30 },
-        iconAnchor: { x: 15, y: 15 } // Punto de anclaje en el centro inferior
+        iconAnchor: { x: 15, y: 15 }, // Punto de anclaje en el centro inferior
+        title: "Retorno",
       },
     ];
 

@@ -27,7 +27,7 @@
     {{this.routePoints[0].nombre_ruta}}
   </ion-chip>
   <app-map-pasajero class="capacitor-google-map" id="map"></app-map-pasajero>
-  <ion-modal #modal [isOpen]="isModalOpen" (didDismiss)="isModalOpen = false" [initialBreakpoint]="0.25" [breakpoints]="[0, 0.25, 0.5, 0.60]">
+  <ion-modal #modal [isOpen]="isModalOpen" (didDismiss)="isModalOpen = false" [initialBreakpoint]="0.25" [breakpoints]="[0, 0.25, 0.5, 0.40]">
     <ng-template>
       <ion-content>
         <ion-grid>
@@ -37,13 +37,13 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col style="display: flex;align-items: center;justify-content: start;">
+            <ion-col style="display: flex;align-items: center;justify-content: start;color: #9D9D9D;font-size: 14px;">
               Hora de Llegada (aprox.)
             </ion-col>
-            <ion-col style="display: flex;align-items: center;justify-content: center;">
+            <ion-col style="display: flex;align-items: center;justify-content: center;text-align:justify;color: #9D9D9D;font-size: 14px;">
               Distancia
             </ion-col>
-            <ion-col style="display: flex;align-items: center;justify-content: end;">
+            <ion-col style="display: flex;align-items: center;justify-content: end;text-align: end;color: #9D9D9D;font-size: 14px;">
               Asientos Disponibles
             </ion-col>
           </ion-row>
@@ -52,24 +52,27 @@
               <h5 class="detail-time">{{ carDetail.calculo }}</h5>
             </ion-col>
             <ion-col style="display: flex;align-items: center;justify-content: center;">
-              <h5 class="detail-time-km">{{ carDetail.distancia }} metros</h5>
+              <h5 class="detail-time-km">{{ carDetail.distancia }}  m</h5>
             </ion-col>
             <ion-col style="display: flex;align-items: center;justify-content: end;">
-              <h5 class="detail-time-km">{{ carDetail.asientos }}</h5>
+              <h5 class="detail-time-km">{{ carDetail.asientos }}
+                <ion-icon slot="end" name="ticket-outline"></ion-icon>
+              </h5>
+              
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col>
+            <ion-col style="display: flex;align-items: center;justify-content: start;color: #9D9D9D;font-size: 14px;">
               <ion-label>
                 Conductor
               </ion-label>
             </ion-col>
-            <ion-col>
+            <ion-col style="display: flex;align-items: center;justify-content: center;text-align:justify;color: #9D9D9D;font-size: 14px;">
               <ion-label>
                 Vehículo
               </ion-label>
             </ion-col>
-            <ion-col class="ion-text-end">
+            <ion-col class="ion-text-end" style="display: flex;align-items: center;justify-content: end;text-align: end;color: #9D9D9D;font-size: 14px;">
               <ion-label>
                 Patente
               </ion-label>
@@ -94,18 +97,19 @@
           </ion-row>
           <ion-row>
             <ion-col>
-              <h5 *ngIf="tarifaNocturna && !tarifaDiurna" >
+              <ion-button  fill="outline" *ngIf="tarifaNocturna && !tarifaDiurna">
                 Tarifa Nocturna
-              </h5>
-              <h5 *ngIf="tarifaDiurna && !tarifaNocturna" >
-                Tarifa Diurna
-              </h5>
-            </ion-col>
-            <ion-col>
-              <ion-button class="" expand="block">${{tarifa}}
-                <ion-icon name="moon" slot="start" *ngIf="tarifaNocturna && !tarifaDiurna" ></ion-icon>
-                <ion-icon name="sunny" slot="start" *ngIf="tarifaDiurna && !tarifaNocturna" ></ion-icon>
+                <ion-icon slot="end" name="moon-outline"></ion-icon>
               </ion-button>
+              <ion-button fill="outline" *ngIf="tarifaDiurna && !tarifaNocturna" class="button-tarifa">
+                Tarifa Diurna
+                <ion-icon slot="end" name="sunny-outline"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col size="7">
+              <ion-button [disabled]="carDetail.asientos == 0" class="button-pago" expand="block">${{tarifa}}
+              </ion-button>
+              <ion-note *ngIf=" carDetail.asientos == 0">Espere un asiento disponible</ion-note>
             </ion-col>
           </ion-row>
         </ion-grid>

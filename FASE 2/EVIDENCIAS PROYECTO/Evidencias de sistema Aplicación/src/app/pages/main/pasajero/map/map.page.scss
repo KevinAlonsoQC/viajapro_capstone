@@ -14,16 +14,38 @@ ion-content{
     top: 50px; /* Ajusta esta posición según prefieras */
     right:7px; /* Puedes cambiar a 'right' o ajustar la posición */
     z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
-    --background:#FFCE48;
-    border-radius: 0px;
+    --background:#1A1528;
+    border-radius: 15px;
+    color: white;
 }
 
 .detail-time{
     color: #1F1F1F;
+    font-size: 48px;
+    font-weight: bold;
+}
+
+.detail-time-km{
+    font-size: 20px;
+    font-weight:600;
+    color: #404040;
 }
 .detail-notificacion{
     color: #1F1F1F;
     --background: #FF8811;
     --border-radius: 1rem;
     
+}
+
+.button-pago{
+    --background:#1A1528 ;
+    height: 48px;
+    --border-radius: 15px;
+}
+
+.button-tarifa{
+    --border-color: #D9D9D9;
+    height: 48px;
+    --border-radius: 15px;
+    color: #1A1528;
 }

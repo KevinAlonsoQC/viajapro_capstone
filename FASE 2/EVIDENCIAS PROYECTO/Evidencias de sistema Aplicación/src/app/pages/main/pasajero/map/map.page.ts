@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { User } from 'src/app/models/user';
+import { AlertController } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { PaymentService } from '../../../../services/payment.service';
@@ -8,6 +9,9 @@ import { environment } from 'src/environments/environment';
 import { GoogleMap } from '@capacitor/google-maps';
 import { Geolocation } from '@capacitor/geolocation';
 import { ActivatedRoute } from '@angular/router';
+
+//Kiphu 
+import {Khipu, KhipuColors, KhipuOptions, KhipuResult, StartOperationOptions} from "capacitor-khipu"
 
 @Component({
   selector: 'app-map',
@@ -37,8 +41,11 @@ export class MapPage implements OnInit {
   tarifaDiurna: boolean;
   tarifaNocturna: boolean;
 
+  mesajeKhipu:any;
+  mesajeKhipuModal = false;
+
   tarifa: number;
-  constructor(private paymentService: PaymentService, private route: ActivatedRoute) { }
+  constructor(private paymentService: PaymentService, private route: ActivatedRoute, private alertController: AlertController) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -162,21 +169,18 @@ export class MapPage implements OnInit {
     this.utilsSvc.routerLink('/main/profile-menu');
   }
 
-  startKhipuPayment() {
-    const amountt = 900; // Monto del pago
+  startKhipuPayment() { //Inicia el pago en Khipu
+    
+    const amountt = Number(this.tarifa); // Monto del pago
     const currency = 'CLP'; // Monto del pago
-    const subject = 'Prueba'; // Monto del pago
+    const subject = 'Pago pasaje en ViajaPro'; 
     const api_key = "49c65a51-5874-4471-beaa-a2891b385026";
 
     this.paymentService.createPayment(amountt, currency, subject, api_key).subscribe(
       (response) => {
-        this.openExternalLink(response.payment_url);
+        this.iniciarOperacionKhipu(response.payment_id);
       }
     );
-  }
-
-  openExternalLink(url: string) {
-    window.open(url, '_blank');
   }
 
   // Lógica para mapa
@@ -507,4 +511,55 @@ export class MapPage implements OnInit {
 
     return R * c; // Distancia en metros
   }
+
+  
+  async iniciarOperacionKhipu(payment_id:string){
+    try {
+      const result: KhipuResult = await Khipu.startOperation({
+        operationId: payment_id,
+        options: {
+          title: '<Title to display in the payment process>', // Título para la barra superior durante el proceso de pago.
+          titleImageUrl: '<Image to display centered in the topbar>', // URL de la imagen para mostrar en la barra superior.
+          locale: 'es_CL', // Configuración regional para el idioma de la interfaz.
+          theme: 'light', // El tema de la interfaz: 'dark', 'light' o 'system'.
+          skipExitPage: true, // Omite la página de salida al final del proceso de pago si es verdadero.
+          showFooter: true, // Muestra un mensaje en la parte inferior con el logo de Khipu.
+          colors: {
+            lightTopBarContainer: '<colorHex>',
+            lightOnTopBarContainer: '<colorHex>',
+            lightPrimary: '<colorHex>',
+            lightOnPrimary: '<colorHex>',
+            lightBackground: '<colorHex>',
+            lightOnBackground: '<colorHex>',
+            darkTopBarContainer: '<colorHex>',
+            darkOnTopBarContainer: '<colorHex>',
+            darkPrimary: '<colorHex>',
+            darkOnPrimary: '<colorHex>',
+            darkBackground: '<colorHex>',
+            darkOnBackground: '<colorHex>',
+          } as KhipuColors,
+        } as KhipuOptions,
+      } as StartOperationOptions);
+      
+      // Manejo de la respuesta de la operación
+      
+      if(result.result == 'OK'){
+        
+        const img = '../../../../../assets/comprobado.png';
+        
+        this.mesajeKhipu = {
+          titulo:'¡Listo, Pago realizado!',
+          mensaje: 'Eviaremos el comprobante de pago a tu correo',
+          img:img
+        };
+        this.mesajeKhipuModal = true;
+      }
+    } catch (error) {
+      console.error('Error al iniciar la operación de pago con Khipu:', error);
+    }
+  }
+
+  
+
+  
 }

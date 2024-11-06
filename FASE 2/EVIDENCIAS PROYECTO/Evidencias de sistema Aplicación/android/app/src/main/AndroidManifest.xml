@@ -42,4 +42,16 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <queries>
+        <package android:name="cl.bci.pass" />
+        <package android:name="cl.bancochile.mi_pass2" />
+        <package android:name="net.veritran.becl.prod" />
+        <package android:name="cl.scotiabank.keypass" />
+        <package android:name="cl.santander.santanderpasschile" />
+        <package android:name="com.konylabs.ItauMobileBank" />
+        <package android:name="cl.bancosecurity.securitypass" />
+        <package android:name="cl.bice.bicepassmobile2" />
+        <package android:name="cl.consorcio.tupass" />
+    </queries>
 </manifest>

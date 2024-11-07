@@ -11,7 +11,7 @@ import { Geolocation } from '@capacitor/geolocation';
 import { ActivatedRoute } from '@angular/router';
 
 //Kiphu 
-import {Khipu, KhipuColors, KhipuOptions, KhipuResult, StartOperationOptions} from "capacitor-khipu"
+import { Khipu, KhipuColors, KhipuOptions, KhipuResult, StartOperationOptions } from "capacitor-khipu"
 
 @Component({
   selector: 'app-map',
@@ -41,8 +41,9 @@ export class MapPage implements OnInit {
   tarifaDiurna: boolean;
   tarifaNocturna: boolean;
 
-  mesajeKhipu:any;
+  mesajeKhipu: any;
   mesajeKhipuModal = false;
+  mesajeKhipuModalError = false;
 
   tarifa: number;
   constructor(private paymentService: PaymentService, private route: ActivatedRoute, private alertController: AlertController) { }
@@ -169,16 +170,22 @@ export class MapPage implements OnInit {
     this.utilsSvc.routerLink('/main/profile-menu');
   }
 
-  startKhipuPayment() { //Inicia el pago en Khipu
-    
+  startKhipuPayment(token: string) { //Inicia el pago en Khipu
+    console.log('Token de Pago del Vehículo: ', token)
+    const currentDate = new Date();
+    const currentHours = currentDate.getHours();
+    const currentMinutes = currentDate.getMinutes();
     const amountt = Number(this.tarifa); // Monto del pago
     const currency = 'CLP'; // Monto del pago
-    const subject = 'Pago pasaje en ViajaPro'; 
-    const api_key = "49c65a51-5874-4471-beaa-a2891b385026";
+    const subject = `Pasaje ViajaPro - ${currentHours}:${currentMinutes}`;
 
+    //Dejé tu API de Pago porque aún no existen un token de pago para el chofer!
+    //Para poner la api de pago del chofer solo usa el que obtiene la función.
+
+    const api_key = "49c65a51-5874-4471-beaa-a2891b385026";
     this.paymentService.createPayment(amountt, currency, subject, api_key).subscribe(
       (response) => {
-        this.iniciarOperacionKhipu(response.payment_id);
+        this.iniciarOperacionKhipu(response.payment_id, api_key);
       }
     );
   }
@@ -473,12 +480,14 @@ export class MapPage implements OnInit {
   showDetailCar(car: any) {
     this.carDetail = {
       id: car.id,
+      id_chofer: car.chofer_actual,
       nombreChofer: car.nombre_chofer,
       patente: car.patente_vehiculo,
       modelo: car.nombre_modelo,
       distancia: car.distance,
       calculo: car.calculo,
-      asientos: car.asientos_dispo_vehiculo
+      asientos: car.asientos_dispo_vehiculo,
+      token: car.token
     }
     this.isModalOpen = true;
   }
@@ -512,8 +521,8 @@ export class MapPage implements OnInit {
     return R * c; // Distancia en metros
   }
 
-  
-  async iniciarOperacionKhipu(payment_id:string){
+
+  async iniciarOperacionKhipu(payment_id: string, api_key: string) {
     try {
       const result: KhipuResult = await Khipu.startOperation({
         operationId: payment_id,
@@ -540,26 +549,75 @@ export class MapPage implements OnInit {
           } as KhipuColors,
         } as KhipuOptions,
       } as StartOperationOptions);
-      
+
       // Manejo de la respuesta de la operación
-      
-      if(result.result == 'OK'){
-        
-        const img = '../../../../../assets/comprobado.png';
-        
+      if (result.result == 'OK') {
+        console.log('ID DE PAGO: ', result.operationId);
+        const loading = await this.utilsSvc.loading();
+        await loading.present(); // Mostrar el loading
+
+        try {
+          // Llamar a getPayment cada 10 segundos para obtener el comprobante
+          let attemptCount = 0;
+          const maxAttempts = 6; // 1 minuto = 60 segundos / 10 segundos = 6 intentos
+          const interval = setInterval(() => {
+            this.paymentService.getPayment(api_key, result.operationId).subscribe(
+              (response) => {
+                console.log('Obteniendo URL de pago:', response);
+
+                // Verificar si el comprobante fue obtenido
+                if (response.receipt_url && response.receipt_url !== "") {
+                  clearInterval(interval); // Detener el intervalo
+                  const img = '../../../../../assets/comprobado.png';
+                  this.mesajeKhipu = {
+                    titulo: '¡Listo, Pago realizado!',
+                    mensaje: 'Eviaremos el comprobante de pago a tu correo',
+                    img: img,
+                    comprobante: response.receipt_url
+                  };
+                  this.mesajeKhipuModal = true;
+                  loading.dismiss(); // Ocultar el loading cuando se obtiene el comprobante
+                }
+              },
+              (error) => {
+                console.error('Error al obtener el comprobante del pago:', error);
+              }
+            );
+
+            attemptCount++;
+            if (attemptCount >= maxAttempts) {
+              clearInterval(interval); // Detener el intervalo después de 1 minuto
+              this.mesajeKhipu = {
+                titulo: 'Error al obtener el comprobante',
+                mensaje: 'No se pudo obtener el comprobante de pago. Intenta nuevamente.',
+                img: '../../../../../assets/rechazado.png'
+              };
+              this.mesajeKhipuModalError = true;
+              loading.dismiss(); // Ocultar el loading si los intentos se agotaron
+            }
+          }, 10000); // Intervalo de 10 segundos
+        } catch (error) {
+          console.error('Error en obtener los datos', error);
+          loading.dismiss(); // Asegurarse de que el loading se cierre en caso de error
+        }
+      }
+
+      if (result.result != 'OK') {
+        console.log('Mensaje de Khipu: ', result.exitMessage);
+        const img = '../../../../../assets/rechazado.png';
         this.mesajeKhipu = {
-          titulo:'¡Listo, Pago realizado!',
-          mensaje: 'Eviaremos el comprobante de pago a tu correo',
-          img:img
+          titulo: `¡Upsi! Algo ocurrió [Trans. ${result.operationId}]`,
+          mensaje: 'No se pudo realizar el pago. Vuelve a intentarlo.',
+          img: img
         };
-        this.mesajeKhipuModal = true;
+        this.mesajeKhipuModalError = true;
       }
     } catch (error) {
-      console.error('Error al iniciar la operación de pago con Khipu:', error);
+      console.error('¡¡Error al iniciar la operación de pago con Khipu!!:', error);
     }
   }
 
-  
-
-  
+  cerrarModal() {
+    this.mesajeKhipuModal = false;
+  }
 }

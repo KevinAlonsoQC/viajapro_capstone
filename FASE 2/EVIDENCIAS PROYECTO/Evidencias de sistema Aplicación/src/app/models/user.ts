@@ -13,5 +13,7 @@ export interface User {
 
     en_ruta?: boolean;
     vehiculo_actual?: string;
+
+    token?: string;
 }
 

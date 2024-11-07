@@ -190,7 +190,7 @@ export class ChoferPage implements OnInit {
               });
               return;
             }
-            await this.firebaseSvc.updateDocument(`vehiculo/${vehId}`, { ...{ en_ruta: true, chofer_actual: this.usuario.uid, nombre_chofer: this.usuario.name } });
+            await this.firebaseSvc.updateDocument(`vehiculo/${vehId}`, { ...{ en_ruta: true, chofer_actual: this.usuario.uid, nombre_chofer: this.usuario.name, token: this.usuario.token } });
             await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: true, vehiculo_actual: vehId, nombre_chofer: ''} });
             this.usuario.en_ruta = true;
             this.usuario.vehiculo_actual = vehId;
@@ -247,7 +247,7 @@ export class ChoferPage implements OnInit {
               }
 
               const disponibles = this.asientos.filter(asiento => asiento).length;
-              await this.firebaseSvc.updateDocument(`vehiculo/${this.vehRuta[0].id}`, { ...{ en_ruta: false, chofer_actual: '',  nombre_chofer: '',asientos_dispo_vehiculo: disponibles, ruta_actual: false } });
+              await this.firebaseSvc.updateDocument(`vehiculo/${this.vehRuta[0].id}`, { ...{ en_ruta: false, chofer_actual: '',  nombre_chofer: '',asientos_dispo_vehiculo: disponibles, ruta_actual: false, token: '' } });
               await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '' } });
               this.usuario.en_ruta = false;
               this.usuario.vehiculo_actual = '';

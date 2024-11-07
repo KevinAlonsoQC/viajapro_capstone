@@ -8,6 +8,7 @@ import { MapPageRoutingModule } from './map-routing.module';
 
 import { MapPage } from './map.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     IonicModule,
     MapPageRoutingModule,
-    SharedModule
+    SharedModule,
+    PdfViewerModule
   ],
   declarations: [MapPage]
 })

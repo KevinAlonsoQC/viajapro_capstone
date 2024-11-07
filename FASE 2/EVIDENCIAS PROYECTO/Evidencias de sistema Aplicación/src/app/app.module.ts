@@ -15,6 +15,7 @@ import { environment } from 'src/environments/environment.prod';
 
 import {provideHttpClient} from '@angular/common/http';
 
+import { PdfViewerModule } from 'ng2-pdf-viewer';
 
 
 @NgModule({
@@ -24,7 +25,7 @@ import {provideHttpClient} from '@angular/common/http';
     IonicModule.forRoot({mode:'md'}), 
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    
+    PdfViewerModule
   ],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy,},provideHttpClient()],
   bootstrap: [AppComponent],

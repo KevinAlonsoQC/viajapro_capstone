@@ -293,4 +293,12 @@ export class ChoferPage implements OnInit {
       this.utilsSvc.routerLink('/main/chofer/en-ruta');
     }
   }
+
+  verFinanzas(){
+    this.utilsSvc.routerLink('/main/chofer/ver-finanzas');
+  }
+
+  verVehiculos(){
+    this.utilsSvc.routerLink('/main/chofer/ver-vehiculos');
+  }
 }

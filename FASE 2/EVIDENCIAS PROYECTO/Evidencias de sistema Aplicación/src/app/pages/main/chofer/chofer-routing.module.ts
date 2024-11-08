@@ -19,7 +19,16 @@ const routes: Routes = [
   {
     path: 'asientos',
     loadChildren: () => import('./asientos/asientos.module').then( m => m.AsientosPageModule)
+  },
+  {
+    path: 'ver-vehiculos',
+    loadChildren: () => import('./ver-vehiculos/ver-vehiculos.module').then( m => m.VerVehiculosPageModule)
+  },
+  {
+    path: 'ver-finanzas',
+    loadChildren: () => import('./ver-finanzas/ver-finanzas.module').then( m => m.VerFinanzasPageModule)
   }
+
 
 ];
 

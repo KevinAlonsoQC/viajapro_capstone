@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { getMessaging, onMessage } from "firebase/messaging";
 import { AlertController } from '@ionic/angular';
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app";
 import { environment } from '../../environments/environment'; // Asegúrate de tener tu configuración de Firebase aquí
 
 @Injectable({
@@ -13,29 +13,7 @@ export class PaymentService {
 
   private apiUrl = 'https://payment-api.khipu.com/v3/payments'; // Cambia esto a tu URL real
 
-  constructor(private http: HttpClient, private alertController: AlertController) {
-    // Inicializa la aplicación de Firebase
-    const app = initializeApp(environment.firebaseConfig);
-    const messaging = getMessaging(app);
-
-    // Escucha los mensajes en primer plano
-    onMessage(messaging, async (payload) => {
-      console.log('Mensaje recibido:', payload);
-      await this.showNotification(payload);
-    });
-  }
-
-  // Función para mostrar una alerta ion-alert con el mensaje recibido
-  async showNotification(payload: any) {
-    const alert = await this.alertController.create({
-      header: 'Notificación',
-      subHeader: payload.notification?.title || 'Nueva Notificación',
-      message: payload.notification?.body || 'Tienes un nuevo mensaje.',
-      buttons: ['OK'],
-    });
-
-    await alert.present();
-  }
+  constructor(private http: HttpClient) {}
 
   // Método para crear un pago
   createPayment(amount: number, currency: string, subject: string, api_key: string): Observable<any> {

@@ -25,7 +25,6 @@ export class MapPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
   usuario: User;
-  userId: string;
   vehiculos: any;
   carDetail: any;
 
@@ -420,7 +419,7 @@ export class MapPage implements OnInit {
       const urlPath2 = 'vehiculo'; // Ruta de la colección de usuarios
 
       try {
-        this.isModalOpen = false;
+        //this.isModalOpen = false;
         const markerIdsToRemove = this.vehiculos.map(veh => veh.markerId).filter(id => id != null);
         if (markerIdsToRemove.length > 0) {
           await this.map.removeMarkers(markerIdsToRemove); // Elimina los marcadores existentes
@@ -453,6 +452,43 @@ export class MapPage implements OnInit {
           this.tarifa = this.routePoints[0].tarifa_diurna;
         }
 
+        if (this.carDetail.id) {
+          console.log('Actualizando valores del vehiculo detallado')
+          this.vehiculos.filter(veh => {
+            if (veh.id == this.carDetail.id) {
+              const vehicleLat = veh.coordenadas_vehiculo.lat;
+              const vehicleLng = veh.coordenadas_vehiculo.lng;
+              const distance = Math.trunc(this.calculateDistance(this.latitude, this.longitude, vehicleLat, vehicleLng));
+
+              // Velocidad en metros por segundo (30 km/h)
+              const speed = 30 * 1000 / 3600; // 30 km/h a m/s
+              const timeInSeconds = veh.distance / speed + 60; // Tiempo en segundos
+              const arrivalTime = new Date(Date.now() + timeInSeconds * 1000); // Hora de llegada
+              const options: Intl.DateTimeFormatOptions = { // Formato de la hora de llegada
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false, // Cambia a true si deseas el formato de 12 horas
+              };
+              const calculo = arrivalTime.toLocaleTimeString([], options); // Retorna la hora de llegada en formato "HH:MM"
+
+              console.log(`Actualizando Distancia al vehículo ${veh.id}: ${distance} metros`);
+              console.log('Asientos Disponibles:', veh.asientos_dispo_vehiculo)
+              this.carDetail = {
+                id: this.carDetail.id,
+                central: veh.central,
+                id_chofer: veh.chofer_actual,
+                nombreChofer: veh.nombre_chofer,
+                patente: veh.patente_vehiculo,
+                modelo: veh.nombre_modelo,
+                distancia: distance,
+                calculo: calculo,
+                asientos: veh.asientos_dispo_vehiculo,
+                token: veh.token
+              }
+            }
+          })
+        }
+
         if (this.vehiculos.length <= 0) {
           this.utilsSvc.presentToast({
             message: '¡No hay choferes en servicio en esta ruta!',
@@ -480,6 +516,7 @@ export class MapPage implements OnInit {
   showDetailCar(car: any) {
     this.carDetail = {
       id: car.id,
+      central: car.central,
       id_chofer: car.chofer_actual,
       nombreChofer: car.nombre_chofer,
       patente: car.patente_vehiculo,
@@ -490,6 +527,11 @@ export class MapPage implements OnInit {
       token: car.token
     }
     this.isModalOpen = true;
+  }
+
+  deleteDetails() {
+    this.isModalOpen = false;
+    this.carDetail = {};
   }
 
   async centerMap(lat: number, lng: number) {
@@ -552,7 +594,6 @@ export class MapPage implements OnInit {
 
       // Manejo de la respuesta de la operación
       if (result.result == 'OK') {
-        console.log('ID DE PAGO: ', result.operationId);
         const loading = await this.utilsSvc.loading();
         await loading.present(); // Mostrar el loading
 
@@ -563,11 +604,38 @@ export class MapPage implements OnInit {
           const interval = setInterval(() => {
             this.paymentService.getPayment(api_key, result.operationId).subscribe(
               (response) => {
-                console.log('Obteniendo URL de pago:', response);
-
                 // Verificar si el comprobante fue obtenido
                 if (response.receipt_url && response.receipt_url !== "") {
                   clearInterval(interval); // Detener el intervalo
+                  const fechaActual = new Date();
+                  const fecha = fechaActual.toLocaleString('es-ES', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                  });
+                  response.fecha_pago = fecha;
+                  //dato de que central es
+                  response.central = this.carDetail.central;
+                  //datos del chofer
+                  response.id_chofer = this.carDetail.id_chofer;
+                  response.nombre_chofer = this.carDetail.nombreChofer;
+                  response.token_chofer = this.carDetail.token;
+                  //datos del pasajero
+                  response.id_pasajero = this.usuario.uid;
+                  response.nombre_pasajero = this.usuario.name;
+                  response.rut_pasajero = this.usuario.rut_usuario;
+                  //datos del vehiculo
+                  response.vehiculo = {
+                    id_vehiculo: this.carDetail.id,
+                    patente: this.carDetail.patente,
+                    modelo: this.carDetail.modelo,
+                  };
+                  this.firebaseSvc.addDocumentWithId('historial_pago', response, result.operationId);
+
                   const img = '../../../../../assets/comprobado.png';
                   this.mesajeKhipu = {
                     titulo: '¡Listo, Pago realizado!',
@@ -589,7 +657,7 @@ export class MapPage implements OnInit {
               clearInterval(interval); // Detener el intervalo después de 1 minuto
               this.mesajeKhipu = {
                 titulo: 'Error al obtener el comprobante',
-                mensaje: 'No se pudo obtener el comprobante de pago. Intenta nuevamente.',
+                mensaje: 'No se pudo obtener el comprobante de pago. Revisa tu Correo.',
                 img: '../../../../../assets/rechazado.png'
               };
               this.mesajeKhipuModalError = true;

@@ -40,13 +40,13 @@
     <hr>
     <ion-row *ngIf="usuario.en_ruta">
       <ion-col>
-        <div class="overlap-group" (click)="backRuta()">
+        <div class="overlap-group">
           <div class="group">
             <img class="bmw-coupe" src="assets/chofer/ruta.svg" />
           </div>
           <div class="group-2">
             <div class="text-wrapper-2">¿No conoces la ruta?, mírala</div>
-            <ion-button color="primary" expand="block" mode="ios">
+            <ion-button color="primary" expand="block" mode="ios" (click)="backRuta()">
               Ver Ruta
               <ion-icon slot="end" name="map-outline"></ion-icon>
             </ion-button>
@@ -56,13 +56,13 @@
     </ion-row>
     <ion-row *ngIf="usuario.en_ruta">
       <ion-col>
-        <div class="overlap-group" (click)="verAsientos()">
+        <div class="overlap-group">
           <div class="group">
             <img class="bmw-coupe" src="assets/chofer/asiento.svg" />
           </div>
           <div class="group-2">
             <div class="text-wrapper-2">¡Actualiza los asientos disponibles!</div>
-            <ion-button color="primary" expand="block" mode="ios">
+            <ion-button color="primary" expand="block" mode="ios" (click)="verAsientos()">
               Gestionar Asientos
               <ion-icon slot="end" name="car-outline"></ion-icon>
             </ion-button>
@@ -73,13 +73,13 @@
 
     <ion-row *ngIf="usuario.en_ruta">
       <ion-col>
-        <div class="overlap-group" (click)="verRutas()">
+        <div class="overlap-group">
           <div class="group">
             <img class="bmw-coupe" src="assets/chofer/opcion.svg" />
           </div>
           <div class="group-2">
             <div class="text-wrapper-2">¿Quieres Cambiar de Ruta?</div>
-            <ion-button color="primary" expand="block" mode="ios">
+            <ion-button color="primary" expand="block" mode="ios" (click)="verRutas()">
               Cambiar Ruta
               <ion-icon slot="end" name="apps-outline"></ion-icon>
             </ion-button>
@@ -98,7 +98,7 @@
           </div>
           <div class="group-2">
             <div class="text-wrapper-2">¡Visualiza tus vehículos!</div>
-            <ion-button color="primary" expand="block" mode="ios">
+            <ion-button color="primary" expand="block" mode="ios" (click)="verVehiculos()">
               Ver Vehículos
               <ion-icon slot="end" name="car-outline"></ion-icon>
             </ion-button>
@@ -114,7 +114,7 @@
           </div>
           <div class="group-2">
             <div class="text-wrapper-2">¡Gestiona tus Finanzas!</div>
-            <ion-button color="primary" expand="block" mode="ios">
+            <ion-button color="primary" expand="block" mode="ios" (click)="verFinanzas()">
               Ver Finanzas
               <ion-icon slot="end" name="cash-outline"></ion-icon>
             </ion-button>

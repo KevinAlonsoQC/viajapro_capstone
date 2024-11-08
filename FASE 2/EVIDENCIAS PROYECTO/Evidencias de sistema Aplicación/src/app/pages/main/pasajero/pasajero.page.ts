@@ -202,7 +202,7 @@ export class PasajeroPage implements OnInit {
           let distance = this.calculateDistance(latitude, longitude, coord.lat, coord.lng);
           distance = parseFloat(distance.toFixed(1)); // Aproxima la distancia a un decimal
 
-          if (distance < 2000) { // 2 km a la redonda
+          if (distance < 3000) { // 3 km a la redonda
             ruta.distance = `${distance} metros`;
             this.rutasCercanadas.push(ruta);
             break; // Sale del bucle de coordenadas una vez que encuentra una cercana

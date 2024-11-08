@@ -27,7 +27,7 @@
     {{routePoints[0].nombre_ruta}}
   </ion-chip>
   <app-map-pasajero class="capacitor-google-map" id="map"></app-map-pasajero>
-  <ion-modal #modal [isOpen]="isModalOpen" (didDismiss)="isModalOpen = false" [initialBreakpoint]="0.25"
+  <ion-modal #modal [isOpen]="isModalOpen" (didDismiss)="deleteDetails()" [initialBreakpoint]="0.25"
     [breakpoints]="[0, 0.25, 0.5, 0.60]">
     <ng-template>
       <ion-content>
@@ -115,7 +115,7 @@
               <ion-button [disabled]="carDetail.asientos == 0" class="button-pago" expand="block"
                 (click)="startKhipuPayment(carDetail.token)">${{tarifa}}
               </ion-button>
-              <ion-note *ngIf=" carDetail.asientos == 0">Espere un asiento disponible</ion-note>
+              <ion-note *ngIf="carDetail.asientos == 0">Espere un asiento disponible</ion-note>
             </ion-col>
           </ion-row>
         </ion-grid>

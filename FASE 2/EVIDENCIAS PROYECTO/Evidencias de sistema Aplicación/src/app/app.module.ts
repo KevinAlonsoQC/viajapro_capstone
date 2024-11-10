@@ -13,21 +13,21 @@ import { AppRoutingModule } from './app-routing.module';
 import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from 'src/environments/environment.prod';
 
-import {provideHttpClient} from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 
-import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
-    BrowserModule, 
-    IonicModule.forRoot({mode:'md'}), 
+    BrowserModule,
+    IonicModule.forRoot({ mode: 'md' }),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    PdfViewerModule
+    NgxDatatableModule
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy,},provideHttpClient()],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, }, provideHttpClient()],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

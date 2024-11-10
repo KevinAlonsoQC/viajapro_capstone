@@ -8,6 +8,7 @@ import { VerFinanzasPageRoutingModule } from './ver-finanzas-routing.module';
 
 import { VerFinanzasPage } from './ver-finanzas.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     IonicModule,
     VerFinanzasPageRoutingModule,
-    SharedModule
+    SharedModule,
+    NgxDatatableModule
   ],
   declarations: [VerFinanzasPage]
 })

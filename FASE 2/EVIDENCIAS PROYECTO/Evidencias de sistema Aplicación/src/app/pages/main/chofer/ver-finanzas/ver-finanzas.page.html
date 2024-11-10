@@ -1,15 +1,40 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start" class="back-button">
+      <ion-button [routerLink]="['/main/chofer/']" class="back-button ion-text-center">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
     <app-logo-small></app-logo-small>
 
     <ion-buttons slot="end">
       <app-campana [notifica]="true"></app-campana>
-      <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile']"></app-avatar>
     </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <!-- Contenido principal / Cuerpo sector amarillo-->
 <ion-content>
-  
+  <div>
+    <input type="text" style="padding:8px;margin:15px auto;width:30%;" placeholder="Type to filter the name column..."
+      (keyup)="updateFilter($event)" />
+    <ngx-datatable #table class="material" [rows]="rows" [columnMode]="ColumnMode.force" [columns]="columns"
+      [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="10" [selected]="selected"
+      [selectionType]="SelectionType.multi" (select)="onSelect($event)">
+    </ngx-datatable>
+  </div>
+
+  <div class="selected-column">
+    <h4>Selections</h4>
+    <ul>
+      <li *ngFor="let sel of selected">
+        {{ sel.id }}
+        {{ sel.estado_pago }}
+      </li>
+      <li *ngIf="!selected.length">No Selections</li>
+    </ul>
+  </div>
 </ion-content>

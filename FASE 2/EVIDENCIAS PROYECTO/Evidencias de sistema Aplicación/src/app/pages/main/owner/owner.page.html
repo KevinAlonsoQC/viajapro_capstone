@@ -6,15 +6,266 @@
       <app-campana [notifica]="true"></app-campana>
       <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
     </ion-buttons>
-    
+
   </ion-toolbar>
 </ion-header>
 <!-- Contenido principal / Cuerpo sector amarillo-->
-<ion-content id="admin-content">
-  
+<ion-content>
+  <main>
+    <nav class="main-menu">
+      <ul>
+        <li class="nav-item active">
+          <b></b>
+          <b></b>
+          <a href="#">
+            <i class="fa fa-house nav-icon"></i>
+            <span class="nav-text">Home</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <b></b>
+          <b></b>
+          <a href="#">
+            <i class="fa fa-user nav-icon"></i>
+            <span class="nav-text">Profile</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <b></b>
+          <b></b>
+          <a href="#">
+            <i class="fa fa-calendar-check nav-icon"></i>
+            <span class="nav-text">Schedule</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <b></b>
+          <b></b>
+          <a href="#">
+            <i class="fa fa-person-running nav-icon"></i>
+            <span class="nav-text">Activities</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <b></b>
+          <b></b>
+          <a href="#">
+            <i class="fa fa-sliders nav-icon"></i>
+            <span class="nav-text">Settings</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="content">
+      <div class="left-content">
+        <div class="activities">
+          <h1>Finanzas Generales</h1>
+          <div class="activity-container">
+            <div class="image-container img-one">
+              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
+                alt="tennis" />
+              <div class="overlay">
+                <h3>Ventas Anuales</h3>
+              </div>
+            </div>
+
+            <div class="image-container img-two">
+              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
+                alt="hiking" />
+              <div class="overlay">
+                <h3>Ventas Semestrales</h3>
+              </div>
+            </div>
+
+            <div class="image-container img-three">
+              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
+                alt="running" />
+              <div class="overlay">
+                <h3>Ventas Díarias</h3>
+              </div>
+            </div>
+
+            <div class="image-container img-four">
+              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
+                alt="cycling" />
+              <div class="overlay">
+                <h3>Mejor Central</h3>
+              </div>
+            </div>
+
+            <div class="image-container img-five">
+              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg" alt="yoga" />
+              <div class="overlay">
+                <h3>Peor Central</h3>
+              </div>
+            </div>
+
+            <div class="image-container img-six">
+              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
+                alt="swimming" />
+              <div class="overlay">
+                <h3>General</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="left-bottom">
+          <div class="weekly-schedule">
+            <h1>Top Centrales</h1>
+            <div class="calendar">
+              <div class="day-and-activity activity-one">
+                <div class="day">
+                  <h1>1°</h1>
+                  <p>Lugar</p>
+                </div>
+                <div class="activity">
+                  <h2>Pinguinos</h2>
+                  <div class="participants">
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/c61daa1c-5881-43f8-a50f-62be3d235daf"
+                      style="--i: 1" alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/90affa88-8da0-40c8-abe7-f77ea355a9de"
+                      style="--i: 2" alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/07d4fa6f-6559-4874-b912-3968fdfe4e5e"
+                      style="--i: 3" alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/e082b965-bb88-4192-bce6-0eb8b0bf8e68"
+                      style="--i: 4" alt="" />
+                  </div>
+                </div>
+                <button class="btn">Ver Central</button>
+              </div>
+
+              <div class="day-and-activity activity-two">
+                <div class="day">
+                  <h1>2°</h1>
+                  <p>Lugar</p>
+                </div>
+                <div class="activity">
+                  <h2>Estacion Central Unida</h2>
+                  <div class="participants">
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/c61daa1c-5881-43f8-a50f-62be3d235daf"
+                      style="--i: 1" alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/32037044-f076-433a-8a6e-9b80842f29c9"
+                      style="--i: 2" alt="" />
+                  </div>
+                </div>
+                <button class="btn">Ver Central</button>
+              </div>
+
+              <div class="day-and-activity activity-three">
+                <div class="day">
+                  <h1>3°</h1>
+                  <p>Lugar</p>
+                </div>
+                <div class="activity">
+                  <h2>Colectios Unidos</h2>
+                  <div class="participants">
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/32037044-f076-433a-8a6e-9b80842f29c9"
+                      style="--i: 1" alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/e082b965-bb88-4192-bce6-0eb8b0bf8e68"
+                      style="--i: 2" alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/c61daa1c-5881-43f8-a50f-62be3d235daf"
+                      style="--i: 3" alt="" />
+                  </div>
+                </div>
+                <button class="btn">Ver Central</button>
+              </div>
+
+              <div class="day-and-activity activity-four">
+                <div class="day">
+                  <h1>4°</h1>
+                  <p>Lugar</p>
+                </div>
+                <div class="activity">
+                  <h2>ColectosNet</h2>
+                  <div class="participants">
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/07d4fa6f-6559-4874-b912-3968fdfe4e5e"
+                      style="--i: 1" alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/32037044-f076-433a-8a6e-9b80842f29c9"
+                      style="--i: 2" alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/07d4fa6f-6559-4874-b912-3968fdfe4e5e"
+                      alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/c61daa1c-5881-43f8-a50f-62be3d235daf"
+                      style="--i: 4" alt="" />
+                    <img
+                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/90affa88-8da0-40c8-abe7-f77ea355a9de"
+                      style="--i: 5" alt="" />
+                  </div>
+                </div>
+                <button class="btn">Ver Central</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="personal-bests">
+            <h1>Opciones</h1>
+            <div class="personal-bests-container">
+              <div class="best-item box-one">
+                <p>Centrales</p>
+                <img src="https://cdn-icons-png.flaticon.com/512/2761/2761008.png" alt="" />
+              </div>
+              <div class="best-item box-two">
+                <p>Pasajeros</p>
+                <img src="https://cdn-icons-png.flaticon.com/512/2491/2491957.png" alt="" />
+              </div>
+              <div class="best-item box-three">
+                <p>Configuraciones</p>
+                <img src="https://cdn-icons-png.flaticon.com/512/6063/6063673.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-content">
+        <div class="user-info">
+          <div class="icon-container">
+            <i class="fa fa-bell nav-icon"></i>
+            <i class="fa fa-message nav-icon"></i>
+          </div>
+        </div>
+
+        <div class="active-calories">
+          <h1 style="align-self: flex-start">Actividad General</h1>
+          Meta Anual: $100,000,000
+          <div class="active-calories-container">
+            <div class="box" style="--i: 75%">
+              <div class="circle">
+                <h2>75<small>%</small></h2>
+              </div>
+            </div>
+            <div class="calories-content">
+              <p><span>Hoy:</span> $350,00</p>
+              <p><span>Semana:</span> $3,500,000</p>
+              <p><span>Mes:</span> $54,300,000</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </ion-content>
 
 
+<!-- 
 <ion-footer>
   <ion-toolbar>
     <ion-grid [fixed]="true">
@@ -32,3 +283,4 @@
     </ion-grid>
   </ion-toolbar>
 </ion-footer>
+-->

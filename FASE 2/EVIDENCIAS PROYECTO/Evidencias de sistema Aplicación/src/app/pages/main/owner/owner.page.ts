@@ -13,16 +13,28 @@ export class OwnerPage implements OnInit {
   utilsSvc = inject(UtilsService);
   usuario: User;
   userId: string;
+  isMobile: boolean;
+
   constructor() { }
-  
 
   ngOnInit() {
+    // Detectar si es móvil o web
+    this.isMobile = this.detectMobile();
+    
+    // Lógica adicional basada en la detección
+    console.log(this.isMobile ? 'Dispositivo móvil' : 'Web');
+
     // Suscribirse al observable del usuario
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
       // Aquí puedes realizar más acciones si es necesario
     });
     this.utilsSvc.getFromLocalStorage('usuario');
+  }
+
+  detectMobile(): boolean {
+    const userAgent = navigator.userAgent || navigator.vendor || window['opera'];
+    return /android|iPad|iPhone|iPod/i.test(userAgent);
   }
 
   async ionViewWillEnter() {
@@ -67,13 +79,12 @@ export class OwnerPage implements OnInit {
       loading.dismiss();
     }
   }
-  profile(){
+
+  profile() {
     this.utilsSvc.routerLink('/main/profile-menu');
   }
 
   signOut() {
     this.firebaseSvc.signOut();
   }
-
-  
 }

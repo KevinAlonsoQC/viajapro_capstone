@@ -27,6 +27,8 @@ export class VerFinanzasPage implements OnInit {
   selected = [];
   SelectionType = SelectionType;
 
+  seleccionado = false;
+
 
   @ViewChild(DatatableComponent) table: DatatableComponent;
   ColumnMode = ColumnMode;
@@ -68,8 +70,8 @@ export class VerFinanzasPage implements OnInit {
         id: historial.id, //ID de la transacción
         nombreChofer: historial.nombre_chofer, //nombre del chofer
         rutChofer: historial.rut_chofer, //rut del chofer
-        modeloVeh: historial.modelo, //modelo del vehículo que usó
-        patenteVeh: historial.patente, //patente del vehículo que usó
+        modeloVeh: historial.vehiculo.modelo, //modelo del vehículo que usó
+        patenteVeh: historial.vehiculo.patente, //patente del vehículo que usó
 
         nombrePago: historial.payer_name, //nombre del dueño de la cuenta bancaria que pagó
         correoPago: historial.payer_email, //email del dueño de la cuenta bancaria que pagó
@@ -87,9 +89,9 @@ export class VerFinanzasPage implements OnInit {
         //credit para pago con crédito,
         //vacío en el caso de que se haya pagado mediante transferencia bancaria.
 
-        monto: historial.amount,  //monto del pago
+        monto: Math.trunc(historial.amount),  //monto del pago
         banco: historial.bank, //banco del cual pagó
-        
+
         estado_pago: historial.status, //Estado del pago, puede ser 
         //'pending' (el pagador aún no comienza a pagar), 
         //'verifying' (se está verificando el pago) 
@@ -98,7 +100,9 @@ export class VerFinanzasPage implements OnInit {
         //Datos que se mostrará en la pantalla!
         nombrePasajero: historial.nombre_pasajero, //nombre del pasajero que se subió
         rutPasajero: historial.rut_pasajero, //rut del pasajero que se subió
-        fechaPago: historial.fecha_pago //fecha de pago
+        fechaPago: historial.fecha_pago, //fecha de pago
+
+        razon: historial.subject
       }));
       this.temp = [...this.rows];
 
@@ -129,7 +133,8 @@ export class VerFinanzasPage implements OnInit {
 
   onSelect({ selected }) {
     console.log('Select Event', selected, this.selected);
-
+    this.seleccionado = true;
+    
     this.selected.splice(0, this.selected.length);
     this.selected.push(...selected);
   }
@@ -137,12 +142,20 @@ export class VerFinanzasPage implements OnInit {
   updateFilter(event) {
     const val = event.target.value.toLowerCase();
 
-    // Filtrar los datos
-    const temp = this.temp.filter(d => d.name.toLowerCase().indexOf(val) !== -1 || !val);
+    // Filtrar los datos basados en las propiedades correctas
+    const temp = this.temp.filter(d => {
+      return (
+        (d.nombrePasajero && d.nombrePasajero.toLowerCase().includes(val)) ||
+        (d.rutPasajero && d.rutPasajero.toLowerCase().includes(val)) ||
+        (d.fechaPago && d.fechaPago.toLowerCase().includes(val)) ||
+        !val
+      );
+    });
 
     // Actualizar las filas
     this.rows = temp;
     // Regresar a la primera página si hay un filtro
     this.table.offset = 0;
   }
+
 }

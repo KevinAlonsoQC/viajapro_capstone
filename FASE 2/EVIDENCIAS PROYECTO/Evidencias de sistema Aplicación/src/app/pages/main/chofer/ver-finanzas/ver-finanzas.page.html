@@ -18,23 +18,122 @@
 
 <!-- Contenido principal / Cuerpo sector amarillo-->
 <ion-content>
-  <div>
-    <input type="text" style="padding:8px;margin:15px auto;width:30%;" placeholder="Type to filter the name column..."
-      (keyup)="updateFilter($event)" />
-    <ngx-datatable #table class="material" [rows]="rows" [columnMode]="ColumnMode.force" [columns]="columns"
-      [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="10" [selected]="selected"
-      [selectionType]="SelectionType.multi" (select)="onSelect($event)">
-    </ngx-datatable>
-  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          <ion-input label="Buscar Registro..." labelPlacement="stacked" [clearOnEdit]="true"
+            placeholder="Ingresa la Fecha, Nombre o Rut" (keyup)="updateFilter($event)">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ngx-datatable #table class="material" [rows]="rows" [columnMode]="ColumnMode.force" [columns]="columns"
+          [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="10" [selected]="selected"
+          [selectionType]="SelectionType.multi" (select)="onSelect($event)">
+        </ngx-datatable>
+      </ion-col>
+    </ion-row>
 
-  <div class="selected-column">
-    <h4>Selections</h4>
-    <ul>
-      <li *ngFor="let sel of selected">
-        {{ sel.id }}
-        {{ sel.estado_pago }}
-      </li>
-      <li *ngIf="!selected.length">No Selections</li>
-    </ul>
-  </div>
+    <ion-row>
+      <div class="box">
+        <div class="rectangle"></div>
+      </div>
+    </ion-row>
+
+    <ion-row *ngIf="seleccionado">
+      <h4>Información</h4>
+      <div class="plan" *ngFor="let sel of selected">
+        <div class="inner">
+          <span class="pricing">
+            <span>
+              ${{ sel.monto }}
+            </span>
+          </span>
+          <p class="title">ID: {{ sel.id }}</p>
+          <p class="info">{{ sel.fechaPago }}</p>
+          <ul class="features">
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Chofer: </strong> {{ sel.nombreChofer }} / {{ sel.rutChofer }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Pasajero: </strong> {{ sel.nombrePasajero }} / {{ sel.rutPasajero }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Vehículo: </strong> {{ sel.modeloVeh }} / {{ sel.patenteVeh }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Responsable Pago: </strong> {{ sel.nombrePago }} / {{ sel.rutPago }} / {{ sel.correoPago }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Banco: </strong> {{ sel.banco }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Mensaje Pago: </strong>{{ sel.razon }}</span>
+            </li>
+
+          </ul>
+
+          <div class="action">
+            <ion-button class="button" fill="clear" [href]="sel.comprobante">Comprobante</ion-button>
+          </div>
+        </div>
+      </div>
+    </ion-row>
+  </ion-grid>
 </ion-content>

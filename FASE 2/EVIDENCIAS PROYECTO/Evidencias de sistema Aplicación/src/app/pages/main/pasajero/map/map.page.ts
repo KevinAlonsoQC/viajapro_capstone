@@ -519,6 +519,7 @@ export class MapPage implements OnInit {
       central: car.central,
       id_chofer: car.chofer_actual,
       nombreChofer: car.nombre_chofer,
+      rutChofer: car.rut_chofer,
       patente: car.patente_vehiculo,
       modelo: car.nombre_modelo,
       distancia: car.distance,
@@ -623,6 +624,7 @@ export class MapPage implements OnInit {
                   //datos del chofer
                   response.id_chofer = this.carDetail.id_chofer;
                   response.nombre_chofer = this.carDetail.nombreChofer;
+                  response.rut_chofer = this.carDetail.rutChofer;
                   response.token_chofer = this.carDetail.token;
                   //datos del pasajero
                   response.id_pasajero = this.usuario.uid;

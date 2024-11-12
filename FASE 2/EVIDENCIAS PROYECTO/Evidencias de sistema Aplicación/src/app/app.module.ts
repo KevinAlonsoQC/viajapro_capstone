@@ -17,6 +17,8 @@ import { provideHttpClient } from '@angular/common/http';
 
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
+import { BaseChartDirective } from 'ng2-charts';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,9 +27,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
     IonicModule.forRoot({ mode: 'md' }),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    NgxDatatableModule
+    NgxDatatableModule,
+    BaseChartDirective
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, }, provideHttpClient()],
+  providers: [provideCharts(withDefaultRegisterables()), { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, }, provideHttpClient()],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

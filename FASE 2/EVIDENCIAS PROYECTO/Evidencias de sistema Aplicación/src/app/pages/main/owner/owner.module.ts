@@ -8,6 +8,7 @@ import { OwnerPageRoutingModule } from './owner-routing.module';
 
 import { OwnerPage } from './owner.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { BaseChartDirective } from 'ng2-charts';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     IonicModule,
     OwnerPageRoutingModule,
-    SharedModule
+    SharedModule,
+    BaseChartDirective
   ],
   declarations: [OwnerPage]
 })

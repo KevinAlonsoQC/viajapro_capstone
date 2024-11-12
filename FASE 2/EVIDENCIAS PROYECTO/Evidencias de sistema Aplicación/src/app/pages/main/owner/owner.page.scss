@@ -1,153 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;500;600;700;800;900;1000&family=Roboto:wght@300;400;500;700&display=swap");
 
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-}
-
-nav {
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-}
-
-nav ul,
-nav ul li {
-    outline: 0;
-}
-
-nav ul li a {
-    text-decoration: none;
-}
-
-/* MAIN MENU */
-
-main {
-    font-family: "Nunito", sans-serif;
-    display: flex;
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 13% 87%;
-    width: 100%;
-    z-index: 10;
-}
-
-.main-menu {
-    overflow: hidden;
-    background: #FFCE48;
-    padding-top: 10px;
-    font-family: "Roboto", sans-serif;
-}
-
-.main-menu h1 {
-    display: block;
-    font-size: 1.5rem;
-    font-weight: 500;
-    text-align: center;
-    margin: 20px 0 30px;
-    color: #fff;
-    font-family: "Nunito", sans-serif;
-}
-
-.logo {
-    display: none;
-}
-
-.nav-item {
-    position: relative;
-    display: block;
-}
-
-.nav-item a {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 1rem;
-    padding: 15px 0;
-    margin-left: 10px;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
-}
-
-.nav-item b:nth-child(1) {
-    position: absolute;
-    top: -15px;
-    height: 15px;
-    width: 100%;
-    background: #fff;
-    display: none;
-}
-
-.nav-item b:nth-child(1)::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-bottom-right-radius: 20px;
-    background: #FFCE48;
-}
-
-.nav-item b:nth-child(2) {
-    position: absolute;
-    bottom: -15px;
-    height: 15px;
-    width: 100%;
-    background: #fff;
-    display: none;
-}
-
-.nav-item b:nth-child(2)::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-top-right-radius: 20px;
-    background: #FFCE48;
-}
-
-.nav-item.active b:nth-child(1),
-.nav-item.active b:nth-child(2) {
-    display: block;
-}
-
-.nav-item.active a {
-    text-decoration: none;
-    color: #000;
-    background: rgb(254, 254, 254);
-}
-
-.nav-icon {
-    width: 60px;
-    height: 20px;
-    font-size: 20px;
-    text-align: center;
-}
-
-.nav-text {
-    display: block;
-    width: 120px;
-    height: 20px;
-}
-
-/* CONTENT */
-
-.content {
-    display: grid;
-    grid-template-columns: 75% 25%;
-}
-
 /* LEFT CONTENT */
 
 .left-content {
@@ -162,7 +14,6 @@ main {
 /* ACTIVITIES */
 
 .activities h1 {
-    margin: 0 0 20px;
     font-size: 1.4rem;
     font-weight: 700;
 }
@@ -207,7 +58,7 @@ main {
     border-radius: 10px;
 }
 
-.image-container img {
+.image-container canvas {
     width: 100%;
     height: 100%;
     border-radius: 10px;
@@ -219,7 +70,6 @@ main {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    justify-content: flex-end;
     top: 0;
     left: 0;
     width: 100%;
@@ -230,6 +80,8 @@ main {
             rgba(3, 3, 185, 0.5));
     border-radius: 10px;
     transition: all 0.6s linear;
+    text-align: center;
+
 }
 
 .image-container:hover .overlay {
@@ -240,6 +92,8 @@ main {
     margin-bottom: 8px;
     margin-right: 10px;
     color: #000;
+    font-size: 15px;
+    font-weight: 700;
 }
 
 /* LEFT BOTTOM */
@@ -252,21 +106,7 @@ main {
 
 /* WEEKLY SCHEDULE */
 
-.weekly-schedule {
-    display: flex;
-    flex-direction: column;
-}
-
-.weekly-schedule h1 {
-    margin-top: 20px;
-    font-size: 1.3rem;
-    font-weight: 700;
-}
-
-.calendar {
-    margin-top: 10px;
-}
-
+/* General style for day-and-activity */
 .day-and-activity {
     display: grid;
     grid-template-columns: 15% 60% 25%;
@@ -277,24 +117,23 @@ main {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 3px;
 }
 
-.activity-one {
+/* Apply gradient background using nth-child */
+.day-and-activity:nth-child(1) {
     background-color: rgb(124, 136, 224, 0.5);
-    background-image: linear-gradient(240deg,
-            rgb(124, 136, 224) 0%,
-            #c3f4fc 100%);
+    background-image: linear-gradient(240deg, rgb(124, 136, 224) 0%, #c3f4fc 100%);
 }
 
-.activity-two {
+.day-and-activity:nth-child(2) {
     background-color: #aee2a4a1;
     background-image: linear-gradient(240deg, #e5a243ab 0%, #f7f7aa 90%);
 }
 
-.activity-three {
+.day-and-activity:nth-child(3) {
     background-color: #ecfcc376;
     background-image: linear-gradient(240deg, #97e7d1 0%, #ecfcc3 100%);
 }
 
-.activity-four {
+.day-and-activity:nth-child(4) {
     background-color: #e6a7c3b5;
     background-image: linear-gradient(240deg, #fc8ebe 0%, #fce5c3 100%);
 }
@@ -324,6 +163,7 @@ main {
 
 .participants {
     display: flex;
+    flex-direction: row; /* Asegura que los elementos sean horizontales */
     margin-left: 20px;
 }
 
@@ -331,8 +171,8 @@ main {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    z-index: calc(2 * var(--i));
-    margin-left: -10px;
+    z-index: calc(2 * var(1));
+    margin-left: 5px; /* Añade un pequeño espacio entre las imágenes */
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 3px;
 }
 
@@ -345,9 +185,9 @@ main {
 
 .btn {
     display: block;
-    padding: 8px 24px;
+    padding: 8px 10px;
     margin: 10px auto;
-    font-size: 1.1rem;
+    font-size: 0.8rem;
     font-weight: 500;
     outline: none;
     text-decoration: none;
@@ -414,6 +254,14 @@ main {
     height: 100%;
     border-radius: 15px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 3px;
+}
+
+.best-item:hover,
+.best-item:focus,
+.best-item:active,
+.best-item:visited {
+    transition-timing-function: cubic-bezier(0.6, 4, 0.3, 0.8);
+    animation: gelatine 0.5s 1;
 }
 
 .box-one {
@@ -508,8 +356,7 @@ main {
     flex-direction: column;
     align-items: center;
     background-color: rgb(214, 227, 248);
-    padding: 0 10px;
-    margin: 15px 10px 0;
+    padding: 0 20px;
     border-radius: 15px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 3px;
 }
@@ -578,349 +425,4 @@ main {
     inset: 10px;
     background-color: rgb(214, 227, 248);
     border-radius: 50%;
-}
-
-/* MOBILE PERSONAL BESTS  */
-
-.mobile-personal-bests {
-    display: none;
-}
-
-/* FRIEND ACTIVITIES  */
-
-.friends-activity {
-    display: flex;
-    flex-direction: column;
-}
-
-.friends-activity h1 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin: 15px 0 10px 15px;
-}
-
-.card-container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.card {
-    background-color: #fff;
-    margin: 0 10px;
-    padding: 5px 7px;
-    border-radius: 15px;
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 3px;
-}
-
-.card-two {
-    display: block;
-}
-
-.card-user-info {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding-bottom: 5px;
-}
-
-.card-user-info img {
-    width: 25px;
-    aspect-ratio: 1/1;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-.card-user-info h2 {
-    font-size: 1rem;
-    font-weight: 700;
-    margin-left: 5px;
-}
-
-.card-img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 7/4;
-    margin-bottom: 10px;
-    object-fit: cover;
-    border-radius: 10px;
-    object-position: 50% 30%;
-}
-
-.card p {
-    font-size: 0.9rem;
-    padding: 0 5px 5px;
-}
-
-@media (max-width: 1500px) {
-    main {
-        grid-template-columns: 6% 94%;
-    }
-
-    .main-menu h1 {
-        display: none;
-    }
-
-    .logo {
-        display: block;
-        width: 30px;
-        margin: 20px auto;
-    }
-
-    .nav-text {
-        display: none;
-    }
-
-    .content {
-        grid-template-columns: 70% 30%;
-    }
-}
-
-@media (max-width: 1310px) {
-    main {
-        grid-template-columns: 8% 92%;
-        margin: 30px;
-    }
-
-    .content {
-        grid-template-columns: 65% 35%;
-    }
-
-    .day-and-activity {
-        margin-bottom: 10px;
-    }
-
-    .btn {
-        padding: 8px 16px;
-        margin: 10px 0;
-        margin-right: 10px;
-        font-size: 1rem;
-    }
-
-    .personal-bests-container {
-        grid-template-rows: repeat(3, 98px);
-        gap: 15px;
-    }
-
-    .box-one {
-        flex-direction: row;
-        justify-content: space-between;
-        grid-area: 1 / 1 / 2 / 3;
-        padding: 10px;
-        font-size: 0.9rem;
-    }
-
-    .box-one img {
-        max-width: 80px;
-    }
-
-    .box-two {
-        flex-direction: row;
-        justify-content: space-between;
-        grid-area: 2 / 1 / 3 / 3;
-    }
-
-    .box-two img {
-        max-width: 70px;
-        align-self: center;
-    }
-
-    .box-three {
-        flex-direction: row;
-        justify-content: space-between;
-        grid-area: 3 / 1 / 4 / 3;
-    }
-
-    .box-three img {
-        max-width: 60px;
-        align-self: center;
-    }
-
-    .right-content {
-        grid-template-rows: 4% 20% 76%;
-        margin: 15px 15px 15px 0;
-    }
-}
-
-@media (max-width: 1150px) {
-    .content {
-        grid-template-columns: 60% 40%;
-    }
-
-    .left-content {
-        grid-template-rows: 50% 50%;
-        margin: 15px;
-        padding: 20px;
-    }
-
-    .btn {
-        padding: 8px 8px;
-        font-size: 0.9rem;
-    }
-
-    .personal-bests-container {
-        grid-template-rows: repeat(3, 70px);
-        gap: 10px;
-    }
-
-    .activity-container {
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 150px);
-    }
-
-    .img-one {
-        grid-area: 1 / 1 / 2 / 2;
-    }
-
-    .img-two {
-        grid-area: 2 / 1 / 3 / 2;
-    }
-
-    .img-three {
-        display: none;
-    }
-
-    .img-four {
-        grid-area: 1 / 2 / 2 / 3;
-    }
-
-    .img-five {
-        grid-area: 1 / 3 / 2 / 4;
-    }
-
-    .img-six {
-        grid-area: 2 / 2 / 3 / 4;
-    }
-
-    .left-bottom {
-        grid-template-columns: 100%;
-        gap: 0;
-    }
-
-    .right-content {
-        grid-template-rows: 4% 19% 36% 41%;
-    }
-
-    .personal-bests {
-        display: none;
-    }
-
-    .mobile-personal-bests {
-        display: block;
-        margin: 0 10px;
-    }
-
-    .mobile-personal-bests h1 {
-        margin-top: 20px;
-        font-size: 1.2rem;
-    }
-
-    .card-two {
-        display: none;
-    }
-
-    .card-img {
-        aspect-ratio: 16/9;
-    }
-}
-
-@media (max-width: 1050px) {
-    .right-content {
-        grid-template-rows: 4% 19% 37% 40%;
-    }
-}
-
-@media (max-width: 910px) {
-    main {
-        grid-template-columns: 10% 90%;
-        margin: 20px;
-    }
-
-    .content {
-        grid-template-columns: 55% 45%;
-    }
-
-    .left-content {
-        grid-template-rows: 50% 50%;
-        padding: 30px 20px 20px;
-    }
-
-    .activity-container {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(2, 150px);
-    }
-
-    .img-one {
-        grid-area: 1 / 1 / 2 / 2;
-    }
-
-    .img-two {
-        grid-area: 2 / 1 / 3 / 2;
-    }
-
-    .img-three {
-        display: none;
-    }
-
-    .img-four {
-        grid-area: 1 / 2 / 2 / 3;
-    }
-
-    .img-five {
-        grid-area: 2 / 2 / 3 / 3;
-    }
-
-    .img-six {
-        display: none;
-    }
-}
-
-@media (max-width: 800px) {
-    .content {
-        grid-template-columns: 52% 48%;
-    }
-}
-
-@media (max-width: 700px) {
-    main {
-        grid-template-columns: 15% 85%;
-    }
-
-    .content {
-        grid-template-columns: 100%;
-        grid-template-rows: 45% 55%;
-        grid-template-areas:
-            "rightContent"
-            "leftContent";
-    }
-
-    .left-content {
-        grid-area: leftContent;
-        grid-template-rows: 45% 55%;
-        padding: 10px 20px 10px;
-    }
-
-    .right-content {
-        grid-area: rightContent;
-        grid-template-rows: 5% 40% 50%;
-        margin: 15px 15px 0 15px;
-        padding: 10px 0 0;
-        gap: 15px;
-    }
-
-    .activities,
-    .weekly-schedule {
-        margin-top: 10px;
-    }
-
-    .active-calories-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .friends-activity {
-        display: none;
-    }
 }

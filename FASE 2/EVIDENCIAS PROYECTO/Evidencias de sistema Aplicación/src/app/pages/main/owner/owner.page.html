@@ -11,241 +11,115 @@
 </ion-header>
 <!-- Contenido principal / Cuerpo sector amarillo-->
 <ion-content>
-  <main>
-    <nav class="main-menu">
-      <ul>
-        <li class="nav-item active">
-          <b></b>
-          <b></b>
-          <a href="#">
-            <i class="fa fa-house nav-icon"></i>
-            <span class="nav-text">Home</span>
-          </a>
-        </li>
+  <ion-grid [fixed]="true">
+    <ion-row>
+      <ion-col>
+        <div class="image-container">
+          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <div class="overlay">
+            <h3>Ventas Diarias</h3>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="image-container">
+          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <div class="overlay">
+            <h3>Ventas Semanales</h3>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="image-container">
+          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <div class="overlay">
+            <h3>Ventas Mensuales</h3>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
 
-        <li class="nav-item">
-          <b></b>
-          <b></b>
-          <a href="#">
-            <i class="fa fa-user nav-icon"></i>
-            <span class="nav-text">Profile</span>
-          </a>
-        </li>
+    <ion-row>
+      <ion-col>
+        <div class="image-container">
+          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <div class="overlay">
+            <h3>Ventas en General</h3>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="image-container">
+          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <div class="overlay">
+            <h3>Ventas en General</h3>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col>
+        <div class="image-container">
+          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <div class="overlay">
+            <h3>Ventas en General</h3>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-        <li class="nav-item">
-          <b></b>
-          <b></b>
-          <a href="#">
-            <i class="fa fa-calendar-check nav-icon"></i>
-            <span class="nav-text">Schedule</span>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <b></b>
-          <b></b>
-          <a href="#">
-            <i class="fa fa-person-running nav-icon"></i>
-            <span class="nav-text">Activities</span>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <b></b>
-          <b></b>
-          <a href="#">
-            <i class="fa fa-sliders nav-icon"></i>
-            <span class="nav-text">Settings</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-
-    <section class="content">
-      <div class="left-content">
-        <div class="activities">
-          <h1>Finanzas Generales</h1>
-          <div class="activity-container">
-            <div class="image-container img-one">
-              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
-                alt="tennis" />
-              <div class="overlay">
-                <h3>Ventas Anuales</h3>
+  <ion-grid [fixed]="true">
+    <ion-row class="ion-align-items-start">
+      <ion-col>
+        <div class="calendar">
+          <h1>Top Centrales</h1>
+          <div class="day-and-activity" *ngFor="let item of rankingCentrales">
+            <div class="day">
+              <h1>1°</h1>
+              <p>Lugar</p>
+            </div>
+            <div class="activity">
+              <h2>{{ item.central.nombre_central }}</h2>
+              <div class="participants">
+                <img *ngFor="let empleado of item.empleados" [src]="empleado.img_usuario" alt="" />
               </div>
             </div>
-
-            <div class="image-container img-two">
-              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
-                alt="hiking" />
-              <div class="overlay">
-                <h3>Ventas Semestrales</h3>
-              </div>
-            </div>
-
-            <div class="image-container img-three">
-              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
-                alt="running" />
-              <div class="overlay">
-                <h3>Ventas Díarias</h3>
-              </div>
-            </div>
-
-            <div class="image-container img-four">
-              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
-                alt="cycling" />
-              <div class="overlay">
-                <h3>Mejor Central</h3>
-              </div>
-            </div>
-
-            <div class="image-container img-five">
-              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg" alt="yoga" />
-              <div class="overlay">
-                <h3>Peor Central</h3>
-              </div>
-            </div>
-
-            <div class="image-container img-six">
-              <img src="https://mexico.unir.net/wp-content/uploads/sites/6/2022/05/grafico-diagramas.jpg"
-                alt="swimming" />
-              <div class="overlay">
-                <h3>General</h3>
-              </div>
-            </div>
+            <button class="btn">Ver Central</button>
           </div>
         </div>
 
-        <div class="left-bottom">
-          <div class="weekly-schedule">
-            <h1>Top Centrales</h1>
-            <div class="calendar">
-              <div class="day-and-activity activity-one">
-                <div class="day">
-                  <h1>1°</h1>
-                  <p>Lugar</p>
-                </div>
-                <div class="activity">
-                  <h2>Pinguinos</h2>
-                  <div class="participants">
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/c61daa1c-5881-43f8-a50f-62be3d235daf"
-                      style="--i: 1" alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/90affa88-8da0-40c8-abe7-f77ea355a9de"
-                      style="--i: 2" alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/07d4fa6f-6559-4874-b912-3968fdfe4e5e"
-                      style="--i: 3" alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/e082b965-bb88-4192-bce6-0eb8b0bf8e68"
-                      style="--i: 4" alt="" />
-                  </div>
-                </div>
-                <button class="btn">Ver Central</button>
-              </div>
+      </ion-col>
 
-              <div class="day-and-activity activity-two">
-                <div class="day">
-                  <h1>2°</h1>
-                  <p>Lugar</p>
-                </div>
-                <div class="activity">
-                  <h2>Estacion Central Unida</h2>
-                  <div class="participants">
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/c61daa1c-5881-43f8-a50f-62be3d235daf"
-                      style="--i: 1" alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/32037044-f076-433a-8a6e-9b80842f29c9"
-                      style="--i: 2" alt="" />
-                  </div>
-                </div>
-                <button class="btn">Ver Central</button>
-              </div>
-
-              <div class="day-and-activity activity-three">
-                <div class="day">
-                  <h1>3°</h1>
-                  <p>Lugar</p>
-                </div>
-                <div class="activity">
-                  <h2>Colectios Unidos</h2>
-                  <div class="participants">
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/32037044-f076-433a-8a6e-9b80842f29c9"
-                      style="--i: 1" alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/e082b965-bb88-4192-bce6-0eb8b0bf8e68"
-                      style="--i: 2" alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/c61daa1c-5881-43f8-a50f-62be3d235daf"
-                      style="--i: 3" alt="" />
-                  </div>
-                </div>
-                <button class="btn">Ver Central</button>
-              </div>
-
-              <div class="day-and-activity activity-four">
-                <div class="day">
-                  <h1>4°</h1>
-                  <p>Lugar</p>
-                </div>
-                <div class="activity">
-                  <h2>ColectosNet</h2>
-                  <div class="participants">
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/07d4fa6f-6559-4874-b912-3968fdfe4e5e"
-                      style="--i: 1" alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/32037044-f076-433a-8a6e-9b80842f29c9"
-                      style="--i: 2" alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/07d4fa6f-6559-4874-b912-3968fdfe4e5e"
-                      alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/c61daa1c-5881-43f8-a50f-62be3d235daf"
-                      style="--i: 4" alt="" />
-                    <img
-                      src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/90affa88-8da0-40c8-abe7-f77ea355a9de"
-                      style="--i: 5" alt="" />
-                  </div>
-                </div>
-                <button class="btn">Ver Central</button>
-              </div>
+      <ion-col>
+        <div class="personal-bests">
+          <h1>Opciones</h1>
+          <div class="personal-bests-container">
+            <div class="best-item box-one" (click)="garitas()">
+              <p>Centrales</p>
+              <img src="https://cdn-icons-png.flaticon.com/512/2761/2761008.png" alt="" />
             </div>
-          </div>
-
-          <div class="personal-bests">
-            <h1>Opciones</h1>
-            <div class="personal-bests-container">
-              <div class="best-item box-one">
-                <p>Centrales</p>
-                <img src="https://cdn-icons-png.flaticon.com/512/2761/2761008.png" alt="" />
-              </div>
-              <div class="best-item box-two">
-                <p>Pasajeros</p>
-                <img src="https://cdn-icons-png.flaticon.com/512/2491/2491957.png" alt="" />
-              </div>
-              <div class="best-item box-three">
-                <p>Configuraciones</p>
-                <img src="https://cdn-icons-png.flaticon.com/512/6063/6063673.png" alt="" />
-              </div>
+            <div class="best-item box-two" (click)="pasajeros()">
+              <p>Pasajeros</p>
+              <img src="https://cdn-icons-png.flaticon.com/512/2491/2491957.png" alt="" />
+            </div>
+            <div class="best-item box-three" (click)="config()">
+              <p>Configuraciones</p>
+              <img src="https://cdn-icons-png.flaticon.com/512/6063/6063673.png" alt="" />
             </div>
           </div>
         </div>
-      </div>
+      </ion-col>
 
-      <div class="right-content">
-        <div class="user-info">
-          <div class="icon-container">
-            <i class="fa fa-bell nav-icon"></i>
-            <i class="fa fa-message nav-icon"></i>
-          </div>
-        </div>
-
+      <ion-col>
         <div class="active-calories">
-          <h1 style="align-self: flex-start">Actividad General</h1>
-          Meta Anual: $100,000,000
+          <h1 style="align-self: flex-start">Actividad General <br>
+            Meta Anual: $100,000,000
+          </h1>
           <div class="active-calories-container">
             <div class="box" style="--i: 75%">
               <div class="circle">
@@ -259,28 +133,27 @@
             </div>
           </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 
 
-<!-- 
+
 <ion-footer>
   <ion-toolbar>
-    <ion-grid [fixed]="true">
+    <ion-grid>
       <ion-row>
         <ion-col class="ion-text-center">
           <app-menu-master url="main/owner/admin" txt_icon="Aplicación" icon="settings-outline"></app-menu-master>
         </ion-col>
-        <ion-col class="ion-text-center"> 
-          <app-menu-master url="main/owner" txt_icon="Inicio" icon="home-outline" ></app-menu-master>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/owner" txt_icon="Inicio" icon="home-outline"></app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/owner/central" txt_icon="Cuentas" icon="person-outline" ></app-menu-master>
+          <app-menu-master url="main/owner/central" txt_icon="Cuentas" icon="person-outline"></app-menu-master>
         </ion-col>
       </ion-row>
     </ion-grid>
   </ion-toolbar>
 </ion-footer>
--->

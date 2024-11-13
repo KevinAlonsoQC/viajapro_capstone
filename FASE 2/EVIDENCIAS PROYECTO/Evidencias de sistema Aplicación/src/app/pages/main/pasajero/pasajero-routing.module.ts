@@ -11,7 +11,11 @@ const routes: Routes = [
   {
     path: 'map/:id',
     loadChildren: () => import('./map/map.module').then( m => m.MapPageModule)
+  },  {
+    path: 'finanzas',
+    loadChildren: () => import('./finanzas/finanzas.module').then( m => m.FinanzasPageModule)
   }
+
 
 ];
 

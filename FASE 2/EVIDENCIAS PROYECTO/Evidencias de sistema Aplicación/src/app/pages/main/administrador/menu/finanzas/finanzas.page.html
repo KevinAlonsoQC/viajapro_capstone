@@ -1,13 +1,156 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>finanzas</ion-title>
+  <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start" class="back-button">
+      <ion-button [routerLink]="['/main/administrador/admin']" class="back-button ion-text-center">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile-menu']"></app-avatar>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">finanzas</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<!-- Contenido principal / Cuerpo sector amarillo-->
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-align-items-center">
+      <ion-col>
+        <ion-item>
+          <ion-input label="Buscar Registro..." labelPlacement="stacked" [clearOnEdit]="true"
+            placeholder="Ingresa la Fecha, Nombre o Rut" (keyup)="updateFilter($event)">
+          </ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+
+    <ion-row class="ion-align-items-center">
+      <ion-col>
+        <ngx-datatable #table class="material" [rows]="rows" [columnMode]="ColumnMode.force" [columns]="columns"
+          [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="10" [selected]="selected"
+          [selectionType]="SelectionType.multi" (select)="onSelect($event)">
+        </ngx-datatable>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="seleccionado" class="ion-align-items-center">
+      <div class="plan" *ngFor="let sel of selected">
+        <div class="inner">
+          <span class="pricing">
+            <span>
+              ${{ sel.monto }}
+            </span>
+          </span>
+          <p class="title">
+            Detalles del Pago
+            <br><br>
+            ID: {{ sel.id }}
+          </p>
+          <p class="info">{{ sel.fechaPago }}</p>
+          <ul class="features">
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Chofer: </strong> {{ sel.nombreChofer }} / {{ sel.rutChofer }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Pasajero: </strong> {{ sel.nombrePasajero }} / {{ sel.rutPasajero }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Vehículo: </strong> {{ sel.modeloVeh }} / {{ sel.patenteVeh }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Responsable Pago: </strong> {{ sel.nombrePago }} / {{ sel.rutPago }} / {{ sel.correoPago
+                }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Banco: </strong> {{ sel.banco }}</span>
+            </li>
+
+            <li>
+              <span class="icon">
+                <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path fill="currentColor" d="M10 15.172l9.192-9.193 1.415 1.414L10 18l-6.364-6.364 1.414-1.414z">
+                  </path>
+                </svg>
+              </span>
+
+              <span><strong>Mensaje Pago: </strong>{{ sel.razon }}</span>
+            </li>
+
+          </ul>
+
+          <div class="action">
+            <ion-button class="button" fill="clear" [href]="sel.comprobante">Comprobante</ion-button>
+          </div>
+        </div>
+      </div>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid [fixed]="true">
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/administrador/personal" txt_icon="Personal" icon="person-outline"></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/administrador/admin" txt_icon="Inicio" icon="home-outline"></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/administrador/finanzas" txt_icon="Finanzas" icon="wallet-outline" ></app-menu-master>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

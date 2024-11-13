@@ -4,19 +4,20 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { VerVehiculosPageRoutingModule } from './ver-vehiculos-routing.module';
+import { FinanzasPageRoutingModule } from './finanzas-routing.module';
 
-import { VerVehiculosPage } from './ver-vehiculos.page';
+import { FinanzasPage } from './finanzas.page';
 import { SharedModule } from 'src/app/shared/shared.module';
-
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    VerVehiculosPageRoutingModule,
-    SharedModule
+    FinanzasPageRoutingModule,
+    SharedModule,
+    NgxDatatableModule
   ],
-  declarations: [VerVehiculosPage]
+  declarations: [FinanzasPage]
 })
-export class VerVehiculosPageModule {}
+export class FinanzasPageModule {}

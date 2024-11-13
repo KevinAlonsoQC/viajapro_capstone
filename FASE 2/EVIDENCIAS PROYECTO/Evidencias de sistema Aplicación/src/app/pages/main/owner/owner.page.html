@@ -88,6 +88,7 @@
               <div class="participants">
                 <img *ngFor="let empleado of item.empleados" [src]="empleado.img_usuario" alt="" />
               </div>
+              <h2>Ventas Totales: {{ item.ventas }}</h2>
             </div>
             <button class="btn">Ver Central</button>
           </div>
@@ -104,7 +105,7 @@
               <img src="https://cdn-icons-png.flaticon.com/512/2761/2761008.png" alt="" />
             </div>
             <div class="best-item box-two" (click)="pasajeros()">
-              <p>Pasajeros</p>
+              <p>Cuentas</p>
               <img src="https://cdn-icons-png.flaticon.com/512/2491/2491957.png" alt="" />
             </div>
             <div class="best-item box-three" (click)="config()">

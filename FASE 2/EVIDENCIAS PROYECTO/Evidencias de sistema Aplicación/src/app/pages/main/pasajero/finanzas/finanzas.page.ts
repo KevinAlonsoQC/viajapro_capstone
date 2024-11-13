@@ -10,6 +10,7 @@ import { DatatableComponent, ColumnMode, SelectionType } from '@swimlane/ngx-dat
   styleUrls: ['./finanzas.page.scss'],
 })
 export class FinanzasPage implements OnInit {
+
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
   usuario: User;
@@ -19,13 +20,16 @@ export class FinanzasPage implements OnInit {
   temp = [];
   columns = [
     { prop: 'nombreChofer', name: 'Nombre Chofer' },
-    { prop: 'rutChofer', name: 'R.U.T Chofer' },
+    { prop: 'patenteVeh', name: 'Patente' },
     { prop: 'fechaPago', name: 'Fecha Pago' },
   ];
 
+
   selected = [];
   SelectionType = SelectionType;
+
   seleccionado = false;
+
 
   @ViewChild(DatatableComponent) table: DatatableComponent;
   ColumnMode = ColumnMode;
@@ -59,7 +63,7 @@ export class FinanzasPage implements OnInit {
       ]);
 
       this.finanzas = finanzas.filter(historial => {
-        return historial.central == this.usuario.central
+        return historial.id_pasajero == this.usuario.uid
       });
 
       this.rows = this.finanzas.map(historial => ({
@@ -143,7 +147,7 @@ export class FinanzasPage implements OnInit {
     const temp = this.temp.filter(d => {
       return (
         (d.nombreChofer && d.nombreChofer.toLowerCase().includes(val)) ||
-        (d.rutChofer && d.rutChofer.toLowerCase().includes(val)) ||
+        (d.patenteVeh && d.patenteVeh.toLowerCase().includes(val)) ||
         (d.fechaPago && d.fechaPago.toLowerCase().includes(val)) ||
         !val
       );

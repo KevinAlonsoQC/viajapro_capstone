@@ -1,13 +1,55 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>ver-vehiculos</ion-title>
+  <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start" class="back-button">
+      <ion-button [routerLink]="['/main/chofer']" class="back-button ion-text-center">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile-menu']"></app-avatar>
+    </ion-buttons>
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">ver-vehiculos</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col>
+        <app-header-funtion titulo="Mis Vehículos"></app-header-funtion>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-searchbar></ion-searchbar>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list lines="full">
+          <!-- Para listar conductores -->
+          <ion-item-sliding *ngFor="let item of vehiculos">
+            <ion-item [button]="true" (click)="detalleVehiculo(item.id)">
+              <ion-avatar aria-hidden="true" slot="start">
+                <img alt="Imagen de {{item.name}}" [src]="item.img_vehiculo" />
+              </ion-avatar>
+              <ion-label>{{ item.patente_vehiculo }}</ion-label>
+              <ion-buttons>
+                <ion-button slot="start">
+                  <ion-icon name="car-outline"></ion-icon>
+                </ion-button>
+                <p>{{ item.nombre_modelo }}</p>
+              </ion-buttons>
+            </ion-item>
+          </ion-item-sliding>
+        </ion-list>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
 </ion-content>

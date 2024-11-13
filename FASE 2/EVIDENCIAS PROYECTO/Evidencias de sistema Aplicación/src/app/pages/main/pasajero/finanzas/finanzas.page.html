@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar class="toolbar-superior">
     <ion-buttons slot="start" class="back-button">
-      <ion-button [routerLink]="['/main/chofer']" class="back-button ion-text-center">
+      <ion-button [routerLink]="['/main/pasajero']" class="back-button ion-text-center">
         <ion-icon name="chevron-back-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -10,7 +10,7 @@
 
     <ion-buttons slot="end">
       <app-campana [notifica]="true"></app-campana>
-      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile']"></app-avatar>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile-menu']"></app-avatar>
     </ion-buttons>
 
   </ion-toolbar>
@@ -136,3 +136,18 @@
     </ion-row>
   </ion-grid>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-grid [fixed]="true">
+      <ion-row>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/pasajero" txt_icon="Rutas" icon="map-outline"></app-menu-master>
+        </ion-col>
+        <ion-col class="ion-text-center">
+          <app-menu-master url="main/pasajero/finanzas" txt_icon="Finanzas" icon="wallet-outline"></app-menu-master>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ion-toolbar>
+</ion-footer>

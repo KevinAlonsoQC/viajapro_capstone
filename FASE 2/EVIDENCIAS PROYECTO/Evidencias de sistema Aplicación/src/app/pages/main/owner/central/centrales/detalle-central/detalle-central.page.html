@@ -38,21 +38,26 @@
               <app-custom-input icon="person-outline" autocomplete="nombre_central" type="text"
                 label="Nombre de Central" [control]="form.controls.nombre_central"></app-custom-input>
             </ion-col>
+
             <ion-col>
               <ion-item>
                 <ion-input label="Comuna" [value]="comuna.nombre_comuna" [disabled]="true"></ion-input>
               </ion-item>
             </ion-col>
+
+          </ion-row>
+
+          <ion-row>
             <ion-col>
               <app-custom-input icon="cash-outline" autocomplete="tarifa_diurna_central" type="number"
                 [control]="form.controls.tarifa_diurna_central" label="Tarifa Diurna"></app-custom-input>
             </ion-col>
+
             <ion-col>
               <app-custom-input icon="cash-outline" autocomplete="tarifa_nocturna_central" type="number"
                 [control]="form.controls.tarifa_nocturna_central" label="Tarifa Nocturna"></app-custom-input>
             </ion-col>
           </ion-row>
-
           <hr>
           <h1>Presidentes / Administradores</h1>
           <ion-row>
@@ -61,7 +66,8 @@
               <ion-list>
                 <ion-item>
                   <ion-select aria-label="Fruit" placeholder="Selecciona Presidente" formControlName="presidente">
-                    <ion-select-option  *ngFor="let item of presidentes" [value]="item.uid">{{ item.name }} - {{ item.rut_usuario }}</ion-select-option>
+                    <ion-select-option *ngFor="let item of presidentes" [value]="item.uid">{{ item.name }} - {{
+                      item.rut_usuario }}</ion-select-option>
                   </ion-select>
                 </ion-item>
               </ion-list>
@@ -73,7 +79,8 @@
               <ion-list>
                 <ion-item>
                   <ion-select aria-label="Fruit" placeholder="Selecciona Presidente" formControlName="presidente">
-                    <ion-select-option  *ngFor="let item of presidentes" [value]="item.uid">{{ item.name }} - {{ item.rut_usuario }}</ion-select-option>
+                    <ion-select-option *ngFor="let item of presidentes" [value]="item.uid">{{ item.name }} - {{
+                      item.rut_usuario }}</ion-select-option>
                   </ion-select>
                 </ion-item>
               </ion-list>

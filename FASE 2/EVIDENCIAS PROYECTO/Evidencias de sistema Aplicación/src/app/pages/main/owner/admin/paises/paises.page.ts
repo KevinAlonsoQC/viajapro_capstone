@@ -22,6 +22,8 @@ export class PaisesPage implements OnInit {
   usuario!: User;
   paises!: Pais[];
   private uniqueId = '';
+  elementosFiltrados: any[] = [];  // Lista filtrada
+  searchText: string = '';  // Texto de búsqueda
 
   constructor(private router: Router, private alertController: AlertController) { }
 
@@ -51,6 +53,7 @@ export class PaisesPage implements OnInit {
 
       // Filtrar los resultados para obtener solo los choferes de la misma central
       this.paises = callback;
+      this.elementosFiltrados = this.paises; //Copiamos desde la variable
 
       if (this.paises.length <= 0) {
         this.utilsSvc.presentToast({
@@ -492,4 +495,18 @@ export class PaisesPage implements OnInit {
     }
   }
 
+  // Función para filtrar
+  filtrar(event: any) {
+    const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+    // Filtrar los choferes por nombre o rut
+    if (textoBusqueda.trim() === '') {
+      // Si no hay texto de búsqueda, mostrar todos los choferes
+      this.elementosFiltrados = this.paises;
+    } else {
+      this.elementosFiltrados = this.paises.filter(elemento =>
+        elemento.nombre_pais.toLowerCase().includes(textoBusqueda)
+      );
+    }
+  }
 }

@@ -1,0 +1,51 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start" class="back-button">
+      <ion-button [routerLink]="['/main/owner/central/pasajeros']" class="back-button ion-text-center">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile-menu']"></app-avatar>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col>
+        <app-header-funtion titulo="Centrales"></app-header-funtion>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-searchbar placeholder="Buscar... (Nombre) " (ionInput)="filtrar($event)"></ion-searchbar>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list lines="full">
+          <!-- Para listar conductores -->
+          <ion-item-sliding *ngFor="let item of elementosFiltrados">
+            <ion-item [button]="true" (click)="choferes(item)">
+              <ion-avatar aria-hidden="true" slot="start" *ngIf="item.img_central">
+                <img alt="Imagen de {{item.nombre_central}}" [src]="item.img_central" />
+              </ion-avatar>
+              <ion-avatar aria-hidden="true" slot="start" *ngIf="!item.img_central">
+                <img alt="Imagen de {{item.nombre_central}}" src="assets/icon/central.svg"/>
+              </ion-avatar>
+
+              <ion-label>{{ item.nombre_central }}</ion-label>
+            </ion-item>
+          </ion-item-sliding>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

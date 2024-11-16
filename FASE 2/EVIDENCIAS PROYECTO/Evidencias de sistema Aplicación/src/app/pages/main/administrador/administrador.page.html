@@ -6,13 +6,51 @@
       <app-campana [notifica]="true"></app-campana>
       <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
     </ion-buttons>
-    
+
   </ion-toolbar>
 </ion-header>
 
 <!-- Contenido principal / Cuerpo sector amarillo-->
 <ion-content id="admin-content">
-  
+  <ion-grid [fixed]="true">
+    <ion-row>
+      <ion-col size="12" size-sm="6">
+        <div class="image-container">
+          <canvas id="sales-daily-chart-admin"></canvas>
+          <div class="overlay">
+            <h3>Ventas Diarias</h3>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col size="12" size-sm="6">
+        <div class="image-container">
+          <canvas id="sales-weekly-chart-admin"></canvas>
+          <div class="overlay">
+            <h3>Ventas Semanales</h3>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-sm="6">
+        <div class="image-container">
+          <canvas id="sales-monthly-chart-admin"></canvas>
+          <div class="overlay">
+            <h3>Ventas Mensuales</h3>
+          </div>
+        </div>
+      </ion-col>
+      <ion-col size="12" size-sm="6">
+        <div class="image-container">
+          <canvas id="sales-annual-chart-admin"></canvas>
+          <div class="overlay">
+            <h3>Ventas Anuales</h3>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
 
 
@@ -21,13 +59,15 @@
     <ion-grid [fixed]="true">
       <ion-row>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/administrador/personal" txt_icon="Personal" icon="person-outline"></app-menu-master>
+          <app-menu-master url="main/administrador/personal" txt_icon="Personal" icon="person-outline">
+          </app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/administrador/admin" txt_icon="Inicio" icon="home-outline" ></app-menu-master>
+          <app-menu-master url="main/administrador" txt_icon="Inicio" icon="home-outline"></app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/administrador/finanzas" txt_icon="Finanzas" icon="wallet-outline" ></app-menu-master>
+          <app-menu-master url="main/administrador/finanzas" txt_icon="Finanzas" icon="wallet-outline">
+          </app-menu-master>
         </ion-col>
       </ion-row>
     </ion-grid>

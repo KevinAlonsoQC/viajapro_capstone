@@ -31,6 +31,9 @@ export class ComunasPage implements OnInit {
   private paisSeleccionado = '';
   private ciudadSeleccionada = '';
 
+  elementosFiltrados: any[] = [];  // Lista filtrada
+  searchText: string = '';  // Texto de búsqueda
+
   constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
@@ -66,6 +69,8 @@ export class ComunasPage implements OnInit {
       this.comunas = callback;
       this.ciudades = callback2
       this.paises = callback3;
+
+      this.elementosFiltrados = this.comunas; //Copiamos desde la variable
 
       if (this.comunas.length <= 0) {
         this.utilsSvc.presentToast({
@@ -121,8 +126,8 @@ export class ComunasPage implements OnInit {
 
   async presentSelectCiudad() {
     const alert = await this.alertController.create({
-      header: 'Selecciona una Ciudad',
-      inputs: this.ciudades.filter(filter => filter.pais == this.paisSeleccionado ).map(ciudad => ({
+      header: 'Selecciona una Región',
+      inputs: this.ciudades.filter(filter => filter.pais == this.paisSeleccionado).map(ciudad => ({
         type: 'radio',
         label: ciudad.nombre_ciudad,
         value: ciudad.id,
@@ -137,7 +142,7 @@ export class ComunasPage implements OnInit {
           handler: (ciudadId) => {
             // Asigna el país seleccionado
             this.ciudadSeleccionada = ciudadId;
-            console.log('Ciudad seleccionada:', ciudadId);
+            console.log('Región seleccionada:', ciudadId);
           }
         }
       ]
@@ -169,7 +174,7 @@ export class ComunasPage implements OnInit {
           }
         },
         {
-          text: 'Seleccionar Ciudad',
+          text: 'Seleccionar Región',
           handler: async () => {
             // Abrir el ion-select para seleccionar el país
             await this.presentSelectCiudad();
@@ -207,7 +212,7 @@ export class ComunasPage implements OnInit {
 
             if (this.paisSeleccionado == "") {
               this.utilsSvc.presentToast({
-                message: 'Selecciona un País para añadir una Ciudad a la Comuna',
+                message: 'Selecciona un País para añadir una Región a la Comuna',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -218,7 +223,7 @@ export class ComunasPage implements OnInit {
 
             if (this.ciudadSeleccionada == "") {
               this.utilsSvc.presentToast({
-                message: 'Selecciona una Ciudad para la Comuna',
+                message: 'Selecciona una Región para la Comuna',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -475,4 +480,19 @@ export class ComunasPage implements OnInit {
     }
   }
 
+
+  // Función para filtrar
+  filtrar(event: any) {
+    const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+    // Filtrar los choferes por nombre o rut
+    if (textoBusqueda.trim() === '') {
+      // Si no hay texto de búsqueda, mostrar todos los choferes
+      this.elementosFiltrados = this.comunas;
+    } else {
+      this.elementosFiltrados = this.comunas.filter(elemento =>
+        elemento.nombre_comuna.toLowerCase().includes(textoBusqueda)
+      );
+    }
+  }
 }

@@ -25,14 +25,14 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-searchbar></ion-searchbar>
+        <ion-searchbar placeholder="Buscar... (Nombre o Estado) " (ionInput)="filtrar($event)"></ion-searchbar>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-list lines="full">
           <!-- Para listar conductores -->
-          <ion-item-sliding *ngFor="let item of rutas">
+          <ion-item-sliding *ngFor="let item of elementosFiltrados">
             <ion-item [button]="true">
               <ion-avatar aria-hidden="true" slot="start">
                 <img src="assets/icon/ruta_img.svg" alt="Rutas_Imagen">

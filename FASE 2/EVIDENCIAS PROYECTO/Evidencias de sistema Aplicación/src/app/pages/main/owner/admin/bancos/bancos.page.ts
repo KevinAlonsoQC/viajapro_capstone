@@ -20,8 +20,11 @@ export class BancosPage implements OnInit {
   utilsSvc = inject(UtilsService);
 
   usuario!: User;
-  bancos!: Banco[];
+  bancos!: any;
   private uniqueId = '';
+
+  elementosFiltrados: any[] = [];  // Lista filtrada
+  searchText: string = '';  // Texto de búsqueda
 
   constructor(private router: Router, private alertController: AlertController) { }
 
@@ -51,6 +54,7 @@ export class BancosPage implements OnInit {
 
       // Filtrar los resultados para obtener solo los choferes de la misma central
       this.bancos = callback;
+      this.elementosFiltrados = this.bancos; //Copiamos desde la variable
 
       if (this.bancos.length <= 0) {
         this.utilsSvc.presentToast({
@@ -415,5 +419,20 @@ export class BancosPage implements OnInit {
       return false;
     }
   }
+
+  // Función para filtrar
+	filtrar(event: any) {
+		const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+		// Filtrar los choferes por nombre o rut
+		if (textoBusqueda.trim() === '') {
+			// Si no hay texto de búsqueda, mostrar todos los choferes
+			this.elementosFiltrados = this.bancos;
+		} else {
+			this.elementosFiltrados = this.bancos.filter(elemento =>
+				elemento.nombre_banco.toLowerCase().includes(textoBusqueda)
+			);
+		}
+	}
 
 }

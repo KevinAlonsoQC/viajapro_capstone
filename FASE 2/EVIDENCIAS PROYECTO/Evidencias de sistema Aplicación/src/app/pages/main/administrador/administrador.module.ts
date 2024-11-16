@@ -8,6 +8,7 @@ import { AdministradorPageRoutingModule } from './administrador-routing.module';
 
 import { AdministradorPage } from './administrador.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { BaseChartDirective } from 'ng2-charts';
 
 @NgModule({
   imports: [
@@ -15,7 +16,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     FormsModule,
     IonicModule,
     AdministradorPageRoutingModule,
-    SharedModule
+    SharedModule,
+    BaseChartDirective
   ],
   declarations: [AdministradorPage]
 })

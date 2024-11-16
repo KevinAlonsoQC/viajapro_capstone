@@ -25,14 +25,14 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-searchbar></ion-searchbar>
+        <ion-searchbar placeholder="Buscar... (Patente o Modelo) " (ionInput)="filtrar($event)"></ion-searchbar>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-list lines="full">
           <!-- Para listar conductores -->
-          <ion-item-sliding *ngFor="let item of vehiculos">
+          <ion-item-sliding *ngFor="let item of elementosFiltrados">
             <ion-item [button]="true" (click)="detalleVehiculo(item.id)">
               <ion-avatar aria-hidden="true" slot="start">
                 <img alt="Imagen de {{item.name}}" [src]="item.img_vehiculo" />

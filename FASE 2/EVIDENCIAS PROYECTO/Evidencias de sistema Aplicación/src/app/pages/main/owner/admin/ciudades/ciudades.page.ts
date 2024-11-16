@@ -28,6 +28,9 @@ export class CiudadesPage implements OnInit {
   private uniqueId = '';
   private paisSeleccionado = '';
 
+  elementosFiltrados: any[] = [];  // Lista filtrada
+  searchText: string = '';  // Texto de búsqueda
+
   constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
@@ -63,9 +66,11 @@ export class CiudadesPage implements OnInit {
       this.ciudades = callback;
       this.paises = callback2
 
+      this.elementosFiltrados = this.ciudades; //Copiamos desde la variable
+
       if (this.ciudades.length <= 0) {
         this.utilsSvc.presentToast({
-          message: 'No hay Ciudades Creadas',
+          message: 'No hay Regiones Creadas',
           duration: 1500,
           color: 'warning',
           position: 'middle',
@@ -124,7 +129,7 @@ export class CiudadesPage implements OnInit {
           type: 'text',
           min: 6,
           max: 50,
-          placeholder: 'Ingresa el Nombre de la Ciudad',
+          placeholder: 'Ingresa el Nombre de la Región',
         },
       ],
       buttons: [
@@ -167,7 +172,7 @@ export class CiudadesPage implements OnInit {
 
             if (this.paisSeleccionado == "") {
               this.utilsSvc.presentToast({
-                message: 'Selecciona un País para la Ciudad',
+                message: 'Selecciona un País para la Región',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -179,7 +184,7 @@ export class CiudadesPage implements OnInit {
             const existe = await this.verificarExistente(dato.nombre_dato);
             if (existe) {
               this.utilsSvc.presentToast({
-                message: 'Ya existe una Ciudad con ese nombre',
+                message: 'Ya existe una Región con ese nombre',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -205,7 +210,7 @@ export class CiudadesPage implements OnInit {
               await this.firebaseSvc.addDocumentWithId('ciudad', datoNuevo, this.uniqueId);
               // Mostrar un mensaje de éxito
               this.utilsSvc.presentToast({
-                message: 'Ciudad creada con éxito',
+                message: 'Región creada con éxito',
                 duration: 1500,
                 color: 'primary',
                 position: 'middle',
@@ -216,9 +221,9 @@ export class CiudadesPage implements OnInit {
               await this.getData();
 
             } catch (error) {
-              console.error('Error al crear la ciudad:', error);
+              console.error('Error al crear la Región:', error);
               this.utilsSvc.presentToast({
-                message: 'Error al crear la ciudad. Inténtalo de nuevo.',
+                message: 'Error al crear la Región. Inténtalo de nuevo.',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -239,7 +244,7 @@ export class CiudadesPage implements OnInit {
 
   async modificar(ciudad: any) {
     const alert = await this.alertController.create({
-      header: 'Modificar Ciudad',
+      header: 'Modificar Región',
       message: `Rellena todos los campos para modificar ${ciudad.nombre_ciudad}.`,
       inputs: [
         {
@@ -247,7 +252,7 @@ export class CiudadesPage implements OnInit {
           type: 'text',
           min: 6,
           max: 50,
-          placeholder: 'Ingresa el Nombre de la Ciudad',
+          placeholder: 'Ingresa el Nombre de la Región',
           value: ciudad.nombre_ciudad
         },
       ],
@@ -306,7 +311,7 @@ export class CiudadesPage implements OnInit {
               await this.firebaseSvc.updateDocument(`ciudad/${ciudad.id}`, { ...datoModificado });
               // Mostrar un mensaje de éxito
               this.utilsSvc.presentToast({
-                message: 'Ciudad modificada con éxito',
+                message: 'Región modificada con éxito',
                 duration: 1500,
                 color: 'primary',
                 position: 'middle',
@@ -316,9 +321,9 @@ export class CiudadesPage implements OnInit {
               await this.getData();
 
             } catch (error) {
-              console.error('Error al modificar la Ciudad:', error);
+              console.error('Error al modificar la Región:', error);
               this.utilsSvc.presentToast({
-                message: 'Hubo un error al modificar la Ciudad. Inténtalo de nuevo.',
+                message: 'Hubo un error al modificar la Región. Inténtalo de nuevo.',
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -344,21 +349,12 @@ export class CiudadesPage implements OnInit {
       titulo = 'Activar'
     }
     const alert = await this.alertController.create({
-      header: `¿Seguro de ${titulo} la ciudad?`,
-      subHeader: `Se cambiará el estado a la Ciudad con nombre: ${ciudad.nombre_ciudad}`,
+      header: `¿Seguro de ${titulo} la Región?`,
+      subHeader: `Se cambiará el estado a la Región con nombre: ${ciudad.nombre_ciudad}`,
       buttons: [
         {
           text: 'Cancelar',
           role: 'cancel',
-          handler: () => {
-            this.utilsSvc.presentToast({
-              message: 'Cancelaste la acción',
-              duration: 1500,
-              color: 'primary',
-              position: 'middle',
-              icon: 'alert-circle-outline'
-            });
-          },
         },
         {
           text: titulo,
@@ -378,7 +374,7 @@ export class CiudadesPage implements OnInit {
                 await this.firebaseSvc.updateDocument(`ciudad/${ciudad.id}`, { ...ciudad, estado: true });
               }
               this.utilsSvc.presentToast({
-                message: `Cambio realizado para el la Ciudad ${ciudad.nombre_ciudad}`,
+                message: `Cambio realizado para la Región ${ciudad.nombre_ciudad}`,
                 duration: 1500,
                 color: 'success',
                 position: 'middle',
@@ -387,9 +383,9 @@ export class CiudadesPage implements OnInit {
 
               await this.getData();
             } catch (error) {
-              console.error('Error al cambiar el estado ciudad:', error);
+              console.error('Error al cambiar el estado Región:', error);
               this.utilsSvc.presentToast({
-                message: `Hubo un error al realizar el cambio en el ciudad con nombre ${ciudad.nombre_ciudad}. Inténtalo de nuevo.`,
+                message: `Hubo un error al realizar el cambio en la Región con nombre ${ciudad.nombre_ciudad}. Inténtalo de nuevo.`,
                 duration: 1500,
                 color: 'danger',
                 position: 'middle',
@@ -415,5 +411,19 @@ export class CiudadesPage implements OnInit {
     }
   }
 
+  // Función para filtrar
+  filtrar(event: any) {
+    const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+    // Filtrar los choferes por nombre o rut
+    if (textoBusqueda.trim() === '') {
+      // Si no hay texto de búsqueda, mostrar todos los choferes
+      this.elementosFiltrados = this.ciudades;
+    } else {
+      this.elementosFiltrados = this.ciudades.filter(elemento =>
+        elemento.nombre_ciudad.toLowerCase().includes(textoBusqueda)
+      );
+    }
+  }
 
 }

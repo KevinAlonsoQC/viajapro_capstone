@@ -25,7 +25,7 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-searchbar></ion-searchbar>
+        <ion-searchbar placeholder="Buscar... (Nombre de Ruta) " (ionInput)="filtrar($event)"></ion-searchbar>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -33,7 +33,7 @@
         <ion-list lines="full">
           <!-- Para listar conductores -->
            <p class="text">Escoge la ruta que deseas ver en el Mapa</p>
-          <ion-item-sliding *ngFor="let item of rutas" (click)="viewRuta(item)">
+          <ion-item-sliding *ngFor="let item of elementosFiltrados" (click)="viewRuta(item)">
             <ion-item [button]="true" >
               <ion-avatar aria-hidden="true" slot="start">
                 <img src="assets/icon/ruta_img.svg" alt="Rutas_Imagen">

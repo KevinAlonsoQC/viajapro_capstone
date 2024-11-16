@@ -13,60 +13,38 @@
 <ion-content>
   <ion-grid [fixed]="true">
     <ion-row>
-      <ion-col>
+      <ion-col size="12" size-sm="6">
         <div class="image-container">
-          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <canvas id="sales-daily-chart"></canvas>
           <div class="overlay">
             <h3>Ventas Diarias</h3>
           </div>
         </div>
       </ion-col>
-      <ion-col>
+      <ion-col size="12" size-sm="6">
         <div class="image-container">
-          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <canvas id="sales-weekly-chart"></canvas>
           <div class="overlay">
             <h3>Ventas Semanales</h3>
-          </div>
-        </div>
-      </ion-col>
-      <ion-col>
-        <div class="image-container">
-          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
-          <div class="overlay">
-            <h3>Ventas Mensuales</h3>
           </div>
         </div>
       </ion-col>
     </ion-row>
 
     <ion-row>
-      <ion-col>
+      <ion-col size="12" size-sm="6">
         <div class="image-container">
-          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <canvas id="sales-monthly-chart"></canvas>
           <div class="overlay">
-            <h3>Ventas en General</h3>
+            <h3>Ventas Mensuales</h3>
           </div>
         </div>
       </ion-col>
-      <ion-col>
+      <ion-col size="12" size-sm="6">
         <div class="image-container">
-          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
+          <canvas id="sales-annual-chart"></canvas>
           <div class="overlay">
-            <h3>Ventas en General</h3>
-          </div>
-        </div>
-      </ion-col>
-      <ion-col>
-        <div class="image-container">
-          <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-            [legend]="barChartLegend" (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></canvas>
-          <div class="overlay">
-            <h3>Ventas en General</h3>
+            <h3>Ventas Anuales</h3>
           </div>
         </div>
       </ion-col>
@@ -80,7 +58,7 @@
           <h1>Top Centrales</h1>
           <div class="day-and-activity" *ngFor="let item of rankingCentrales">
             <div class="day">
-              <h1>1°</h1>
+              <h1>{{item.lugar}}</h1>
               <p>Lugar</p>
             </div>
             <div class="activity">
@@ -90,10 +68,9 @@
               </div>
               <h2>Ventas Totales: {{ item.ventas }}</h2>
             </div>
-            <button class="btn">Ver Central</button>
+            <button class="btn" (click)="verCentral(item)">Ver Central</button>
           </div>
         </div>
-
       </ion-col>
 
       <ion-col>
@@ -119,18 +96,19 @@
       <ion-col>
         <div class="active-calories">
           <h1 style="align-self: flex-start">Actividad General <br>
-            Meta Anual: $100,000,000
+            Meta Anual: {{ meta_anual | currency : "CLP" }}
           </h1>
           <div class="active-calories-container">
-            <div class="box" style="--i: 75%">
+            <div class="box" style="--i: {{porcentaje_meta}}%">
               <div class="circle">
-                <h2>75<small>%</small></h2>
+                <h2>{{porcentaje_meta}}<small>%</small></h2>
               </div>
             </div>
             <div class="calories-content">
-              <p><span>Hoy:</span> $350,00</p>
-              <p><span>Semana:</span> $3,500,000</p>
-              <p><span>Mes:</span> $54,300,000</p>
+              <p><span>Hoy:</span> {{ ventas_hoy | currency : "CLP" }}</p>
+              <p><span>Semana:</span> {{ ventas_semanal | currency : "CLP" }}</p>
+              <p><span>Mes:</span> {{ ventas_mes | currency : "CLP" }}</p>
+              <p><span style="color: green;">General:</span> {{ ventas_totales | currency : "CLP" }}</p>
             </div>
           </div>
         </div>

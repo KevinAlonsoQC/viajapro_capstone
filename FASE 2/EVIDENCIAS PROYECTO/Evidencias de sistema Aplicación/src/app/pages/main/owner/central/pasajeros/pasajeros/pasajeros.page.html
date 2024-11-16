@@ -1,0 +1,65 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar-superior">
+    <ion-buttons slot="start" class="back-button">
+      <ion-button [routerLink]="['/main/owner/central/pasajeros']" class="back-button ion-text-center">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <app-logo-small></app-logo-small>
+
+    <ion-buttons slot="end">
+      <app-campana [notifica]="true"></app-campana>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile-menu']"></app-avatar>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col>
+        <app-header-funtion titulo="Pasajeros"></app-header-funtion>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-searchbar placeholder="Buscar... (Nombre o Rut) " (ionInput)="filtrar($event)"></ion-searchbar>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list lines="full">
+          <!-- Para listar conductores -->
+          <ion-item-sliding *ngFor="let item of elementosFiltrados">
+            <ion-item [button]="true">
+              <ion-avatar aria-hidden="true" slot="start">
+                <img alt="Imagen de {{item.name}}" [src]="item.img_usuario" />
+              </ion-avatar>
+              <ion-label><b>Nombre:</b> {{ item.name }}</ion-label>
+              <ion-buttons>
+                <ion-button slot="start">
+                  <ion-icon name="person-outline"></ion-icon>
+                </ion-button>
+                <p>{{ item.rut_usuario }}</p>
+              </ion-buttons>
+            </ion-item>
+
+            <ion-item-options slot="end">
+              <ion-item-option (click)="modificarPasajero(item.uid)">
+                <ion-icon class="icon-option" slot="icon-only" name="pencil"></ion-icon>
+              </ion-item-option>
+
+              <ion-item-option expandable="true" (click)="eliminarPasajero(item.uid, item.rut_usuario)">
+                <ion-icon class="icon-option" slot="icon-only" name="trash"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        </ion-list>
+
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

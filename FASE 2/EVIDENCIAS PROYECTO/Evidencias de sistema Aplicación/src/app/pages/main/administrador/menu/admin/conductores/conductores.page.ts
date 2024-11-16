@@ -24,6 +24,9 @@ export class ConductoresPage implements OnInit {
   choferes!: any;
   central!: CentralColectivo;
 
+  elementosFiltrados: any[] = [];  // Lista filtrada
+  searchText: string = '';  // Texto de búsqueda
+
   constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
@@ -38,7 +41,7 @@ export class ConductoresPage implements OnInit {
   async ionViewWillEnter() {
     await this.getChoferes();
   }
-  
+
   async getChoferes() {
     const loading = await this.utilsSvc.loading();
     await loading.present();
@@ -54,6 +57,8 @@ export class ConductoresPage implements OnInit {
       this.choferes = usuarios.filter(usuario =>
         usuario.central == this.usuario.central && usuario.tipo_usuario == '2'
       );
+
+      this.elementosFiltrados = this.choferes; //Copiamos desde la variable
 
       if (this.choferes.length > 0) {
         this.utilsSvc.presentToast({
@@ -132,7 +137,7 @@ export class ConductoresPage implements OnInit {
                 position: 'middle',
                 icon: 'checkmark-circle-outline',
               });
-              
+
               await this.getChoferes();
             } catch (error) {
               console.error('Error al eliminar usuario:', error);
@@ -153,4 +158,20 @@ export class ConductoresPage implements OnInit {
 
     await alert.present();
   }
+  // Función para filtrar
+  filtrar(event: any) {
+    const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+    // Filtrar los choferes por nombre o rut
+    if (textoBusqueda.trim() === '') {
+      // Si no hay texto de búsqueda, mostrar todos los choferes
+      this.elementosFiltrados = this.choferes;
+    } else {
+      this.elementosFiltrados = this.choferes.filter(chofer =>
+        chofer.name.toLowerCase().includes(textoBusqueda) ||
+        chofer.rut_usuario.toLowerCase().includes(textoBusqueda)
+      );
+    }
+  }
+
 }

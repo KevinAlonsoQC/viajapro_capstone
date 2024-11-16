@@ -20,19 +20,19 @@
   <ion-grid class="ion-no-padding">
     <ion-row>
       <ion-col>
-        <app-header-funtion titulo="Ciudades"></app-header-funtion>
+        <app-header-funtion titulo="Regiones"></app-header-funtion>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-searchbar></ion-searchbar>
+        <ion-searchbar placeholder="Buscar... (Nombre) " (ionInput)="filtrar($event)"></ion-searchbar>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-list lines="full">
           <!-- Para listar conductores -->
-          <ion-item-sliding *ngFor="let item of ciudades">
+          <ion-item-sliding *ngFor="let item of elementosFiltrados">
             <ion-item [button]="true">
               <ion-label>{{ item.nombre_ciudad }}</ion-label>
               <ion-buttons [ngClass]="{noActivo: !item.estado}">
@@ -71,7 +71,7 @@
       <ion-row>
         <ion-col>
           <ion-button expand="block" mode="ios" class="submit" (click)="crear()" >
-            Agregar Ciudad
+            Agregar Región
           </ion-button>
         </ion-col>
       </ion-row>

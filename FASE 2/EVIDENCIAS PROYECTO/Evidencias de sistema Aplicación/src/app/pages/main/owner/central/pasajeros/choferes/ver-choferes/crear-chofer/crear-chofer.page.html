@@ -1,0 +1,117 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button class="button-close" [routerLink]="['/main/owner/central/pasajeros/choferes/ver-choferes', central_id]">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" [fullscreen]="true">
+  <div class="d-flex-center">
+    <form [formGroup]="form" class="auth-form" (ngSubmit)="submit()" (keypress.enter)="submit()">
+      <app-logo></app-logo>
+
+      <ion-item lines="none">
+        <ion-avatar slot="start" *ngIf="form.value.img_usuario">
+          <img alt="avatar" [src]=form.value.img_usuario />
+        </ion-avatar>
+        <ion-avatar slot="start" *ngIf="!form.value.img_usuario">
+          <img alt="avatar" [src]="imagenDefault" />
+        </ion-avatar>
+        <ion-button (click)="takeImage()" shape="round" mode="ios">Seleccionar Imagen</ion-button>
+      </ion-item>
+
+      <app-custom-input icon="id-card-outline" [control]="form.controls.rut_usuario" type="text" label="RUT"
+        (blur)="validarIngresoRut(form.controls.rut_usuario)">
+      </app-custom-input>
+      <div class="validators" *ngIf="form.controls.rut_usuario.errors && form.controls.rut_usuario.touched">
+        <div *ngIf="form.controls.rut_usuario.errors?.['required']">
+          Por favor ingresa el RUT (ejemplo: 12345678-4)
+        </div>
+        <div *ngIf="form.controls.rut_usuario.errors?.['invalidRut']">
+          El RUT ingresado no es válido. Debe estar en el formato 12345678-4.
+        </div>
+      </div>
+
+
+      <app-custom-input icon="person-outline" autocomplete="name" [control]="form.controls.name" type="text"
+        label="Nombre Completo"></app-custom-input>
+      <div class="validators" *ngIf="form.controls.name.errors && form.controls.name.touched">
+        <div *ngIf="form.controls.name.errors?.['required']">
+          Por favor ingresa el Nombre Completo
+        </div>
+        <div *ngIf="form.controls.name.errors?.['minlenght']">
+          El nombre debe tener al menos 3 caracteres
+        </div>
+      </div>
+      
+
+      <app-custom-input icon="mail-outline" autocomplete="email" [control]="form.controls.email" type="email"
+        label="Correo"></app-custom-input>
+      <div class="validators" *ngIf="form.controls.email.errors && form.controls.email.touched">
+        <div *ngIf="form.controls.email.errors?.['required']">
+          Por favor ingresa el email
+        </div>
+        <div *ngIf="form.controls.email.errors?.['email']">
+          Por favor ingresa un correo válido
+        </div>
+      </div>
+
+      <app-custom-input icon="lock-closed-outline" [control]="form.controls.password" type="password"
+        label="Contraseña"></app-custom-input>
+      <div class="validators" *ngIf="form.controls.password.errors && form.controls.password.touched">
+        <div *ngIf="form.controls.password.errors?.['required']">
+          Por favor ingresa la contraseña
+        </div>
+      </div>
+
+      <app-custom-input icon="phone-portrait-outline" [control]="form.controls.telefono_usuario" type="number"
+        label="Teléfono (+56 9)">
+        ></app-custom-input>
+      <div class="validators" *ngIf="form.controls.telefono_usuario.errors && form.controls.telefono_usuario.touched">
+        <div *ngIf="form.controls.telefono_usuario.errors?.['required']">
+          Por favor ingresa tu Teléfono
+        </div>
+        <div *ngIf="form.controls.telefono_usuario.errors?.['maxLength']">
+          Por favor ingresa un teléfono válido (+56 9 1234 5678)
+        </div>
+        <div *ngIf="form.controls.telefono_usuario.errors?.['minLength']">
+          Por favor ingresa un teléfono válido (+56 9 1234 5678)
+        </div>
+      </div>
+
+      <ion-list>
+        <ion-item lines="none">
+          <ion-icon slot="start" name="flag-outline"></ion-icon>
+          <ion-select placeholder="País" formControlName="pais">
+            <div slot="label">Nacionalidad</div>
+            <ion-select-option *ngFor="let item of pais" [value]="item.id">
+              {{ item.nacionalidad_pais }}
+            </ion-select-option>
+          </ion-select>
+
+          <div class="validators" *ngIf="form.controls.pais.errors && form.controls.pais.touched">
+            <div *ngIf="form.controls.pais.errors?.['required']">
+              Por favor selecciona el País
+            </div>
+          </div>
+        </ion-item>
+      </ion-list>
+
+      <app-custom-input icon="key-outline" autocomplete="token" [control]="form.controls.token" type="text"
+        label="Token de Pago"></app-custom-input>
+      <div class="validators" *ngIf="form.controls.token.errors && form.controls.token.touched">
+        <div *ngIf="form.controls.token.errors?.['required']">
+          Por favor ingresa el Token de Pago
+        </div>
+      </div>
+
+      <ion-button expand="block" mode="ios" class="submit" type="submit" [disabled]="form.invalid">
+        Crear Cuenta
+        <ion-icon slot="end" name="person-add-outline"></ion-icon>
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

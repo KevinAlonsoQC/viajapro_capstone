@@ -235,7 +235,7 @@ export class PasajeroPage implements OnInit {
       if (tipo_cuenta == "0") {
         this.utilsSvc.routerLink('/main/owner');
       } else if (tipo_cuenta == "1") {
-        this.utilsSvc.routerLink('/main/administrador/admin');
+                this.utilsSvc.routerLink('/main/administrador');
       } else if (tipo_cuenta == "2") {
         this.utilsSvc.routerLink('/main/chofer');
       } else if (tipo_cuenta == "3") {

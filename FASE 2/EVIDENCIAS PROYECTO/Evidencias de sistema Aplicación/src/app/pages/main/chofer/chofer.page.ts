@@ -19,9 +19,9 @@ export class ChoferPage implements OnInit {
   vehRuta: any;
   asientos: boolean[];
   updateInterval: any; // ID del intervalo de actualización
-
   ruta_actual: any;
 
+  isMobile: boolean;
   constructor(private alertController: AlertController) { }
 
 
@@ -111,7 +111,7 @@ export class ChoferPage implements OnInit {
       if (tipo_cuenta == "0") {
         this.utilsSvc.routerLink('/main/owner');
       } else if (tipo_cuenta == "1") {
-        this.utilsSvc.routerLink('/main/administrador/admin');
+                this.utilsSvc.routerLink('/main/administrador');
       } else if (tipo_cuenta == "2") {
         this.utilsSvc.routerLink('/main/chofer');
       } else if (tipo_cuenta == "3") {

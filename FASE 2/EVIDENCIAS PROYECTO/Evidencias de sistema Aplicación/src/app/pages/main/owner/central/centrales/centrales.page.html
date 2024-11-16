@@ -10,7 +10,7 @@
 
     <ion-buttons slot="end">
       <app-campana [notifica]="true"></app-campana>
-      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile']"></app-avatar>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile-menu']"></app-avatar>
     </ion-buttons>
 
   </ion-toolbar>
@@ -25,14 +25,14 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-searchbar></ion-searchbar>
+        <ion-searchbar placeholder="Buscar... (Nombre) " (ionInput)="filtrar($event)"></ion-searchbar>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
         <ion-list lines="full">
           <!-- Para listar conductores -->
-          <ion-item-sliding *ngFor="let item of centrales">
+          <ion-item-sliding *ngFor="let item of elementosFiltrados">
             <ion-item [button]="true" (click)="detalles(item)">
               <ion-avatar aria-hidden="true" slot="start" *ngIf="item.img_central">
                 <img alt="Imagen de {{item.nombre_central}}" [src]="item.img_central" />

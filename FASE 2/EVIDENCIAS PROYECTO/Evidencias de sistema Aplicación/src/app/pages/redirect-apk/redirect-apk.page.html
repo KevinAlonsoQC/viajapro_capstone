@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar class="toolbar-superior">
+    <app-logo-small (click)="auth()"></app-logo-small>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div class="sp-container">
+          <div class="sp-content">
+            <div class="sp-globe"></div>
+            <h2 class="frame-1">CONECTA</h2>
+            <h2 class="frame-2">VIAJA</h2>
+            <h2 class="frame-3">GESTIONA</h2>
+            <h2 class="frame-4">AHORRA!</h2>
+            <h2 class="frame-5">
+              <span>VIAJA</span>
+              <span style="color: #000;">COMO</span>
+              <span>PRO</span>
+            </h2>
+            <div class="sp-circle-link" *ngIf="link">
+              <ion-button class="android-button" [href]="link.android" target="_blank">
+                <ion-icon name="logo-android"></ion-icon>
+                Descargar para Android
+              </ion-button>
+              <ion-button class="ios-button" [href]="link.ios" target="_blank" >
+                <ion-icon name="logo-apple"></ion-icon>
+                Descargar para IOs
+              </ion-button>
+            </div>
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<ion-footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="row">
+        <div>
+          <div class="footer-widget">
+            <div class="footer-text">
+              <p>Desde ahora viaja de una manera más inteligente con ViajaPro. ¿Qué esperas para conectarte?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="copyright-area">
+    <div class="container">
+      <div class="row">
+        <div>
+          <div class="copyright-text">
+            <p>Copyright &copy; 2024, All Right Reserved</p>
+          </div>
+        </div>
+        <br>
+        <div>
+          <div class="footer-menu">
+            <ul>
+              <li><a href="#">
+                  <ion-icon name="logo-instagram"></ion-icon>
+                </a></li>
+              <li><a href="#">
+                  <ion-icon name="logo-twitter"></ion-icon>
+                </a></li>
+              <li><a href="#">
+                  <ion-icon name="logo-linkedin"></ion-icon>
+                </a></li>
+              <li><a href="#">
+                  <ion-icon name="logo-facebook"></ion-icon>
+                </a></li>
+              <li><a href="#">
+                  <ion-icon name="logo-google"></ion-icon>
+                </a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-footer>

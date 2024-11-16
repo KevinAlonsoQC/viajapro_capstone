@@ -7,7 +7,19 @@ const routes: Routes = [
   {
     path: '',
     component: PasajerosPage
+  },  {
+    path: 'presidentes',
+    loadChildren: () => import('./presidentes/presidentes.module').then( m => m.PresidentesPageModule)
+  },
+  {
+    path: 'choferes',
+    loadChildren: () => import('./choferes/choferes.module').then( m => m.ChoferesPageModule)
+  },
+  {
+    path: 'pasajeros',
+    loadChildren: () => import('./pasajeros/pasajeros.module').then( m => m.PasajerosPageModule)
   }
+
 ];
 
 @NgModule({

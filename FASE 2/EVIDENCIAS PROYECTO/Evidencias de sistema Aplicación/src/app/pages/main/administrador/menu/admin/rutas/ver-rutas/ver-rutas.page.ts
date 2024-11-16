@@ -17,6 +17,8 @@ export class VerRutasPage implements OnInit {
 	usuario!: User;
 	rutas!: any;
 
+	elementosFiltrados: any[] = [];  // Lista filtrada
+	searchText: string = '';  // Texto de búsqueda
 	constructor(private router: Router, private alertController: AlertController) { }
 
 	ngOnInit() {
@@ -47,6 +49,8 @@ export class VerRutasPage implements OnInit {
 			this.rutas = ruta.filter(ruta =>
 				ruta.central == this.usuario.central
 			);
+
+			this.elementosFiltrados = this.rutas; //Copiamos desde la variable
 
 			if (this.rutas.length > 0) {
 				this.utilsSvc.presentToast({
@@ -221,5 +225,21 @@ export class VerRutasPage implements OnInit {
 		});
 
 		await alert.present();
+	}
+
+	// Función para filtrar
+	filtrar(event: any) {
+		const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+		// Filtrar los choferes por nombre o rut
+		if (textoBusqueda.trim() === '') {
+			// Si no hay texto de búsqueda, mostrar todos los choferes
+			this.elementosFiltrados = this.rutas;
+		} else {
+			this.elementosFiltrados = this.rutas.filter(elemento =>
+				elemento.nombre_ruta.toLowerCase().includes(textoBusqueda) ||
+				elemento.estado.toLowerCase().includes(textoBusqueda)
+			);
+		}
 	}
 }

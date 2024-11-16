@@ -22,6 +22,9 @@ export class VerVehiculosPage implements OnInit {
   vehiculos!: any;
   central!: CentralColectivo;
 
+  elementosFiltrados: any[] = [];  // Lista filtrada
+  searchText: string = '';  // Texto de búsqueda
+
   constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
@@ -49,13 +52,16 @@ export class VerVehiculosPage implements OnInit {
       ]);
 
       // Filtrar los resultados para obtener solo los choferes de la misma central
-      this.vehiculos = vehiculos.filter(vehiculo => { 
-        for(let item of vehiculo.usuario){
-          if(item == this.usuario.uid){
+      this.vehiculos = vehiculos.filter(vehiculo => {
+        for (let item of vehiculo.usuario) {
+          if (item == this.usuario.uid) {
             return vehiculo
           }
         }
       });
+
+      this.elementosFiltrados = this.vehiculos; //Copiamos desde la variable
+
 
       if (this.vehiculos.length > 0) {
         this.utilsSvc.presentToast({
@@ -93,5 +99,20 @@ export class VerVehiculosPage implements OnInit {
     this.router.navigate(['/main/chofer/ver-vehiculos/detalle-vehiculo', id]);
   }
 
+  // Función para filtrar
+  filtrar(event: any) {
+    const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+    // Filtrar los choferes por nombre o rut
+    if (textoBusqueda.trim() === '') {
+      // Si no hay texto de búsqueda, mostrar todos los choferes
+      this.elementosFiltrados = this.vehiculos;
+    } else {
+      this.elementosFiltrados = this.vehiculos.filter(elemento =>
+        elemento.patente_vehiculo.toLowerCase().includes(textoBusqueda) ||
+        elemento.nombre_modelo.toLowerCase().includes(textoBusqueda)
+      );
+    }
+  }
 }
 

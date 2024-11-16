@@ -29,6 +29,9 @@ export class CentralesPage implements OnInit {
   private uniqueId = '';
   private comunaSeleccionada = '';
 
+  elementosFiltrados: any[] = [];  // Lista filtrada
+  searchText: string = '';  // Texto de búsqueda
+
   constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
@@ -65,6 +68,8 @@ export class CentralesPage implements OnInit {
       this.comunas = callback2;
       this.presidentes = callback3.filter(usuario => usuario.tipo_usuario == '1'); //1, porque el tipo de usuario 1 es de los presidentes/administradores
 
+
+      this.elementosFiltrados = this.centrales; //Copiamos desde la variable
 
       if (this.centrales.length <= 0) {
         this.utilsSvc.presentToast({
@@ -506,4 +511,18 @@ export class CentralesPage implements OnInit {
     }
   }
 
+  // Función para filtrar
+	filtrar(event: any) {
+		const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+		// Filtrar los choferes por nombre o rut
+		if (textoBusqueda.trim() === '') {
+			// Si no hay texto de búsqueda, mostrar todos los choferes
+			this.elementosFiltrados = this.centrales;
+		} else {
+			this.elementosFiltrados = this.centrales.filter(elemento =>
+				elemento.nombre_central.toLowerCase().includes(textoBusqueda)
+			);
+		}
+	}
 }

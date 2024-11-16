@@ -52,6 +52,11 @@ export class FirebaseService {
     this.utilsSvc.routerLink('auth')
   }
 
+  signOutNotRedirect() {
+    getAuth().signOut();
+    localStorage.removeItem('usuario');
+  }
+
   // ========== Base de Datos ==========
 
   // ========== Setear documentos ==========

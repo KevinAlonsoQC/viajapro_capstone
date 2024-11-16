@@ -143,7 +143,7 @@ export class CrearConductorPage implements OnInit {
       delete this.form.value.password;
 
       this.firebaseSvc.setDocument(path, this.form.value).then(async res => {
-        this.utilsSvc.routerLink('/main/administrador/admin');
+                this.utilsSvc.routerLink('/main/administrador');
         this.form.reset();
         this.utilsSvc.presentToast({
           message: 'Usuario creado con éxito',

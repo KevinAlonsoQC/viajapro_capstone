@@ -109,11 +109,15 @@ export class DetalleCentralPage implements OnInit {
           this.central.img_central = this.form.value.img_central
         }
 
-        if (this.form.value.presidente !== this.presidente.uid) {
-          await this.firebaseSvc.updateDocument(`usuario/${this.presidente.uid}`, { central: '' });
-          const presidenteObtenido = await this.firebaseSvc.getDocument(`usuario/${this.form.value.presidente}`);
-          this.presidente = presidenteObtenido
+        if (this.presidente && this.presidente.uid) {
+          if (this.form.value.presidente !== this.presidente.uid) {
+            await this.firebaseSvc.updateDocument(`usuario/${this.presidente.uid}`, { central: '' });
+          }
         }
+
+        const presidenteObtenido = await this.firebaseSvc.getDocument(`usuario/${this.form.value.presidente}`);
+        this.presidente = presidenteObtenido
+
 
         await this.firebaseSvc.updateDocument(`central_colectivo/${this.central.id}`, this.form.value);
         this.central = { ...this.central, ...this.form.value }
@@ -130,7 +134,7 @@ export class DetalleCentralPage implements OnInit {
 
         await this.firebaseSvc.updateDocument(`usuario/${this.central.presidente}`, { central: this.central.id });
 
-        this.utilsSvc.routerLink('main/owner/central');
+        this.utilsSvc.routerLink('main/owner/central/centrales');
         this.utilsSvc.presentToast({
           message: 'Central actualizada con éxito.',
           duration: 1500,

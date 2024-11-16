@@ -22,7 +22,8 @@ export class VehiculosPage implements OnInit {
 	usuario!: User;
 	vehiculos!: any;
 	central!: CentralColectivo;
-
+	elementosFiltrados: any[] = [];  // Lista filtrada
+	searchText: string = '';  // Texto de búsqueda
 	constructor(private router: Router, private alertController: AlertController) { }
 
 	ngOnInit() {
@@ -53,6 +54,8 @@ export class VehiculosPage implements OnInit {
 			this.vehiculos = vehiculos.filter(vehiculo =>
 				vehiculo.central == this.usuario.central
 			);
+
+			this.elementosFiltrados = this.vehiculos; //Copiamos desde la variable
 
 			if (this.vehiculos.length > 0) {
 				this.utilsSvc.presentToast({
@@ -155,6 +158,23 @@ export class VehiculosPage implements OnInit {
 		});
 
 		await alert.present();
+	}
+
+
+	// Función para filtrar
+	filtrar(event: any) {
+		const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+		// Filtrar los choferes por nombre o rut
+		if (textoBusqueda.trim() === '') {
+			// Si no hay texto de búsqueda, mostrar todos los choferes
+			this.elementosFiltrados = this.vehiculos;
+		} else {
+			this.elementosFiltrados = this.vehiculos.filter(elemento =>
+				elemento.patente_vehiculo.toLowerCase().includes(textoBusqueda) ||
+				elemento.nombre_modelo.toLowerCase().includes(textoBusqueda)
+			);
+		}
 	}
 }
 

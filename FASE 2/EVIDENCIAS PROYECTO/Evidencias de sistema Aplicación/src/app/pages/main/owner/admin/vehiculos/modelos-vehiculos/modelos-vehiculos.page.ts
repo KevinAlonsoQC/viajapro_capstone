@@ -28,6 +28,9 @@ export class ModelosVehiculosPage implements OnInit {
   private uniqueId = '';
   private marcaSeleccionado = '';
 
+  elementosFiltrados: any[] = [];  // Lista filtrada
+  searchText: string = '';  // Texto de búsqueda
+
   constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
@@ -62,6 +65,8 @@ export class ModelosVehiculosPage implements OnInit {
       // Filtrar los resultados para obtener solo los choferes de la misma central
       this.modelos = callback;
       this.marcas = callback2
+
+      this.elementosFiltrados = this.modelos; //Copiamos desde la variable
 
       if (this.modelos.length <= 0) {
         this.utilsSvc.presentToast({
@@ -418,7 +423,7 @@ export class ModelosVehiculosPage implements OnInit {
     }
     const alert = await this.alertController.create({
       header: `¿Seguro de ${titulo} el Modelo de Vehículo?`,
-      subHeader: `Se cambiará el estado a la Ciudad con nombre: ${modelo.nombre_modelo}`,
+      subHeader: `Se cambiará el estado del Modelo de Vehículo con nombre: ${modelo.nombre_modelo}`,
       buttons: [
         {
           text: 'Cancelar',
@@ -446,7 +451,7 @@ export class ModelosVehiculosPage implements OnInit {
               //En vez de eliminarlo se pone como estado 0, porque si lo eliminamos, y llegasen a existir datos con un banco, al eliminarlo causará
               //un error a escala!
               if (modelo.estado) {
-                await this.firebaseSvc.updateDocument(`ciudad/${modelo.id}`, { ...modelo, estado: false });
+                await this.firebaseSvc.updateDocument(`modelo/${modelo.id}`, { ...modelo, estado: false });
               } else {
                 await this.firebaseSvc.updateDocument(`modelo/${modelo.id}`, { ...modelo, estado: true });
               }
@@ -489,4 +494,18 @@ export class ModelosVehiculosPage implements OnInit {
   }
 
 
+  // Función para filtrar
+  filtrar(event: any) {
+    const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+    // Filtrar los choferes por nombre o rut
+    if (textoBusqueda.trim() === '') {
+      // Si no hay texto de búsqueda, mostrar todos los choferes
+      this.elementosFiltrados = this.modelos;
+    } else {
+      this.elementosFiltrados = this.modelos.filter(elemento =>
+        elemento.nombre_modelo.toLowerCase().includes(textoBusqueda)
+      );
+    }
+  }
 }

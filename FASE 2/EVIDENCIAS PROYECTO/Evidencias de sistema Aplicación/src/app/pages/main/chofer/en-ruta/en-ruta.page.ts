@@ -20,7 +20,8 @@ export class EnRutaPage implements OnInit {
   rutas: any;
   updateInterval: any; // ID del intervalo de actualización
   vehRuta: any;
-
+  elementosFiltrados: any[] = [];  // Lista filtrada
+  searchText: string = '';  // Texto de búsqueda
   constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
@@ -83,6 +84,9 @@ export class EnRutaPage implements OnInit {
         console.log('Vehículo en ruta!')
         await this.startTrackingUserLocation();
       }
+
+      this.elementosFiltrados = this.rutas; //Copiamos desde la variable
+
 
       if (this.vehRuta.length <= 0) {
         this.utilsSvc.presentToast({
@@ -155,4 +159,18 @@ export class EnRutaPage implements OnInit {
     await alert.present();
   }
 
+  // Función para filtrar
+	filtrar(event: any) {
+		const textoBusqueda = event.target.value.toLowerCase();  // Captura el valor ingresado y lo convierte a minúsculas
+
+		// Filtrar los choferes por nombre o rut
+		if (textoBusqueda.trim() === '') {
+			// Si no hay texto de búsqueda, mostrar todos los choferes
+			this.elementosFiltrados = this.rutas;
+		} else {
+			this.elementosFiltrados = this.rutas.filter(elemento =>
+				elemento.nombre_ruta.toLowerCase().includes(textoBusqueda)
+			);
+		}
+	}
 }

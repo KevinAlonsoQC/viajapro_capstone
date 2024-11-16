@@ -38,15 +38,16 @@ export class MainPage implements OnInit {
 
     try {
       const tipo_cuenta = this.usuario.tipo_usuario;
-
+      console.log('Alo?')
       if(tipo_cuenta == "0"){
         this.utilsSvc.routerLink('/main/owner');
       }else if(tipo_cuenta == "1"){
-        this.utilsSvc.routerLink('/main/administrador/admin');
+        this.utilsSvc.routerLink('/main/administrador');
       }else if(tipo_cuenta == "2"){
         this.utilsSvc.routerLink('/main/chofer');
       }else if(tipo_cuenta == "3"){
-        this.utilsSvc.routerLink('/main/pasajero');
+        console.log('Pasajero')
+        await this.utilsSvc.routerLink('/main/pasajero');
       }else{
         this.utilsSvc.presentToast({
           message: 'No se pudo reconocer los datos de tu cuenta. Informa a soporte por favor.',

@@ -121,7 +121,7 @@ export class PersonalPage implements OnInit {
           icon: 'alert-circle-outline'
         });
       }
-    }, 10000); // Actualiza cada 10 segundos
+    }, 5000); // Actualiza cada 10 segundos
   }
 
   onSelect({ selected }) {

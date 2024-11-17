@@ -158,7 +158,7 @@ export class ChoferPage implements OnInit {
           console.error('Error obteniendo la ubicación [chofer', error);
         }
       }
-    }, 15000); // Actualiza cada 15 segundos
+    }, 5000); // Actualiza cada 15 segundos
   }
 
   async entrarEnServicio() {

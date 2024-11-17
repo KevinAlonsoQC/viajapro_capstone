@@ -151,7 +151,7 @@ export class VerRutaPage implements OnInit {
         } catch (error) {
           console.error('Error obteniendo la ubicación', error);
         }
-      }, 15000); // Actualiza cada 15 segundos
+      }, 5000); // Actualiza cada 15 segundos
     }
   }
 

@@ -256,7 +256,7 @@ export class MapPage implements OnInit {
         } catch (error) {
           console.error('Error obteniendo la ubicación', error);
         }
-      }, 15000); // Actualiza cada 5 segundos
+      }, 5000); // Actualiza cada 5 segundos
     }
   }
 
@@ -510,7 +510,7 @@ export class MapPage implements OnInit {
       } finally {
         loading.dismiss();
       }
-    }, 30000); // Actualiza cada 30 segundos
+    }, 5000); // Actualiza cada 30 segundos
   }
 
   showDetailCar(car: any) {

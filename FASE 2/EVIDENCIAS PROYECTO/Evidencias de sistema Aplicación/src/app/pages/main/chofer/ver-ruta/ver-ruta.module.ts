@@ -8,6 +8,7 @@ import { VerRutaPageRoutingModule } from './ver-ruta-routing.module';
 
 import { VerRutaPage } from './ver-ruta.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
   imports: [
@@ -17,6 +18,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     VerRutaPageRoutingModule,
     SharedModule
   ],
-  declarations: [VerRutaPage]
+  declarations: [VerRutaPage],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Añadir esto aquí también
+
 })
 export class VerRutaPageModule {}

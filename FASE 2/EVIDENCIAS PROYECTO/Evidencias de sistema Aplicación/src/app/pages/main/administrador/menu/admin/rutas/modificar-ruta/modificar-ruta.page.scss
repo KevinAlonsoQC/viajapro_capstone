@@ -1,12 +1,15 @@
-
-.capacitor-google-map {
-    display: inline-block;
-    width: 100%;
-    height:100%;
+ion-content {
+    --background: 'transparent';
 }
 
-ion-content{
-    --background: 'transparent';
+#container {
+    width: 100%;
+    height: 100%;
+}
+
+capacitor-google-map {
+    display: inline-block;
+    width: 100%;
     height: 100%;
 }
 

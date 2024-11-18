@@ -12,31 +12,32 @@
       <app-campana [notifica]="true"></app-campana>
       <app-avatar [img]="usuario.img_usuario" (click)="profile()"></app-avatar>
     </ion-buttons>
-    
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-chip class="boton-volver" (click)="removeLastPoint()">
-    <ion-label>Volver</ion-label>
-    <ion-icon name="arrow-undo-circle-outline"></ion-icon>
-  </ion-chip>
-  <ion-chip class="boton-inicio" (click)="marcarInicio()">
-    <ion-label>Punto de Inicio</ion-label>
-    <ion-icon name="golf-outline"></ion-icon>
-  </ion-chip>
-  <ion-chip class="boton-final" (click)="marcarFinal()">
-    <ion-label>Punto Final</ion-label>
-    <ion-icon name="golf-outline"></ion-icon>
-  </ion-chip>
-  <ion-chip class="boton-guardar" (click)="guardarRuta()">
-    <ion-label>Guardar</ion-label>
-  </ion-chip>
-  <ion-chip class="boton-borrar" (click)="clearRoute()">
-    <ion-label>Borrar Líneas</ion-label>
-    <ion-icon name="trash-outline"></ion-icon>
-  </ion-chip>
-   
-   
-  <app-map-pasajero class="capacitor-google-map" id="map"></app-map-pasajero>
+  <div id="container">
+    <capacitor-google-map id="map" #map></capacitor-google-map>
+
+    <ion-chip class="boton-volver" (click)="removeLastPoint()">
+      <ion-label>Volver</ion-label>
+      <ion-icon name="arrow-undo-circle-outline"></ion-icon>
+    </ion-chip>
+    <ion-chip class="boton-inicio" (click)="marcarInicio()">
+      <ion-label>Punto de Inicio</ion-label>
+      <ion-icon name="golf-outline"></ion-icon>
+    </ion-chip>
+    <ion-chip class="boton-final" (click)="marcarFinal()">
+      <ion-label>Punto Final</ion-label>
+      <ion-icon name="golf-outline"></ion-icon>
+    </ion-chip>
+    <ion-chip class="boton-guardar" (click)="guardarRuta()">
+      <ion-label>Guardar</ion-label>
+    </ion-chip>
+    <ion-chip class="boton-borrar" (click)="clearRoute()">
+      <ion-label>Borrar Líneas</ion-label>
+      <ion-icon name="trash-outline"></ion-icon>
+    </ion-chip>
+  </div>
 </ion-content>

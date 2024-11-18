@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -22,9 +22,6 @@ export class RutasPage implements OnInit {
   usuario: User;
   userId: string;
 
-  apiKey: 'AIzaSyC9L5m9leV5N2oY6gG2P075FJdMw5akOlk';
-  map: GoogleMap;
-
   latitude: number;
   longitude: number;
   userMarker: any;
@@ -43,6 +40,10 @@ export class RutasPage implements OnInit {
   coordenadaInicio: any;
   coordenadaFinal: any;
 
+  @ViewChild('map')
+  mapRef: ElementRef<HTMLElement>;
+  map: GoogleMap;
+  apiKey: string = environment.firebaseConfig.apiKey;
   constructor(private alertController: AlertController) { }
 
   ngOnInit() {
@@ -63,7 +64,7 @@ export class RutasPage implements OnInit {
   }
 
   async ionViewWillEnter() {
-    await this.checkGeolocationPermission();
+    await this.getLocation();
     if (!this.map) {
       await this.initMap();
     }
@@ -224,79 +225,11 @@ export class RutasPage implements OnInit {
     }
   }
 
-  async checkGeolocationPermission() {
-    return new Promise<void>((resolve, reject) => {
-      if ('geolocation' in navigator) {
-        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-          if (result.state === 'granted') {
-            console.log('Permiso concedido');
-            this.getLocation().then(() => resolve()).catch((error) => {
-              console.error('No se pudo obtener la ubicación al tener permiso concedido', error);
-              reject(error);
-            });
-          } else if (result.state === 'prompt') {
-            console.log('Solicitud de permiso para obtener ubicación');
-            this.getLocation().then(() => resolve()).catch((error) => {
-              console.error('No se pudo obtener la ubicación después de solicitar permiso', error);
-              reject(error);
-            });
-          } else {
-            console.log('Permiso de geolocalización denegado');
-            reject('Permiso de geolocalización denegado');
-          }
-        }).catch(error => {
-          console.error('Error al verificar el permiso de geolocalización', error);
-          reject(error);
-        });
-      } else {
-        console.error('Geolocalización no es soportada por este navegador');
-        reject('Geolocalización no soportada');
-      }
-    });
-  }
-
-  getLocation(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const options = {
-        enableHighAccuracy: true,
-        timeout: 15000,             // Tiempo máximo de espera de 15 segundos
-        maximumAge: 0
-      };
-
-      const attemptLocation = (retryCount = 5) => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            console.log('Ubicación obtenida:', position.coords.latitude, position.coords.longitude);
-            this.latitude = position.coords.latitude;
-            this.longitude = position.coords.longitude;
-            resolve();
-          },
-          (error) => {
-            console.error('Error obteniendo la ubicación', error);
-            if (error.code === 2) {
-              console.error("Posición no disponible. Reintentando...");
-              if (retryCount > 0) {
-                setTimeout(() => attemptLocation(retryCount - 1), 5000); // Reintenta después de 5 segundos
-              } else {
-                console.error("Número máximo de intentos alcanzado. Verifica la conexión de red o la configuración del GPS.");
-                reject(error);
-              }
-            } else if (error.code === 1) {
-              console.error("Permiso denegado por el usuario.");
-              reject(error);
-            } else if (error.code === 3) {
-              console.error("Solicitud de geolocalización expiró.");
-              reject(error);
-            } else {
-              reject(error);
-            }
-          },
-          options
-        );
-      };
-
-      attemptLocation();
-    });
+  async getLocation() {
+    const coordinates = await Geolocation.getCurrentPosition();
+    const { latitude, longitude } = coordinates.coords;
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 
   async addPointToRoute(event: any) {
@@ -322,7 +255,7 @@ export class RutasPage implements OnInit {
               lat: event.latitude,
               lng: event.longitude,
             },
-            iconUrl: "../../../../assets/icon/icon_inicio.png",
+            iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055467632623689/icon_inicio.png?ex=673c8d15&is=673b3b95&hm=b64f383d7638ca5c12c5b35b6b3f3e34fbe5969804821c83c138f3656304e9e1&=&format=webp&quality=lossless",
             iconSize: { width: 25, height: 25 },
             iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
           }
@@ -344,7 +277,7 @@ export class RutasPage implements OnInit {
               lat: event.latitude,
               lng: event.longitude,
             },
-            iconUrl: "../../../../assets/icon/icono_fin.png",
+            iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055468182208573/icon_user2.png?ex=673c8d16&is=673b3b96&hm=2924ba05100932f3bdcfb8b0bb2f40ac7a05a9e820ba48cd58563b2ac33d0c60&=&format=webp&quality=lossless",
             iconSize: { width: 25, height: 25 },
             iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
           }

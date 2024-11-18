@@ -17,10 +17,6 @@ const routes: Routes = [
     loadChildren: () => import('./menu/personal/personal.module').then( m => m.PersonalPageModule)
   },
   {
-    path: 'colectivos',
-    loadChildren: () => import('./menu/colectivos/colectivos.module').then( m => m.ColectivosPageModule)
-  },
-  {
     path: 'admin',
     loadChildren: () => import('./menu/admin/admin.module').then( m => m.AdminPageModule)
   },

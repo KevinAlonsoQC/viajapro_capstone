@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -8,7 +8,6 @@ import { environment } from 'src/environments/environment';
 import { GoogleMap } from '@capacitor/google-maps';
 import { Geolocation } from '@capacitor/geolocation';
 import { ActivatedRoute } from '@angular/router';
-import { Vehiculo } from 'src/app/models/vehiculo';
 
 @Component({
   selector: 'app-ver-ruta',
@@ -22,8 +21,6 @@ export class VerRutaPage implements OnInit {
   usuario: User;
   userId: string;
 
-  apiKey: 'AIzaSyC9L5m9leV5N2oY6gG2P075FJdMw5akOlk';
-  map: GoogleMap;
   latitude: number;
   longitude: number;
   userMarkerId: any;
@@ -31,6 +28,12 @@ export class VerRutaPage implements OnInit {
   updateInterval: any; // ID del intervalo de actualización
 
   vehiculo: any;
+
+  @ViewChild('map')
+  mapRef: ElementRef<HTMLElement>;
+  map: GoogleMap;
+  apiKey: string = environment.firebaseConfig.apiKey;
+
   constructor(private paymentService: PaymentService, private route: ActivatedRoute) { }
 
   ngOnInit() {
@@ -49,7 +52,7 @@ export class VerRutaPage implements OnInit {
   async ionViewWillEnter() {
 
     await this.getData();
-    await this.checkGeolocationPermission();
+    await this.getLocation();
     if (!this.map) {
       await this.initMap();
     }
@@ -140,7 +143,7 @@ export class VerRutaPage implements OnInit {
               lat: latitude,
               lng: longitude,
             },
-            iconUrl: "../../../../assets/icon/icono_vp.png",
+            iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055469243367484/icono_vp_grande.png?ex=673c8d16&is=673b3b96&hm=02a8ba220e36fa43e0973014fbc13fa2d9c39e9d85b6c5950c9dbe5144e08bee&=&format=webp&quality=lossless",
             iconSize: { width: 25, height: 25 },
             iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
           }]);
@@ -161,7 +164,7 @@ export class VerRutaPage implements OnInit {
         lat: this.latitude,
         lng: this.longitude,
       },
-      iconUrl: "../../../../assets/icon/icono_vp.png",
+      iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055469243367484/icono_vp_grande.png?ex=673c8d16&is=673b3b96&hm=02a8ba220e36fa43e0973014fbc13fa2d9c39e9d85b6c5950c9dbe5144e08bee&=&format=webp&quality=lossless",
       iconSize: { width: 25, height: 25 },
       iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
     }]);
@@ -176,7 +179,7 @@ export class VerRutaPage implements OnInit {
           lat: this.routePoints[0].punto_inicio.lat,
           lng: this.routePoints[0].punto_inicio.lng,
         },
-        iconUrl: "../../../../assets/icon/icon_inicio.png",
+        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055467632623689/icon_inicio.png?ex=673c8d15&is=673b3b95&hm=b64f383d7638ca5c12c5b35b6b3f3e34fbe5969804821c83c138f3656304e9e1&=&format=webp&quality=lossless",
         iconSize: { width: 25, height: 25 },
         iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
@@ -185,7 +188,7 @@ export class VerRutaPage implements OnInit {
           lat: this.routePoints[0].punto_final.lat,
           lng: this.routePoints[0].punto_final.lng,
         },
-        iconUrl: "../../../../assets/icon/icono_fin.png",
+        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055468182208573/icon_user2.png?ex=673c8d16&is=673b3b96&hm=2924ba05100932f3bdcfb8b0bb2f40ac7a05a9e820ba48cd58563b2ac33d0c60&=&format=webp&quality=lossless",
         iconSize: { width: 25, height: 25 },
         iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
@@ -196,48 +199,12 @@ export class VerRutaPage implements OnInit {
 
   }
 
-  // Probar la localización en la web
-  async checkGeolocationPermission() {
-    return new Promise<void>((resolve, reject) => {
-      if ('geolocation' in navigator) {
-        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-          if (result.state === 'granted') {
-            console.log('Permiso concedido');
-            this.getLocation().then(() => resolve());
-          } else if (result.state === 'prompt') {
-            console.log('El permiso debe solicitarse');
-            this.getLocation().then(() => resolve());
-          } else if (result.state === 'denied') {
-            console.log('Permiso denegado');
-            reject('Permiso de geolocalización denegado');
-          }
 
-          result.onchange = () => {
-            console.log(`El estado del permiso ha cambiado a: ${result.state}`);
-          };
-        });
-      } else {
-        console.log('Geolocalización no es soportada por este navegador');
-        reject('Geolocalización no soportada');
-      }
-    });
-  }
-
-  getLocation(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('Ubicación obtenida:', position.coords.latitude, position.coords.longitude);
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
-          resolve();  // Resuelve la promesa cuando tienes las coordenadas
-        },
-        (error) => {
-          console.error('Error obteniendo la ubicación', error);
-          reject(error);
-        }
-      );
-    });
+  async getLocation() {
+    const coordinates = await Geolocation.getCurrentPosition();
+    const { latitude, longitude } = coordinates.coords;
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 
   drawRoute() {

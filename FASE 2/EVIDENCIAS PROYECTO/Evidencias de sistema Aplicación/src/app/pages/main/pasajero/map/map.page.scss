@@ -1,49 +1,57 @@
-capacitor-google-map {
-    display: inline-block;
-    width: 100%;
-    height:100%;
+ion-content {
+    --background: 'transparent';
 }
 
-ion-content{
-    --background: 'transparent';
+#container {
+    width: 100%;
     height: 100%;
 }
 
-.tarifa{
+capacitor-google-map {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.tarifa {
     position: absolute;
-    top: 50px; /* Ajusta esta posición según prefieras */
-    right:7px; /* Puedes cambiar a 'right' o ajustar la posición */
-    z-index: 10; /* Asegúrate de que sea mayor que el z-index del mapa */
-    --background:#1A1528;
+    top: 50px;
+    /* Ajusta esta posición según prefieras */
+    right: 7px;
+    /* Puedes cambiar a 'right' o ajustar la posición */
+    z-index: 10;
+    /* Asegúrate de que sea mayor que el z-index del mapa */
+    --background: #1A1528;
     border-radius: 15px;
     color: white;
 }
 
-.detail-time{
+.detail-time {
     color: #1F1F1F;
     font-size: 48px;
     font-weight: bold;
 }
 
-.detail-time-km{
+.detail-time-km {
     font-size: 20px;
-    font-weight:600;
+    font-weight: 600;
     color: #404040;
 }
-.detail-notificacion{
+
+.detail-notificacion {
     color: #1F1F1F;
     --background: #FF8811;
     --border-radius: 1rem;
-    
+
 }
 
-.button-pago{
-    --background:#1A1528 ;
+.button-pago {
+    --background: #1A1528;
     height: 48px;
     --border-radius: 15px;
 }
 
-.button-tarifa{
+.button-tarifa {
     --border-color: #D9D9D9;
     height: 48px;
     --border-radius: 15px;
@@ -57,23 +65,23 @@ ion-modal#example-modal {
     --height: fit-content;
     --border-radius: 6px;
     --box-shadow: 0 28px 48px rgba(0, 0, 0, 0.4);
-  }
-  
-  ion-modal#example-modal h1 {
+}
+
+ion-modal#example-modal h1 {
     margin: 20px 20px 10px 20px;
-  }
-  
-  ion-modal#example-modal ion-icon {
+}
+
+ion-modal#example-modal ion-icon {
     margin-right: 6px;
-  
+
     width: 48px;
     height: 48px;
-  
+
     padding: 4px 0;
-  
+
     color: #aaaaaa;
-  }
-  
-  ion-modal#example-modal .wrapper {
+}
+
+ion-modal#example-modal .wrapper {
     margin-bottom: 10px;
-  }
+}

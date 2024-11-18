@@ -9,6 +9,7 @@ import { RutasPageRoutingModule } from './rutas-routing.module';
 import { RutasPage } from './rutas.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
   imports: [
@@ -18,6 +19,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     RutasPageRoutingModule,
     SharedModule
   ],
-  declarations: [RutasPage]
+  declarations: [RutasPage],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA] // Añadir esto aquí también
+
 })
 export class RutasPageModule {}

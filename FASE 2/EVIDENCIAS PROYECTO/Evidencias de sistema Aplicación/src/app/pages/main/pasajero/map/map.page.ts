@@ -28,7 +28,6 @@ export class MapPage implements OnInit {
   vehiculos: any;
   carDetail: any;
 
-  apiKey: string = environment.firebaseConfig.apiKey;
   latitude: number;
   longitude: number;
   userMarkerId: any;
@@ -48,6 +47,7 @@ export class MapPage implements OnInit {
   @ViewChild('map')
   mapRef: ElementRef<HTMLElement>;
   map: GoogleMap;
+  apiKey: string = environment.firebaseConfig.apiKey;
 
   constructor(private paymentService: PaymentService, private route: ActivatedRoute, private alertController: AlertController) { }
 
@@ -223,7 +223,7 @@ export class MapPage implements OnInit {
     });
 
     await this.setMarkers();
-    await this.setUserMarker();  // Marcador inicial del usuario
+    //await this.setUserMarker();  // Marcador inicial del usuario
     await this.setMarkersCars();
     this.startTrackingUserLocation();  // Comienza a rastrear la ubicación del usuario
     this.drawRoute();
@@ -249,10 +249,10 @@ export class MapPage implements OnInit {
           // Agrega un nuevo marcador en la nueva ubicación y guarda el ID
           const ids = await this.map.addMarkers([{
             coordinate: {
-              lat: latitude,
-              lng: longitude,
+              lat: this.latitude,
+              lng: this.longitude,
             },
-            iconUrl: "../../../../assets/icon/user_icon.png",
+            iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055469490962493/user_icon.png?ex=673c8d16&is=673b3b96&hm=6590d9270077e59efbadeabfcccf81708c726816fd2c3967a3c38c0d16b638e5&=&format=webp&quality=lossless",
             iconSize: { width: 25, height: 25 },
             iconAnchor: { x: 12.5, y: 12.5 }
           }]);
@@ -271,7 +271,7 @@ export class MapPage implements OnInit {
         lat: this.latitude,
         lng: this.longitude,
       },
-      iconUrl: "../../../../assets/icon/user_icon.png",
+      iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055469490962493/user_icon.png?ex=673c8d16&is=673b3b96&hm=6590d9270077e59efbadeabfcccf81708c726816fd2c3967a3c38c0d16b638e5&=&format=webp&quality=lossless",
       iconSize: { width: 30, height: 30 },
       iconAnchor: { x: 15, y: 15 }
     }]);
@@ -286,7 +286,7 @@ export class MapPage implements OnInit {
           lat: this.routePoints[0].punto_inicio.lat,
           lng: this.routePoints[0].punto_inicio.lng,
         },
-        iconUrl: "../../../../assets/icon/icon_inicio.png",
+        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055467632623689/icon_inicio.png?ex=673c8d15&is=673b3b95&hm=b64f383d7638ca5c12c5b35b6b3f3e34fbe5969804821c83c138f3656304e9e1&=&format=webp&quality=lossless",
         iconSize: { width: 25, height: 25 },
         iconAnchor: { x: 12.5, y: 12.5 }, // Punto de anclaje en el centro inferior
         title: "Central",
@@ -296,7 +296,7 @@ export class MapPage implements OnInit {
           lat: this.routePoints[0].punto_final.lat,
           lng: this.routePoints[0].punto_final.lng,
         },
-        iconUrl: "../../../../assets/icon/icono_fin.png",
+        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055468412768286/icono_fin.png?ex=673c8d16&is=673b3b96&hm=2290e86a5358c444d8c9b44125ec4741271156e7d235394742475f790b72c7f7&=&format=webp&quality=lossless",
         iconSize: { width: 30, height: 30 },
         iconAnchor: { x: 15, y: 15 }, // Punto de anclaje en el centro inferior
         title: "Retorno",
@@ -318,7 +318,7 @@ export class MapPage implements OnInit {
               lat: veh.coordenadas_vehiculo.lat,
               lng: veh.coordenadas_vehiculo.lng,
             },
-            iconUrl: "../../../../assets/icon/icon_car.png",
+            iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055467347542108/icon_car.png?ex=673c8d15&is=673b3b95&hm=e451b17825132236f98a16bd26cc799140b9462bf0fddc962d6a3188f1aab11b&=&format=webp&quality=lossless",
             iconSize: { width: 30, height: 35 },
             iconAnchor: { x: 15, y: 35 } // Punto de anclaje en el centro inferior
           });

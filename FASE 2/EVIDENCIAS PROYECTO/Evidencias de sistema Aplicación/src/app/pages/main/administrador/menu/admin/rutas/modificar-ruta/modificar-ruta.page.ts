@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, inject, ViewChild } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
@@ -18,8 +18,6 @@ export class ModificarRutaPage implements OnInit {
   utilsSvc = inject(UtilsService);
   usuario: User;
   userId: string;
-  apiKey: 'AIzaSyC9L5m9leV5N2oY6gG2P075FJdMw5akOlk';
-  map: GoogleMap;
   latitude: number;
   longitude: number;
   userMarker: any;
@@ -29,6 +27,12 @@ export class ModificarRutaPage implements OnInit {
   currentPolylineId: string | null = null; // ID de la polilínea actual
 
   ruta: any;
+
+  @ViewChild('map')
+  mapRef: ElementRef<HTMLElement>;
+  map: GoogleMap;
+  apiKey: string = environment.firebaseConfig.apiKey;
+
   constructor(private route: ActivatedRoute, private alertController: AlertController) { }
 
   async ngOnInit() {
@@ -37,23 +41,20 @@ export class ModificarRutaPage implements OnInit {
       this.usuario = user;
     });
     this.usuario = this.utilsSvc.getFromLocalStorage('usuario');
-  
+
     // Obtener el ID de la URL
     this.route.params.subscribe(async params => {
       const id = params['id'];
       console.log('ID recibido:', id);
-  
+
       try {
         // Obtener los datos de la ruta con el ID desde Firebase
         const rutaObtenida = await this.firebaseSvc.getDocument(`ruta_central/${id}`);
-  
+
         // Verificar si la ruta obtenida pertenece a la misma "central"
         if (rutaObtenida && rutaObtenida['central'] === this.usuario.central) {
           this.ruta = rutaObtenida;
-  
-          // Verificar permisos de geolocalización
-          await this.checkGeolocationPermission();
-  
+
           // Inicializar el mapa si aún no se ha creado
           if (!this.map) {
             await this.initMap();
@@ -82,7 +83,7 @@ export class ModificarRutaPage implements OnInit {
       }
     });
   }
-  
+
 
   profile() {
     this.utilsSvc.routerLink('/main/profile-menu');
@@ -136,7 +137,7 @@ export class ModificarRutaPage implements OnInit {
 
     this.map.setOnMapClickListener((event) => this.addPointToRoute(event));
   }
-  
+
   async setMarkest() { // Configura otros marcadores
 
     const markers = [
@@ -145,7 +146,7 @@ export class ModificarRutaPage implements OnInit {
           lat: this.ruta.punto_inicio.lat,
           lng: this.ruta.punto_inicio.lng,
         },
-        iconUrl: "../../../../assets/icon/icon_inicio.png",
+        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055467632623689/icon_inicio.png?ex=673c8d15&is=673b3b95&hm=b64f383d7638ca5c12c5b35b6b3f3e34fbe5969804821c83c138f3656304e9e1&=&format=webp&quality=lossless",
         iconSize: { width: 25, height: 25 },
         iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
@@ -154,7 +155,7 @@ export class ModificarRutaPage implements OnInit {
           lat: this.ruta.punto_final.lat,
           lng: this.ruta.punto_final.lng,
         },
-        iconUrl: "../../../../assets/icon/icono_fin.png",
+        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055468182208573/icon_user2.png?ex=673c8d16&is=673b3b96&hm=2924ba05100932f3bdcfb8b0bb2f40ac7a05a9e820ba48cd58563b2ac33d0c60&=&format=webp&quality=lossless",
         iconSize: { width: 25, height: 25 },
         iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
@@ -164,48 +165,6 @@ export class ModificarRutaPage implements OnInit {
     await this.centerMap(this.ruta.punto_inicio.lat, this.ruta.punto_inicio.lng); // Usa las coordenadas que prefieras
   }
 
-  async checkGeolocationPermission() {
-    return new Promise<void>((resolve, reject) => {
-      // Comprueba si el navegador soporta geolocalización
-      if ('geolocation' in navigator) {
-        // Usa Permissions API para verificar el estado de la geolocalización
-        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-          if (result.state === 'granted') {
-            console.log('Permiso concedido');
-            this.getLocation().then(() => resolve()); // Llama a getLocation y espera a que obtenga las coordenadas
-          } else if (result.state === 'prompt') {
-            console.log('El permiso debe solicitarse');
-            this.getLocation().then(() => resolve()); // Pide la ubicación y espera las coordenadas
-          } else if (result.state === 'denied') {
-            console.log('Permiso denegado');
-            reject('Permiso de geolocalización denegado');
-          }
-          result.onchange = () => {
-            console.log(`El estado del permiso ha cambiado a: ${result.state}`);
-          };
-        });
-      } else {
-        console.log('Geolocalización no es soportada por este navegador');
-        reject('Geolocalización no soportada');
-      }
-    });
-  }
-  getLocation(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('Ubicación obtenida:', position.coords.latitude, position.coords.longitude);
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
-          resolve();  // Resuelve la promesa cuando tienes las coordenadas
-        },
-        (error) => {
-          console.error('Error obteniendo la ubicación', error);
-          reject(error);
-        }
-      );
-    });
-  }
   async addPointToRoute(event: any) {
     const lat = event.latitude;
     const lng = event.longitude;

@@ -376,6 +376,13 @@ export class MapPage implements OnInit {
           };
         });
       } else {
+        this.utilsSvc.presentToast({
+          message: '¡Geolocalización no aceptada!',
+          duration: 4000,
+          color: 'danger',
+          position: 'middle',
+          icon: 'alert-circle-outline'
+        });
         console.log('Geolocalización no es soportada por este navegador');
         reject('Geolocalización no soportada');
       }
@@ -413,8 +420,6 @@ export class MapPage implements OnInit {
 
   async getData() {
     this.updateData = setInterval(async () => {
-      const loading = await this.utilsSvc.loading();
-      await loading.present();
       const urlPath = 'ruta_central'; // Ruta de la colección de usuarios
       const urlPath2 = 'vehiculo'; // Ruta de la colección de usuarios
 
@@ -452,27 +457,28 @@ export class MapPage implements OnInit {
           this.tarifa = this.routePoints[0].tarifa_diurna;
         }
 
-        if (this.carDetail.id) {
-          console.log('Actualizando valores del vehiculo detallado')
+        if (this.carDetail && this.carDetail.length > 0 && this.carDetail.id) {
+          console.log('Actualizando valores del vehiculo detallado');
           this.vehiculos.filter(veh => {
             if (veh.id == this.carDetail.id) {
               const vehicleLat = veh.coordenadas_vehiculo.lat;
               const vehicleLng = veh.coordenadas_vehiculo.lng;
               const distance = Math.trunc(this.calculateDistance(this.latitude, this.longitude, vehicleLat, vehicleLng));
-
+        
               // Velocidad en metros por segundo (30 km/h)
               const speed = 30 * 1000 / 3600; // 30 km/h a m/s
-              const timeInSeconds = veh.distance / speed + 60; // Tiempo en segundos
+              const timeInSeconds = distance / speed + 60; // Tiempo en segundos
               const arrivalTime = new Date(Date.now() + timeInSeconds * 1000); // Hora de llegada
-              const options: Intl.DateTimeFormatOptions = { // Formato de la hora de llegada
+              const options: Intl.DateTimeFormatOptions = {
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false, // Cambia a true si deseas el formato de 12 horas
               };
               const calculo = arrivalTime.toLocaleTimeString([], options); // Retorna la hora de llegada en formato "HH:MM"
-
+        
               console.log(`Actualizando Distancia al vehículo ${veh.id}: ${distance} metros`);
-              console.log('Asientos Disponibles:', veh.asientos_dispo_vehiculo)
+              console.log('Asientos Disponibles:', veh.asientos_dispo_vehiculo);
+        
               this.carDetail = {
                 id: this.carDetail.id,
                 central: veh.central,
@@ -484,31 +490,12 @@ export class MapPage implements OnInit {
                 calculo: calculo,
                 asientos: veh.asientos_dispo_vehiculo,
                 token: veh.token
-              }
+              };
             }
-          })
-        }
-
-        if (this.vehiculos.length <= 0) {
-          this.utilsSvc.presentToast({
-            message: '¡No hay choferes en servicio en esta ruta!',
-            duration: 4000,
-            color: 'warning',
-            position: 'middle',
-            icon: 'alert-circle-outline'
           });
         }
       } catch (error) {
         console.log(error);
-        this.utilsSvc.presentToast({
-          message: 'No se pudo obtener los datos :(',
-          duration: 1500,
-          color: 'primary',
-          position: 'middle',
-          icon: 'alert-circle-outline'
-        });
-      } finally {
-        loading.dismiss();
       }
     }, 5000); // Actualiza cada 30 segundos
   }

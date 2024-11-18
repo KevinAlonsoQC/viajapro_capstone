@@ -26,7 +26,9 @@
   <ion-chip *ngIf="routePoints.length > 0" class="tarifa">
     {{routePoints[0].nombre_ruta}}
   </ion-chip>
-  <app-map-pasajero class="capacitor-google-map" id="map"></app-map-pasajero>
+
+  <capacitor-google-map #map></capacitor-google-map>
+
   <ion-modal #modal [isOpen]="isModalOpen" (didDismiss)="deleteDetails()" [initialBreakpoint]="0.25"
     [breakpoints]="[0, 0.25, 0.5, 0.60]">
     <ng-template>

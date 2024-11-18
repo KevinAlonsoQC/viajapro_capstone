@@ -23,6 +23,13 @@ export class PersonalPage implements OnInit {
     { prop: 'estado', name: 'Estado' },
   ];
 
+  datatableMessages = {
+    emptyMessage: 'No hay datos disponibles',
+    totalMessage: 'Total',
+    selectedMessage: 'seleccionado'
+  };
+
+
   selected = [];
   SelectionType = SelectionType;
   updateInterval: any; // ID del intervalo de actualización

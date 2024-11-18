@@ -24,6 +24,12 @@ export class FinanzasPage implements OnInit {
     { prop: 'fechaPago', name: 'Fecha Pago' },
   ];
 
+  datatableMessages = {
+    emptyMessage: 'No hay datos disponibles',
+    totalMessage: 'Total',
+    selectedMessage: 'seleccionado'
+  };
+
 
   selected = [];
   SelectionType = SelectionType;

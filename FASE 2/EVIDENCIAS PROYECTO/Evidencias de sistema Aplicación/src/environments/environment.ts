@@ -6,7 +6,7 @@ export const environment = {
   production: false,
 
   firebaseConfig: {
-    apiKey: "AIzaSyC9L5m9leV5N2oY6gG2P075FJdMw5akOlk",
+    apiKey: "AIzaSyDqPBMyYqIVJ9aU_Wj2IwSPiK0zXgY9Jzs",
     authDomain: "viajapro.firebaseapp.com",
     projectId: "viajapro",
     storageBucket: "viajapro.appspot.com",

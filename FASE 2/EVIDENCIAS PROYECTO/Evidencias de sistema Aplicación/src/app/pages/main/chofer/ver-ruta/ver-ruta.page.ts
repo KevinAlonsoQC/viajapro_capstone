@@ -22,7 +22,7 @@ export class VerRutaPage implements OnInit {
   usuario: User;
   userId: string;
 
-  apiKey: string = environment.firebaseConfig.apiKey;
+  apiKey: 'AIzaSyC9L5m9leV5N2oY6gG2P075FJdMw5akOlk';
   map: GoogleMap;
   latitude: number;
   longitude: number;

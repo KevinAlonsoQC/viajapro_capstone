@@ -69,7 +69,7 @@ export class PasajeroPage implements OnInit {
     this.updateInterval = setInterval(() => {
       console.log('Actualizando Rutas!!');
       this.updateNearbyRoutes();
-    }, 60000); // cada 60segundos se actualizarán las rutas cercanas!
+    }, 10000); // cada 60segundos se actualizarán las rutas cercanas!
   }
 
 

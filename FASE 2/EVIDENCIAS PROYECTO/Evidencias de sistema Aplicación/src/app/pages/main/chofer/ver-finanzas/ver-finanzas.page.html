@@ -10,7 +10,7 @@
 
     <ion-buttons slot="end">
       <app-campana [notifica]="true"></app-campana>
-      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile']"></app-avatar>
+      <app-avatar [img]="usuario.img_usuario" [routerLink]="['/main/profile-menu']"></app-avatar>
     </ion-buttons>
 
   </ion-toolbar>
@@ -33,7 +33,7 @@
       <ion-col>
         <ngx-datatable #table class="material" [rows]="rows" [columnMode]="ColumnMode.force" [columns]="columns"
           [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="10" [selected]="selected"
-          [selectionType]="SelectionType.multi" (select)="onSelect($event)">
+          [selectionType]="SelectionType.multi" (select)="onSelect($event)" [messages]="datatableMessages">
         </ngx-datatable>
       </ion-col>
     </ion-row>
@@ -129,7 +129,7 @@
           </ul>
 
           <div class="action">
-            <ion-button class="button" fill="clear" [href]="sel.comprobante">Comprobante</ion-button>
+            <ion-button class="button" fill="clear" [href]="sel.comprobante" target="_blank">Comprobante</ion-button>
           </div>
         </div>
       </div>

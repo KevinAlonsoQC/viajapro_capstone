@@ -22,12 +22,14 @@
 </ion-header>
 
 <!-- Contenido principal / Cuerpo sector amarillo-->
-<ion-content id="admin-content">
+<ion-content [fullscreen]="true">
   <ion-chip *ngIf="routePoints.length > 0" class="tarifa">
     {{routePoints[0].nombre_ruta}}
   </ion-chip>
 
-  <capacitor-google-map #map></capacitor-google-map>
+  <div id="container">
+    <capacitor-google-map #map></capacitor-google-map>
+  </div>
 
   <ion-modal #modal [isOpen]="isModalOpen" (didDismiss)="deleteDetails()" [initialBreakpoint]="0.25"
     [breakpoints]="[0, 0.25, 0.5, 0.60]">

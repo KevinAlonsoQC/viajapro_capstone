@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
 import { User } from 'src/app/models/user';
 import { AlertController } from '@ionic/angular';
 import { FirebaseService } from 'src/app/services/firebase.service';
@@ -29,7 +29,6 @@ export class MapPage implements OnInit {
   carDetail: any;
 
   apiKey: string = environment.firebaseConfig.apiKey;
-  map: GoogleMap;
   latitude: number;
   longitude: number;
   userMarkerId: any;
@@ -45,6 +44,11 @@ export class MapPage implements OnInit {
   mesajeKhipuModalError = false;
 
   tarifa: number;
+
+  @ViewChild('map')
+  mapRef: ElementRef<HTMLElement>;
+  map: GoogleMap;
+
   constructor(private paymentService: PaymentService, private route: ActivatedRoute, private alertController: AlertController) { }
 
   ngOnInit() {
@@ -133,7 +137,6 @@ export class MapPage implements OnInit {
       loading.dismiss();
     }
     await this.getData();
-    await this.checkGeolocationPermission();
     if (!this.map) {
       await this.initMap();
     }
@@ -193,12 +196,12 @@ export class MapPage implements OnInit {
   async initMap() {
     this.map = await GoogleMap.create({
       id: 'pasajero-map',
-      element: document.getElementById('map'),
+      element: this.mapRef.nativeElement,
       apiKey: this.apiKey,
       config: {
         center: {
-          lat: this.latitude,
-          lng: this.longitude,
+          lat: 33.6,
+          lng: -117.9,
         },
         zoom: 15,
         styles: [
@@ -228,7 +231,9 @@ export class MapPage implements OnInit {
 
   async startTrackingUserLocation() {
     if (this.map) {
-      // Establece un intervalo que actualiza la ubicación cada 5 segundos
+      // Evitar iniciar un nuevo intervalo si ya existe uno activo
+      if (this.updateInterval) return;
+
       this.updateInterval = setInterval(async () => {
         try {
           const coordinates = await Geolocation.getCurrentPosition();
@@ -236,12 +241,12 @@ export class MapPage implements OnInit {
           this.latitude = latitude;
           this.longitude = longitude;
 
-          // Elimina solo el marcador del usuario antes de agregar uno nuevo
+          // Elimina el marcador del usuario antes de agregar uno nuevo
           if (this.userMarkerId) {
             await this.map.removeMarkers([this.userMarkerId]);
           }
 
-          // Agrega un nuevo marcador en la nueva ubicación y guarda el ID del marcador
+          // Agrega un nuevo marcador en la nueva ubicación y guarda el ID
           const ids = await this.map.addMarkers([{
             coordinate: {
               lat: latitude,
@@ -249,10 +254,10 @@ export class MapPage implements OnInit {
             },
             iconUrl: "../../../../assets/icon/user_icon.png",
             iconSize: { width: 25, height: 25 },
-            iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
+            iconAnchor: { x: 12.5, y: 12.5 }
           }]);
 
-          this.userMarkerId = ids[0]; // Guarda el ID del nuevo marcador del usuario
+          this.userMarkerId = ids[0]; // Guarda el ID del marcador
         } catch (error) {
           console.error('Error obteniendo la ubicación', error);
         }
@@ -355,57 +360,6 @@ export class MapPage implements OnInit {
     });
   }
 
-  // Probar la localización en la web
-  async checkGeolocationPermission() {
-    return new Promise<void>((resolve, reject) => {
-      if ('geolocation' in navigator) {
-        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-          if (result.state === 'granted') {
-            console.log('Permiso concedido');
-            this.getLocation().then(() => resolve());
-          } else if (result.state === 'prompt') {
-            console.log('El permiso debe solicitarse');
-            this.getLocation().then(() => resolve());
-          } else if (result.state === 'denied') {
-            console.log('Permiso denegado');
-            reject('Permiso de geolocalización denegado');
-          }
-
-          result.onchange = () => {
-            console.log(`El estado del permiso ha cambiado a: ${result.state}`);
-          };
-        });
-      } else {
-        this.utilsSvc.presentToast({
-          message: '¡Geolocalización no aceptada!',
-          duration: 4000,
-          color: 'danger',
-          position: 'middle',
-          icon: 'alert-circle-outline'
-        });
-        console.log('Geolocalización no es soportada por este navegador');
-        reject('Geolocalización no soportada');
-      }
-    });
-  }
-
-  getLocation(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('Ubicación obtenida:', position.coords.latitude, position.coords.longitude);
-          this.latitude = position.coords.latitude;
-          this.longitude = position.coords.longitude;
-          resolve();  // Resuelve la promesa cuando tienes las coordenadas
-        },
-        (error) => {
-          console.error('Error obteniendo la ubicación', error);
-          reject(error);
-        }
-      );
-    });
-  }
-
   drawRoute() {
     this.map.addPolylines([{
       path: this.routePoints[0].coordenada_ruta,
@@ -464,7 +418,7 @@ export class MapPage implements OnInit {
               const vehicleLat = veh.coordenadas_vehiculo.lat;
               const vehicleLng = veh.coordenadas_vehiculo.lng;
               const distance = Math.trunc(this.calculateDistance(this.latitude, this.longitude, vehicleLat, vehicleLng));
-        
+
               // Velocidad en metros por segundo (30 km/h)
               const speed = 30 * 1000 / 3600; // 30 km/h a m/s
               const timeInSeconds = distance / speed + 60; // Tiempo en segundos
@@ -475,10 +429,10 @@ export class MapPage implements OnInit {
                 hour12: false, // Cambia a true si deseas el formato de 12 horas
               };
               const calculo = arrivalTime.toLocaleTimeString([], options); // Retorna la hora de llegada en formato "HH:MM"
-        
+
               console.log(`Actualizando Distancia al vehículo ${veh.id}: ${distance} metros`);
               console.log('Asientos Disponibles:', veh.asientos_dispo_vehiculo);
-        
+
               this.carDetail = {
                 id: this.carDetail.id,
                 central: veh.central,

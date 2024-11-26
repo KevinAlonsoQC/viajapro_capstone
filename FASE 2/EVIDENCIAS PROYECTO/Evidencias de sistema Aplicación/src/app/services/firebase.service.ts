@@ -10,6 +10,7 @@ import { UtilsService } from './utils.service';
 import { AngularFireStorage } from '@angular/fire/compat/storage'; // Importar AngularFireStorage
 import { uploadString, getDownloadURL, getStorage, ref } from 'firebase/storage';
 
+import { getDatabase, ref as dbRef, set, onDisconnect, get, query, equalTo, orderByChild } from 'firebase/database'; // Importar módulos de Realtime Database
 
 @Injectable({
   providedIn: 'root'
@@ -28,17 +29,17 @@ export class FirebaseService {
 
   // ========= Acceder Usuario =========
   signIn(user: User) {
-    return signInWithEmailAndPassword(getAuth(), user.email, user.password)
+    return signInWithEmailAndPassword(getAuth(), user.email, user.password);
   }
 
   // ========= Registrarse Usuario =========
   signUp(user: User) {
-    return createUserWithEmailAndPassword(getAuth(), user.email, user.password)
+    return createUserWithEmailAndPassword(getAuth(), user.email, user.password);
   }
 
   // ========= Actualizar Usuario =========
   updateProfile(displayName: string) {
-    return updateProfile(getAuth().currentUser, { displayName })
+    return updateProfile(getAuth().currentUser, { displayName });
   }
 
   sendRecoveryEmail(email: string) {
@@ -49,7 +50,7 @@ export class FirebaseService {
   signOut() {
     getAuth().signOut();
     localStorage.removeItem('usuario');
-    this.utilsSvc.routerLink('auth')
+    this.utilsSvc.routerLink('auth');
   }
 
   signOutNotRedirect() {
@@ -70,25 +71,24 @@ export class FirebaseService {
     return updateDoc(docRef, data);
   }
 
-  //Obtener un documento de la colección
+  // Obtener un documento de la colección
   async getDocument(path: string) {
     return (await getDoc(doc(getFirestore(), path))).data();
   }
 
-  //añadir uno nuevo a la colección
+  // Añadir uno nuevo a la colección
   async addDocument(collectionPath: string, data: any): Promise<void> {
     const docRef = this.firestore.collection(collectionPath).doc(); // Crea un nuevo documento
     return docRef.set(data); // Guarda el documento en la colección
   }
 
-  //AÑADIR UN DOCUMENTO NUEVO A LA COLECCIÓN CON UN UID DE LA FUNCIÓN UID, PARA MEJOR MANEJO
+  // Añadir un documento nuevo a la colección con un UID de la función UID, para mejor manejo
   async addDocumentWithId(collectionPath: string, data: any, id: string): Promise<void> {
     const docRef = this.firestore.collection(collectionPath).doc(id); // Usa el ID proporcionado
     return docRef.set(data); // Guarda el documento en la colección
   }
 
-
-  //eliminar un documento de la colección
+  // Eliminar un documento de la colección
   async deleteDocument(path: string): Promise<void> {
     return this.firestore.collection(path.split('/')[0]).doc(path.split('/')[1]).delete();
   }
@@ -106,18 +106,35 @@ export class FirebaseService {
     return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
   }
 
-
-
   // ========= Subir Imagen a Firebase Storage =========
   async uploadImage(path: string, data_url: string) {
     return uploadString(ref(getStorage(), path), data_url, 'data_url').then(() => {
       return getDownloadURL(ref(getStorage(), path));
-    })
+    });
   }
 
-  // ==== Obtener La ruta de la image ====
+  // ==== Obtener La ruta de la imagen ====
   async getFilePath(url: string) {
     return ref(getStorage(), url).fullPath;
+  }
+
+  // ========== Gestión de Presencia en Tiempo Real ==========
+
+  // FirebaseService
+  async trackPresenceOnLogin(uid: string) {
+    const userStatusRef = this.firestore.collection('usuario').doc(uid);
+
+    // Actualizar el estado del usuario a "online"
+    await userStatusRef.set({
+      isLoggedIn: true,
+      lastActive: Date.now()
+    }, { merge: true });
+  }
+
+
+  async getActiveUsers() {
+    const querySnapshot = await this.firestore.collection('usuario', ref => ref.where('isLoggedIn', '==', true)).get().toPromise();
+    return querySnapshot.docs.length; // Número de usuarios activos
   }
 
 }

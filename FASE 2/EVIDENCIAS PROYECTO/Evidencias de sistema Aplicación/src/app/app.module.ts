@@ -20,6 +20,8 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { BaseChartDirective } from 'ng2-charts';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
+import { SessionService } from './services/session.service'; // Asegúrate de importar el servicio
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -30,7 +32,7 @@ import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
     NgxDatatableModule,
     BaseChartDirective
   ],
-  providers: [provideCharts(withDefaultRegisterables()), { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, }, provideHttpClient()],
+  providers: [provideCharts(withDefaultRegisterables()), { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, }, provideHttpClient(), SessionService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

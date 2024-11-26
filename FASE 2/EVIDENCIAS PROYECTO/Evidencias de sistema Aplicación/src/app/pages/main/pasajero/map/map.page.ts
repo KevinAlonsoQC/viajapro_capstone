@@ -184,10 +184,9 @@ export class MapPage implements OnInit {
     //Dejé tu API de Pago porque aún no existen un token de pago para el chofer!
     //Para poner la api de pago del chofer solo usa el que obtiene la función.
 
-    const api_key = "49c65a51-5874-4471-beaa-a2891b385026";
-    this.paymentService.createPayment(amountt, currency, subject, api_key).subscribe(
+    this.paymentService.createPayment(amountt, currency, subject, token).subscribe(
       (response) => {
-        this.iniciarOperacionKhipu(response.payment_id, api_key);
+        this.iniciarOperacionKhipu(response.payment_id, token);
       }
     );
   }
@@ -247,12 +246,12 @@ export class MapPage implements OnInit {
           }
 
           // Agrega un nuevo marcador en la nueva ubicación y guarda el ID
-          const ids = await this.map.addMarkers([{
+          const ids = await this.map.addMarkers([{ 
             coordinate: {
               lat: this.latitude,
               lng: this.longitude,
             },
-            iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055469490962493/user_icon.png?ex=673c8d16&is=673b3b96&hm=6590d9270077e59efbadeabfcccf81708c726816fd2c3967a3c38c0d16b638e5&=&format=webp&quality=lossless",
+            iconUrl: "https://i.imgur.com/3FZWEg7.png",
             iconSize: { width: 25, height: 25 },
             iconAnchor: { x: 12.5, y: 12.5 }
           }]);
@@ -271,7 +270,7 @@ export class MapPage implements OnInit {
         lat: this.latitude,
         lng: this.longitude,
       },
-      iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055469490962493/user_icon.png?ex=673c8d16&is=673b3b96&hm=6590d9270077e59efbadeabfcccf81708c726816fd2c3967a3c38c0d16b638e5&=&format=webp&quality=lossless",
+      iconUrl: "https://i.imgur.com/3FZWEg7.png",
       iconSize: { width: 30, height: 30 },
       iconAnchor: { x: 15, y: 15 }
     }]);
@@ -286,7 +285,7 @@ export class MapPage implements OnInit {
           lat: this.routePoints[0].punto_inicio.lat,
           lng: this.routePoints[0].punto_inicio.lng,
         },
-        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055467632623689/icon_inicio.png?ex=673c8d15&is=673b3b95&hm=b64f383d7638ca5c12c5b35b6b3f3e34fbe5969804821c83c138f3656304e9e1&=&format=webp&quality=lossless",
+        iconUrl: "https://i.imgur.com/W7tYbxC.png",
         iconSize: { width: 25, height: 25 },
         iconAnchor: { x: 12.5, y: 12.5 }, // Punto de anclaje en el centro inferior
         title: "Central",
@@ -296,7 +295,7 @@ export class MapPage implements OnInit {
           lat: this.routePoints[0].punto_final.lat,
           lng: this.routePoints[0].punto_final.lng,
         },
-        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055468412768286/icono_fin.png?ex=673c8d16&is=673b3b96&hm=2290e86a5358c444d8c9b44125ec4741271156e7d235394742475f790b72c7f7&=&format=webp&quality=lossless",
+        iconUrl: "https://i.imgur.com/08sjVf4.png",
         iconSize: { width: 30, height: 30 },
         iconAnchor: { x: 15, y: 15 }, // Punto de anclaje en el centro inferior
         title: "Retorno",
@@ -318,7 +317,7 @@ export class MapPage implements OnInit {
               lat: veh.coordenadas_vehiculo.lat,
               lng: veh.coordenadas_vehiculo.lng,
             },
-            iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055467347542108/icon_car.png?ex=673c8d15&is=673b3b95&hm=e451b17825132236f98a16bd26cc799140b9462bf0fddc962d6a3188f1aab11b&=&format=webp&quality=lossless",
+            iconUrl: "https://i.imgur.com/1bvSFDM.png",
             iconSize: { width: 30, height: 35 },
             iconAnchor: { x: 15, y: 35 } // Punto de anclaje en el centro inferior
           });
@@ -411,7 +410,7 @@ export class MapPage implements OnInit {
           this.tarifa = this.routePoints[0].tarifa_diurna;
         }
 
-        if (this.carDetail && this.carDetail.length > 0 && this.carDetail.id) {
+        if (this.carDetail && this.carDetail.id) {
           console.log('Actualizando valores del vehiculo detallado');
           this.vehiculos.filter(veh => {
             if (veh.id == this.carDetail.id) {

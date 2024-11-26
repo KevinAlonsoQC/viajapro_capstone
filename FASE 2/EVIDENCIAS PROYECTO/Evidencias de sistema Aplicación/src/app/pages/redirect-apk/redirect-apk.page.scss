@@ -55,6 +55,24 @@ ion-button {
   margin-top: 20px; /* Asegúrate de que haya un espacio entre los botones */
 }
 
+/* Botones más grandes */
+.android-button,
+.ios-button {
+  font-size: 18px; /* Tamaño de texto más grande */
+  padding: 15px 20px; /* Más espacio interno */
+  border-radius: 8px; /* Bordes redondeados */
+  width: 80%; /* Botones más anchos */
+  margin: 10px auto; /* Separación entre botones */
+  display: block; /* Asegura que estén en bloque para centrarlos */
+  text-align: center;
+}
+
+.android-button ion-icon,
+.ios-button ion-icon {
+  font-size: 24px; /* Iconos más grandes */
+  margin-right: 8px;
+}
+
 ion-content {
   --background: #ffc300;
   --color: #000 !important;
@@ -129,7 +147,7 @@ p.demos {
   animation-delay: 6s;
 }
 .sp-container h2.frame-4 {
-  font-size: 200px;
+  font-size: 90px;
   -webkit-animation-delay: 9s;
   -moz-animation-delay: 9s;
   -ms-animation-delay: 9s;
@@ -187,7 +205,7 @@ p.demos {
 .sp-circle-link {
   position: absolute;
   left: 50%;
-  bottom: 300px;
+  bottom: 200px;
   margin-left: -50px;
   text-align: center;
   line-height: 100px;
@@ -374,5 +392,135 @@ p.demos {
   100% {
     opacity: 1;
     transform: scale(1) rotate(0deg);
+  }
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .footer-logo img {
+    max-width: 150px;
+  }
+
+  .footer-text p {
+    font-size: 14px; /* Reducir tamaño de texto en móviles */
+  }
+
+  .sp-container h2 {
+    font-size: 60px; /* Reducir títulos para pantallas pequeñas */
+  }
+  .sp-container h2.frame-4 {
+    font-size: 60px;
+  }
+
+  .sp-circle-link {
+    bottom: 100px; /* Ajustar posición de los botones */
+  }
+
+  .android-button,
+  .ios-button {
+    font-size: 16px; /* Botones un poco más pequeños */
+    padding: 10px 15px;
+    width: 100%; /* Usar el 100% del ancho disponible */
+    border-radius: 20px;
+  }
+
+  .sp-circle-link {
+    position: absolute;
+    bottom: 200px;
+    margin: 0 auto; /* Centrar horizontalmente */
+    transform: translateX(-50%); /* Ajustar el elemento para que quede centrado */
+    text-align: center;
+    line-height: 100px;
+    width: 250px;
+    height: 250px;
+    background: #ffc300;
+    color: #3f1616;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centrar texto dentro del círculo */
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-text p {
+    font-size: 12px; /* Más pequeño en pantallas muy pequeñas */
+  }
+
+  .sp-container h2 {
+    font-size: 40px; /* Reducir títulos para pantallas pequeñas */
+  }
+
+  .sp-container h2.frame-4 {
+    font-size: 40px;
+  }
+
+  .android-button,
+  .ios-button {
+    font-size: 16px; /* Botones un poco más pequeños */
+    padding: 10px 15px;
+    width: 100%; /* Usar el 100% del ancho disponible */
+    border-radius: 20px;
+  }
+
+  .sp-circle-link {
+    position: absolute;
+    bottom: 200px;
+    margin: 0 auto; /* Centrar horizontalmente */
+    transform: translateX(-50%); /* Ajustar el elemento para que quede centrado */
+    text-align: center;
+    line-height: 100px;
+    width: 150px;
+    height: 150px;
+    background: #ffc300;
+    color: #3f1616;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centrar texto dentro del círculo */
+  }
+}
+
+
+@media (min-width: 768px) {
+  /* Estilos para pantallas más grandes */
+  .footer-logo img {
+    max-width: 250px;
+  }
+
+  .sp-container h2 {
+    font-size: 90px; /* Reducir títulos para pantallas pequeñas */
+  }
+
+  .android-button,
+  .ios-button {
+    font-size: 20px;
+    width: 60%;
+  }
+
+  .android-button,
+  .ios-button {
+    font-size: 16px; /* Botones un poco más pequeños */
+    padding: 10px 15px;
+    width: 100%; /* Usar el 100% del ancho disponible */
+    border-radius: 20px;
+  }
+
+  .sp-circle-link {
+    position: absolute;
+    bottom: 200px;
+    margin: 0 auto; /* Centrar horizontalmente */
+    transform: translateX(-50%); /* Ajustar el elemento para que quede centrado */
+    text-align: center;
+    line-height: 100px;
+    width: 150px;
+    height: 150px;
+    background: #ffc300;
+    color: #3f1616;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centrar texto dentro del círculo */
   }
 }

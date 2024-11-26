@@ -6,6 +6,8 @@ import { UtilsService } from 'src/app/services/utils.service';
 import { Chart, registerables } from 'chart.js';  // Para versiones 3.x y superiores
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import * as Papa from 'papaparse'; // Para CSV
+import * as XLSX from 'xlsx'; // Para Excel
 
 @Component({
   selector: 'app-owner',
@@ -32,20 +34,22 @@ export class OwnerPage implements OnInit {
   porcentaje_meta: number = 0;
 
   rankingCentrales: { central: CentralColectivo; empleados: any; ventas: number, lugar: any }[] = [];
+
+  selectedYear: number;
+
+  chartDaily: any;
+  chartMonthly: any;
+  chartAnnual: any;
+
+  currentYear: number = new Date().getFullYear();  // Año actual
   constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
-    this.isMobile = this.detectMobile();
-    console.log(this.isMobile ? 'Dispositivo móvil' : 'Web');
+    this.selectedYear = new Date().getFullYear(); // Año por defecto al actual
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
     });
     this.utilsSvc.getFromLocalStorage('usuario');
-  }
-
-  detectMobile(): boolean {
-    const userAgent = navigator.userAgent || navigator.vendor || window['opera'];
-    return /android|iPad|iPhone|iPod/i.test(userAgent);
   }
 
   async ionViewWillEnter() {
@@ -117,8 +121,8 @@ export class OwnerPage implements OnInit {
         this.porcentaje_meta = parseFloat(((this.ventas_totales / this.meta_anual) * 100).toFixed(3));
       }
 
-      this.createSalesCharts();
-      this.createAnnualSalesChart();
+      this.updateCharts(); // Actualizar los gráficos cuando los datos estén listos.
+
 
       if (this.centrales.length <= 0) {
         this.utilsSvc.presentToast({
@@ -144,59 +148,69 @@ export class OwnerPage implements OnInit {
     }
   }
 
-  createAnnualSalesChart() {
-    const hoy = new Date();
-    const ventasAnuales = [];
-    const anos = [];
-    for (let i = 0; i < 6; i++) {
-      const anio = hoy.getFullYear() - i;
-      anos.push(anio.toString());
-
-      const ventarxAnio = this.finanzas.filter(venta => {
-        const fecha = new Date(venta.fecha_pago.split(', ')[0].split('/').reverse().join('-'));
-        return fecha.getFullYear() === anio;
-      });
-
-      const totalVentasAnuales = ventarxAnio.reduce((acc, venta) => acc + parseFloat(venta.amount), 0);
-      ventasAnuales.push(totalVentasAnuales);
-    }
-
-    new Chart('sales-annual-chart', {
-      type: 'bar',
-      data: {
-        labels: anos,
-        datasets: [{
-          label: 'Ventas Anuales',
-          data: ventasAnuales,
-          backgroundColor: 'rgba(255, 99, 132, 0.2)',
-          borderColor: 'rgba(255, 99, 132, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
+  // Filtrar las ventas por el año seleccionado
+  getVentasPorAnio() {
+    return this.finanzas.filter(venta => {
+      const fecha = new Date(venta.fecha_pago.split(', ')[0].split('/').reverse().join('-'));
+      return fecha.getFullYear() === this.selectedYear;
     });
   }
 
-  createSalesCharts() {
-    const hoy = new Date();
+  async updateCharts() {
+    const loading = await this.utilsSvc.loading();
+    await loading.present();
+    try {
+      this.utilsSvc.presentToast({
+        message: 'Gráficos Actualizados',
+        duration: 1500,
+        color: 'primary',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+      this.createSalesCharts(this.selectedYear);
+    } catch (error) {
+      console.log(error);
+      this.utilsSvc.presentToast({
+        message: 'No se pudo actualizar los gráficos',
+        duration: 1500,
+        color: 'warning',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+    } finally {
+      loading.dismiss();
+    }
+  }
+
+  createSalesCharts(year: number) {
     const ventasDiarias = [];
+    const month = new Date().getMonth();
+    const diasDelMes = new Date(year, month + 1, 0).getDate();
+
     for (let i = 1; i <= 31; i++) {
-      const fecha = new Date(hoy.getFullYear(), hoy.getMonth(), i);
-      const ventasDelDia = this.finanzas.filter(venta => new Date(venta.fecha_pago.split(', ')[0].split('/').reverse().join('-')).toDateString() === fecha.toDateString());
-      ventasDiarias.push(ventasDelDia.reduce((acc, venta) => acc + parseFloat(venta.amount), 0));
+      if (i <= diasDelMes) {
+        const fecha = new Date(year, month, i);
+        const ventasDelDia = this.finanzas.filter(venta =>
+          new Date(venta.fecha_pago.split(', ')[0].split('/').reverse().join('-')).toDateString() === fecha.toDateString()
+        );
+        ventasDiarias.push(ventasDelDia.reduce((acc, venta) => acc + parseFloat(venta.amount), 0));
+      } else {
+        ventasDiarias.push(0);
+      }
     }
 
-    new Chart('sales-daily-chart', {
+    // Destruir el gráfico anterior si existe
+    if (this.chartDaily) {
+      this.chartDaily.destroy();
+    }
+
+    // Crear el gráfico de ventas diarias
+    this.chartDaily = new Chart('sales-daily-chart-admin', {
       type: 'bar',
       data: {
-        labels: Array.from({ length: 31 }, (_, i) => `${i + 1}/${hoy.getMonth() + 1}`),
+        labels: Array.from({ length: 31 }, (_, i) => `${i + 1}/${month + 1}`),
         datasets: [{
-          label: 'Ventas Diarias',
+          label: 'Ventas Diarias ' + year,
           data: ventasDiarias,
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderColor: 'rgba(75, 192, 192, 1)',
@@ -206,39 +220,9 @@ export class OwnerPage implements OnInit {
       options: {
         responsive: true,
         scales: {
-          y: { beginAtZero: true }
-        }
-      }
-    });
-
-    const ventasSemanales = [];
-    const semanas = [];
-    for (let i = 0; i < 4; i++) {
-      const inicioSemana = new Date(hoy.getFullYear(), hoy.getMonth(), i * 7);
-      const finSemana = new Date(hoy.getFullYear(), hoy.getMonth(), (i + 1) * 7);
-      semanas.push(`${inicioSemana.getDate()}/${inicioSemana.getMonth() + 1} - ${finSemana.getDate()}/${finSemana.getMonth() + 1}`);
-      const ventasSemana = this.finanzas.filter(venta => {
-        const fecha = new Date(venta.fecha_pago.split(', ')[0].split('/').reverse().join('-'));
-        return fecha >= inicioSemana && fecha <= finSemana;
-      });
-      ventasSemanales.push(ventasSemana.reduce((acc, venta) => acc + parseFloat(venta.amount), 0));
-    }
-
-    new Chart('sales-weekly-chart', {
-      type: 'bar',
-      data: {
-        labels: semanas,
-        datasets: [{
-          label: 'Ventas Semanales',
-          data: ventasSemanales,
-          backgroundColor: 'rgba(153, 102, 255, 0.2)',
-          borderColor: 'rgba(153, 102, 255, 1)',
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: {
+          x: {
+            ticks: { callback: (val, index) => (index + 1 <= diasDelMes ? `${index + 1}/${month + 1}` : '') }
+          },
           y: { beginAtZero: true }
         }
       }
@@ -246,17 +230,28 @@ export class OwnerPage implements OnInit {
 
     const ventasMensuales = [];
     const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+    // Aquí filtras las ventas del mes específico del año seleccionado
     for (let i = 0; i < 12; i++) {
-      const ventasMes = this.finanzas.filter(venta => new Date(venta.fecha_pago.split(', ')[0].split('/').reverse().join('-')).getMonth() === i);
+      const ventasMes = this.finanzas.filter(venta => {
+        const fechaVenta = new Date(venta.fecha_pago.split(', ')[0].split('/').reverse().join('-'));
+        return fechaVenta.getFullYear() === year && fechaVenta.getMonth() === i;
+      });
       ventasMensuales.push(ventasMes.reduce((acc, venta) => acc + parseFloat(venta.amount), 0));
     }
 
-    new Chart('sales-monthly-chart', {
+    // Destruir el gráfico anterior si existe
+    if (this.chartMonthly) {
+      this.chartMonthly.destroy();
+    }
+
+    // Crear el gráfico de ventas mensuales
+    this.chartMonthly = new Chart('sales-monthly-chart-admin', {
       type: 'bar',
       data: {
         labels: meses,
         datasets: [{
-          label: 'Ventas Mensuales',
+          label: 'Ventas Mensuales ' + year,
           data: ventasMensuales,
           backgroundColor: 'rgba(255, 159, 64, 0.2)',
           borderColor: 'rgba(255, 159, 64, 1)',
@@ -265,9 +260,55 @@ export class OwnerPage implements OnInit {
       },
       options: {
         responsive: true,
-        scales: {
-          y: { beginAtZero: true }
-        }
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // Destruir el gráfico anterior si existe
+    if (this.chartAnnual) {
+      this.chartAnnual.destroy();
+    }
+
+    const ventasAnuales = [];
+    const anos = [];
+
+    // Recorrer los últimos 6 años (por ejemplo, de 2024 a 2019)
+    for (let i = 0; i < 6; i++) {
+      const anio = year - i;
+      anos.push(anio.toString());
+
+      // Filtrar ventas por año
+      const ventarxAnio = this.finanzas.filter(venta => {
+        const fecha = new Date(venta.fecha_pago.split(', ')[0].split('/').reverse().join('-'));
+        return fecha.getFullYear() === anio;
+      });
+
+      // Calcular las ventas anuales
+      const totalVentasAnuales = ventarxAnio.reduce((acc, venta) => acc + parseFloat(venta.amount), 0);
+      ventasAnuales.push(totalVentasAnuales); // Añadir el total de ventas del año (0 si no hay ventas)
+    }
+
+    // Destruir el gráfico anterior si existe
+    if (this.chartAnnual) {
+      this.chartAnnual.destroy();
+    }
+
+    // Crear el gráfico de ventas anuales
+    this.chartAnnual = new Chart('sales-annual-chart-admin', {
+      type: 'bar',
+      data: {
+        labels: anos, // Etiquetas con los años
+        datasets: [{
+          label: 'Ventas Anuales',
+          data: ventasAnuales, // Datos de las ventas anuales (con 0 si no hay ventas)
+          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+          borderColor: 'rgba(255, 99, 132, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
       }
     });
   }
@@ -387,6 +428,85 @@ export class OwnerPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+
+  downloadCSV() {
+    const ventasFiltradas = this.getVentasPorAnio();
+
+    if (ventasFiltradas.length === 0) {
+      this.utilsSvc.presentToast({
+        message: 'No hay ventas para el año seleccionado',
+        duration: 1500,
+        color: 'warning',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+      return;
+    }
+
+    const data = ventasFiltradas.map(venta => ({
+      'ID_Transaccion': venta.payment_id,
+      'Fecha': venta.fecha_pago,
+      'Monto': Math.trunc(venta.amount),
+      'Nombre_Chofer': venta.nombre_chofer,
+      'Rut_Chofer': venta.rut_chofer,
+      'Nombre_Pasajero': venta.nombre_pasajero,
+      'Rut_Pasajero': venta.rut_pasajero,
+      'Razon': venta.subject,
+      'Modelo_Vehiculo': venta.vehiculo.modelo,
+      'Patente_Vehiculo': venta.vehiculo.patente,
+      'Banco': venta.bank,
+      'Comprobante': venta.receipt_url
+    }));
+
+    // Usando PapaParse para convertir los datos a CSV
+    const csv = Papa.unparse(data);
+
+    // Crear un blob con el CSV y preparar la descarga
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `ventas_${this.selectedYear}.csv`; // Nombre del archivo CSV con el año
+    link.click(); // Iniciar la descarga
+  }
+
+  // Función para descargar los datos en Excel
+  downloadExcel() {
+    const ventasFiltradas = this.getVentasPorAnio();
+
+    if (ventasFiltradas.length === 0) {
+      this.utilsSvc.presentToast({
+        message: 'No hay ventas para el año seleccionado',
+        duration: 1500,
+        color: 'warning',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });      
+      return;
+    }
+
+    const data = ventasFiltradas.map(venta => ({
+      'ID_Transaccion': venta.payment_id,
+      'Fecha': venta.fecha_pago,
+      'Monto': Math.trunc(venta.amount),
+      'Nombre_Chofer': venta.nombre_chofer,
+      'Rut_Chofer': venta.rut_chofer,
+      'Nombre_Pasajero': venta.nombre_pasajero,
+      'Rut_Pasajero': venta.rut_pasajero,
+      'Razon': venta.subject,
+      'Modelo_Vehiculo': venta.vehiculo.modelo,
+      'Patente_Vehiculo': venta.vehiculo.patente,
+      'Banco': venta.bank,
+      'Comprobante': venta.receipt_url
+    }));
+
+    // Convertir el array de objetos a una hoja de Excel
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = { Sheets: { 'Ventas': ws }, SheetNames: ['Ventas'] };
+
+    // Exportar la hoja como un archivo Excel
+    XLSX.writeFile(wb, `ventas_${this.selectedYear}.xlsx`); // Nombre del archivo Excel con el año
   }
 
 }

@@ -146,7 +146,7 @@ export class ModificarRutaPage implements OnInit {
           lat: this.ruta.punto_inicio.lat,
           lng: this.ruta.punto_inicio.lng,
         },
-        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055467632623689/icon_inicio.png?ex=673c8d15&is=673b3b95&hm=b64f383d7638ca5c12c5b35b6b3f3e34fbe5969804821c83c138f3656304e9e1&=&format=webp&quality=lossless",
+        iconUrl: "https://i.imgur.com/W7tYbxC.png",
         iconSize: { width: 25, height: 25 },
         iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },
@@ -155,7 +155,7 @@ export class ModificarRutaPage implements OnInit {
           lat: this.ruta.punto_final.lat,
           lng: this.ruta.punto_final.lng,
         },
-        iconUrl: "https://media.discordapp.net/attachments/1257401262903660668/1308055468182208573/icon_user2.png?ex=673c8d16&is=673b3b96&hm=2924ba05100932f3bdcfb8b0bb2f40ac7a05a9e820ba48cd58563b2ac33d0c60&=&format=webp&quality=lossless",
+        iconUrl: "https://i.imgur.com/08sjVf4.png",
         iconSize: { width: 25, height: 25 },
         iconAnchor: { x: 12.5, y: 12.5 } // Punto de anclaje en el centro inferior
       },

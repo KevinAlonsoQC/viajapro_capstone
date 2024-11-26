@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { SessionService } from './services/session.service';  // Importa el servicio
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
-}
+  constructor(private sessionService: SessionService) {}
+  }

@@ -14,40 +14,60 @@
 <ion-content id="admin-content">
   <ion-grid [fixed]="true">
     <ion-row>
-      <ion-col size="12" size-sm="6">
-        <div class="image-container">
-          <canvas id="sales-daily-chart-admin"></canvas>
-          <div class="overlay">
-            <h3>Ventas Diarias</h3>
-          </div>
+      <ion-col size="12" size-sm="12">
+        <ion-list>
+          <ion-item>
+            <ion-input labelPlacement="stacked" label="Año" [placeholder]="selectedYear" size="small" type="number" [(ngModel)]="selectedYear" [min]="2000" [max]="currentYear">
+              <ion-button fill="clear" slot="end" [disabled]="selectedYear < 2000 || selectedYear > currentYear" (click)="updateCharts()">
+                Buscar
+                <ion-icon slot="icon-only" name="search" aria-hidden="true"></ion-icon>
+              </ion-button>
+            </ion-input>
+          </ion-item>
+        </ion-list>
+      
+        <!-- Mensaje para mostrar si el año es menor a 2000 -->
+        <div *ngIf="selectedYear && selectedYear < 2000" style="color: red;">
+          Solo se pueden seleccionar años desde el 2000 en adelante.
         </div>
+        <!-- Mensaje para mostrar si el año es superior al año actual -->
+        <div *ngIf="selectedYear && selectedYear > currentYear" style="color: red;">
+          No se puede seleccionar un año superior al año actual.
+        </div>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="downloadCSV()"
+              [disabled]="selectedYear < 2000 || selectedYear > currentYear || !selectedYear">
+              Descargar Ventas (CSV)
+            </ion-button>
+          </ion-buttons>
+
+          <ion-buttons slot="end">
+            <ion-button (click)="downloadExcel()"
+              [disabled]="selectedYear < 2000 || selectedYear > currentYear || !selectedYear">
+              Descargar Ventas (Excel)
+            </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+
       </ion-col>
-      <ion-col size="12" size-sm="6">
-        <div class="image-container">
-          <canvas id="sales-weekly-chart-admin"></canvas>
-          <div class="overlay">
-            <h3>Ventas Semanales</h3>
-          </div>
-        </div>
+
+    </ion-row>
+
+
+
+    <ion-row class="ion-justify-content-center ion-align-items-center">
+      <ion-col size="12" size-sm="12">
+        <canvas id="sales-daily-chart-admin"></canvas>
       </ion-col>
     </ion-row>
 
     <ion-row>
       <ion-col size="12" size-sm="6">
-        <div class="image-container">
-          <canvas id="sales-monthly-chart-admin"></canvas>
-          <div class="overlay">
-            <h3>Ventas Mensuales</h3>
-          </div>
-        </div>
+        <canvas id="sales-monthly-chart-admin"></canvas>
       </ion-col>
       <ion-col size="12" size-sm="6">
-        <div class="image-container">
-          <canvas id="sales-annual-chart-admin"></canvas>
-          <div class="overlay">
-            <h3>Ventas Anuales</h3>
-          </div>
-        </div>
+        <canvas id="sales-annual-chart-admin"></canvas>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -63,7 +83,8 @@
           </app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
-          <app-menu-master url="main/administrador/admin" txt_icon="Configuración" icon="settings-outline"></app-menu-master>
+          <app-menu-master url="main/administrador/admin" txt_icon="Configuración"
+            icon="settings-outline"></app-menu-master>
         </ion-col>
         <ion-col class="ion-text-center">
           <app-menu-master url="main/administrador" txt_icon="Inicio" icon="home-outline"></app-menu-master>

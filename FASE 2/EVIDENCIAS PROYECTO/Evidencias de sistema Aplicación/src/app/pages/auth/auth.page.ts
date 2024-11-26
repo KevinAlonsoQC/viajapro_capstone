@@ -19,41 +19,72 @@ export class AuthPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
-  async submit(){
-    if(this.form.valid){
+  async submit() {
+    if (this.form.valid) {
       const loading = await this.utilsSvc.loading();
       await loading.present();
-      this.firebaseSvc.signIn(this.form.value as User).then(res => {
-        this.getUserInfo(res.user.uid)
 
-      }).catch(error => {
-        console.log(error);
+      const email = this.form.value.email!;
+      const userStatusRef = this.firebaseSvc.firestore.collection('usuario');
+
+      try {
+        // Buscar el estado del usuario basado en el correo
+        const snapshot = await userStatusRef.ref.where('email', '==', email).get();
+
+        if (!snapshot.empty) {
+          const userStatus = snapshot.docs[0].data();
+
+          // Verificar si `isLoggedIn` existe y es true
+          if (userStatus && userStatus['isLoggedIn']) {
+            this.utilsSvc.presentToast({
+              message: 'Este usuario ya está iniciado. Repórtalo si crees que es un error.',
+              duration: 3000,
+              color: 'warning',
+              position: 'middle',
+              icon: 'alert-circle-outline',
+            });
+            loading.dismiss();
+            return;
+          }
+        }
+
+        // Intentar iniciar sesión
+        const res = await this.firebaseSvc.signIn(this.form.value as User);
+        const uid = res.user.uid;
+
+        // Rastrear presencia con Firestore
+        await this.firebaseSvc.trackPresenceOnLogin(uid);
+
+        // Obtener información del usuario
+        this.getUserInfo(uid);
+
+      } catch (error) {
+        console.error(error);
         this.utilsSvc.presentToast({
-          message: 'Las credenciales son incorrectas',
+          message: 'Ocurrió un error al intentar iniciar sesión.',
           duration: 2500,
           position: 'middle',
           icon: 'close-circle-outline',
-          cssClass:'toast-error'
-        })
-
-      }).finally(() =>{
+          cssClass: 'toast-error',
+        });
+      } finally {
         loading.dismiss();
-      })
+      }
     }
   }
+
 
   async getUserInfo(uid: string) {
     if (this.form.valid) {
       const loading = await this.utilsSvc.loading();
       await loading.present();
 
-      let path = `usuario/${uid}`
+      const path = `usuario/${uid}`;
 
       this.firebaseSvc.getDocument(path).then((user: User) => {
-        this.utilsSvc.saveInLocalStorage('usuario', user)
+        this.utilsSvc.saveInLocalStorage('usuario', user);
         this.utilsSvc.routerLink('/main');
         this.form.reset();
 
@@ -63,7 +94,7 @@ export class AuthPage implements OnInit {
           color: 'primary',
           position: 'middle',
           icon: 'person-circle-outline'
-        })
+        });
 
       }).catch(error => {
         console.log(error);
@@ -73,11 +104,11 @@ export class AuthPage implements OnInit {
           color: 'primary',
           position: 'middle',
           icon: 'alert-circle-outline'
-        })
+        });
 
       }).finally(() => {
         loading.dismiss();
-      })
+      });
     }
   }
 

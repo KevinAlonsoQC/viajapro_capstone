@@ -117,20 +117,23 @@ export class SessionService {
     this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
       this.usuario = user;
     });
+
     if (this.usuario) {
       const getUser = await this.firebaseSvc.getDocument(`usuario/${this.usuario.uid}`);
       const device = await this.utilsSvc.itsThisDevice(getUser['dispositivo']);
+
       if (!device) {
         const alert = await this.alertController.create({
           header: 'Lo sentimos :(',
           message: 'Se ha iniciado sesión en otro dispositivo.',
+          backdropDismiss: false, // Evita cerrar al presionar fuera
           buttons: [
             {
               text: 'Aceptar',
               handler: () => {
                 clearTimeout(this.sessionTimeout);
                 clearTimeout(this.confirmationSessionTimeout);
-                this.firebaseSvc.signOut(); // Si responde, reinicia el temporizador
+                this.firebaseSvc.signOut(); // Finaliza la sesión
               },
             },
           ],
@@ -143,18 +146,18 @@ export class SessionService {
           alert.dismiss();
           clearTimeout(this.sessionTimeout);
           clearTimeout(this.confirmationSessionTimeout);
-
           this.firebaseSvc.signOut();
         }, this.waitDuration);
       } else {
         this.resetTimerSession();
       }
     } else {
-      console.log('No hay usuario')
+      console.log('No hay usuario');
       clearTimeout(this.sessionTimeout);
       clearTimeout(this.confirmationSessionTimeout);
     }
   }
+
 
   /**
    * Finaliza el Servicio del Chofer.

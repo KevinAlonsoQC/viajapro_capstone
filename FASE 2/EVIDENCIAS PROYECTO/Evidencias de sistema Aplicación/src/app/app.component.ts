@@ -7,5 +7,5 @@ import { SessionService } from './services/session.service';  // Importa el serv
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(private sessionService: SessionService) {}
+  constructor() {}
   }

@@ -15,7 +15,7 @@ export class MainPage implements OnInit {
 
   public usuario: any;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     // Suscribirse al observable del usuario
@@ -38,7 +38,6 @@ export class MainPage implements OnInit {
 
     try {
       const tipo_cuenta = this.usuario.tipo_usuario;
-      console.log('Alo?')
       if(tipo_cuenta == "0"){
         this.utilsSvc.routerLink('/main/owner');
       }else if(tipo_cuenta == "1"){

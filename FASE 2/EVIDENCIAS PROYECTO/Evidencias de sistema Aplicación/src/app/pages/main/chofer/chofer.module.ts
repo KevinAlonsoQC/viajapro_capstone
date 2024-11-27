@@ -8,6 +8,7 @@ import { ChoferPageRoutingModule } from './chofer-routing.module';
 
 import { ChoferPage } from './chofer.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { SessionService } from '../../../services/session.service'; // Asegúrate de importar el servicio
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
     ChoferPageRoutingModule,
     SharedModule
   ],
+  providers:[SessionService],
   declarations: [ChoferPage]
 })
 export class ChoferPageModule {}

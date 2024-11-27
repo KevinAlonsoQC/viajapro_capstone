@@ -4,6 +4,7 @@ import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { AlertController } from '@ionic/angular';
 import { Geolocation } from '@capacitor/geolocation';
+import { SessionService } from 'src/app/services/session.service';
 
 @Component({
   selector: 'app-chofer',
@@ -22,7 +23,7 @@ export class ChoferPage implements OnInit {
   ruta_actual: any;
 
   isMobile: boolean;
-  constructor(private alertController: AlertController) { }
+  constructor(private alertController: AlertController, private sessionService: SessionService) { }
 
 
   ngOnInit() {

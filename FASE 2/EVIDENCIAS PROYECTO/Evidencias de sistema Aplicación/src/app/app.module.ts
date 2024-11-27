@@ -12,15 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 // ======= Firebase ==========
 import { AngularFireModule } from '@angular/fire/compat';
 import { environment } from 'src/environments/environment.prod';
-
 import { provideHttpClient } from '@angular/common/http';
-
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-
-import { BaseChartDirective } from 'ng2-charts';
-import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
-
-import { SessionService } from './services/session.service'; // Asegúrate de importar el servicio
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,10 +21,8 @@ import { SessionService } from './services/session.service'; // Asegúrate de im
     IonicModule.forRoot({ mode: 'md' }),
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    NgxDatatableModule,
-    BaseChartDirective
   ],
-  providers: [provideCharts(withDefaultRegisterables()), { provide: RouteReuseStrategy, useClass: IonicRouteStrategy, }, provideHttpClient(), SessionService],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy, }, provideHttpClient()],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

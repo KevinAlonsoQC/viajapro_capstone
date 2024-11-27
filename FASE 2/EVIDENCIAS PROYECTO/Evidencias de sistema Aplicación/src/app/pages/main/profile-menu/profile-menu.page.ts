@@ -34,8 +34,9 @@ export class ProfileMenuPage implements OnInit {
         this.utilsSvc.saveInLocalStorage(asientoKey, true);
       }
 
-      await this.firebaseSvc.updateDocument(`vehiculo/${this.usuario.vehiculo_actual}`, { ...{ en_ruta: false, chofer_actual: '', nombre_chofer: '', asientos_dispo_vehiculo: 4, ruta_actual: false, token: '', rut_chofer: '' } });
-      await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '', isLoggedIn: false, lastActive: Date.now() } });
+      this.firebaseSvc.updateDocument(`vehiculo/${this.usuario.vehiculo_actual}`, { ...{ en_ruta: false, chofer_actual: '', nombre_chofer: '', asientos_dispo_vehiculo: 4, ruta_actual: false, token: '', rut_chofer: '' } });
+      this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '', isLoggedIn: false, lastActive: Date.now() } });
+      
       this.usuario.en_ruta = false;
       this.usuario.vehiculo_actual = '';
       this.utilsSvc.saveInLocalStorage('usuario', this.usuario);

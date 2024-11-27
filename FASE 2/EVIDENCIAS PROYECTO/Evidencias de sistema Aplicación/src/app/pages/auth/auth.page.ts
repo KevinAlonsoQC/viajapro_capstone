@@ -11,6 +11,7 @@ import { UtilsService } from 'src/app/services/utils.service';
 })
 export class AuthPage implements OnInit {
 
+  rememberMe: boolean = false;
   form = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required])
@@ -19,7 +20,14 @@ export class AuthPage implements OnInit {
   firebaseSvc = inject(FirebaseService);
   utilsSvc = inject(UtilsService);
 
-  ngOnInit() { }
+  ngOnInit() {
+    // Si "Recordar usuario" está activado previamente, restaurar el correo desde el localStorage
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+      this.form.controls['email'].setValue(savedEmail);
+      this.rememberMe = true;
+    }
+  }
 
   async submit() {
     if (this.form.valid) {
@@ -37,7 +45,7 @@ export class AuthPage implements OnInit {
           const userStatus = snapshot.docs[0].data();
 
           // Verificar si `isLoggedIn` existe y es true
-          if (userStatus && userStatus['isLoggedIn']) {
+          if (userStatus && userStatus['isLoggedIn'] && (userStatus['tipo_usuario'] == '2' || userStatus['tipo_usuario'] == '3')) {
             this.utilsSvc.presentToast({
               message: 'Este usuario ya está iniciado. Repórtalo si crees que es un error.',
               duration: 3000,
@@ -60,6 +68,13 @@ export class AuthPage implements OnInit {
         // Obtener información del usuario
         this.getUserInfo(uid);
 
+        // Si el usuario ha seleccionado "Recordar usuario", guardar el correo en localStorage
+        if (this.rememberMe) {
+          localStorage.setItem('rememberedEmail', email);
+        } else {
+          localStorage.removeItem('rememberedEmail'); // Si no se marca, eliminar del almacenamiento
+        }
+        
       } catch (error) {
         console.error(error);
         this.utilsSvc.presentToast({

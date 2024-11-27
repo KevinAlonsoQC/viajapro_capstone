@@ -28,6 +28,11 @@
         </div>
       </div>
 
+      <ion-item class="ion-text-start">
+        <ion-label>Recuérdame</ion-label>
+        <ion-checkbox slot="start" [(ngModel)]="rememberMe" [ngModelOptions]="{standalone: true}"></ion-checkbox>
+      </ion-item>
+
       <p class="ion-text-end" routerLink="forgot-password">
         ¿Olvidaste tu Contraseña?
       </p>

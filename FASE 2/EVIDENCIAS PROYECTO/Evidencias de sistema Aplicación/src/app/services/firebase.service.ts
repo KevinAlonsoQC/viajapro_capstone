@@ -49,13 +49,13 @@ export class FirebaseService {
   // ========= Cerrar Sesión Usuario =========
   signOut() {
     getAuth().signOut();
-    localStorage.removeItem('usuario');
+    this.utilsSvc.deleteFromLocalStorage('usuario');
     this.utilsSvc.routerLink('auth');
   }
 
   signOutNotRedirect() {
     getAuth().signOut();
-    localStorage.removeItem('usuario');
+    this.utilsSvc.deleteFromLocalStorage('usuario');
   }
 
   // ========== Base de Datos ==========
@@ -116,25 +116,6 @@ export class FirebaseService {
   // ==== Obtener La ruta de la imagen ====
   async getFilePath(url: string) {
     return ref(getStorage(), url).fullPath;
-  }
-
-  // ========== Gestión de Presencia en Tiempo Real ==========
-
-  // FirebaseService
-  async trackPresenceOnLogin(uid: string) {
-    const userStatusRef = this.firestore.collection('usuario').doc(uid);
-
-    // Actualizar el estado del usuario a "online"
-    await userStatusRef.set({
-      isLoggedIn: true,
-      lastActive: Date.now()
-    }, { merge: true });
-  }
-
-
-  async getActiveUsers() {
-    const querySnapshot = await this.firestore.collection('usuario', ref => ref.where('isLoggedIn', '==', true)).get().toPromise();
-    return querySnapshot.docs.length; // Número de usuarios activos
   }
 
 }

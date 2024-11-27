@@ -4,6 +4,7 @@ import { LoadingController, ToastController, ToastOptions } from '@ionic/angular
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { BehaviorSubject } from 'rxjs';
 import { User } from 'src/app/models/user';
+import { Device } from '@capacitor/device';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,16 @@ export class UtilsService {
     return data;
   }
 
+  deleteFromLocalStorage(key: string) {
+    // Elimina el elemento del localStorage
+    localStorage.removeItem(key);
+
+    // Actualiza el BehaviorSubject correspondiente si existe
+    if (this.dataSubjects[key]) {
+      this.dataSubjects[key].next(null); // Establece el valor como null para indicar que ya no hay datos
+    }
+  }
+
   // ==== Para sacar Fotografías ====
   async takePicture(promptLabelHeader: string) {
     return await Camera.getPhoto({
@@ -69,5 +80,16 @@ export class UtilsService {
   // Método para obtener el observable de un BehaviorSubject específico
   getDataObservable(key: string) {
     return this.dataSubjects[key]?.asObservable();
+  }
+
+  // ==== Obtener ID del dispositivo
+  async getDeviceID() {
+    const info = await Device.getId();
+    return info.identifier
+  }
+
+  async itsThisDevice(id: string) {
+    const info = await Device.getId();
+    return info.identifier == id;
   }
 }

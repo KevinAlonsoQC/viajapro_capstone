@@ -15,5 +15,8 @@ export interface User {
     vehiculo_actual?: string;
 
     token?: string;
+
+    dispositivo?: string; // O el tipo adecuado según tu base de datos
+
 }
 

@@ -1,8 +1,7 @@
-import { Injectable, inject, HostListener } from '@angular/core';
-import { AlertController, Platform } from '@ionic/angular';
+import { Injectable, inject } from '@angular/core';
+import { AlertController } from '@ionic/angular';
 import { FirebaseService } from './firebase.service';
 import { UtilsService } from './utils.service';
-import { App } from '@capacitor/app';
 
 @Injectable({
   providedIn: 'root',
@@ -10,27 +9,20 @@ import { App } from '@capacitor/app';
 export class SessionService {
   private firebaseSvc = inject(FirebaseService);
   private utilsSvc = inject(UtilsService);
-  private platform = inject(Platform);
 
   private inactivityTimeout: any;
   private confirmationTimeout: any;
   private inactivityDuration = 20 * 60 * 1000; // 20 minutos
   private confirmationDuration = 60 * 1000; // 1 minuto para responder
 
+  private sessionTimeout: any;
+  private confirmationSessionTimeout: any;
+  private verificationDuration = 5000; // 5 segundos
+  private waitDuration = 10000; // 10 segundos para responder
+
   private usuario: any;
   constructor(private alertController: AlertController) {
     this.initSessionMonitoring();
-    this.detectAppClose();
-  }
-
-  // Detectar cierre de la app en dispositivos móviles
-  private detectAppClose() {
-    App.addListener('appStateChange', (state) => {
-      if (!state.isActive) {
-        console.log('App')
-        this.logoutService();
-      }
-    });
   }
 
   /**
@@ -38,7 +30,6 @@ export class SessionService {
    */
   initSessionMonitoring() {
     this.startInactivityTracking();
-    this.handleAppLifecycle();
   }
 
   /**
@@ -46,26 +37,16 @@ export class SessionService {
    */
   private startInactivityTracking() {
     this.resetInactivityTimer();
+    this.resetTimerSession();
 
     // Detectar eventos de actividad en todas las páginas
     const activityEvents = ['click', 'mousemove', 'keydown', 'touchstart', 'scroll'];
     activityEvents.forEach(event => {
-      document.addEventListener(event, () => this.resetInactivityTimer());
-    });
-  }
-
-  /**
-   * Maneja los estados de pausa y reanudación de la aplicación.
-   */
-  private handleAppLifecycle() {
-    this.platform.pause.subscribe(() => {
-      // Si la app se va a segundo plano, cerrar sesión.
-      this.logoutService();
-    });
-
-    this.platform.resume.subscribe(() => {
-      // Cuando la app vuelve al primer plano, reinicia el temporizador.
-      this.resetInactivityTimer();
+      document.addEventListener(event, () => {
+        this.resetInactivityTimer()
+        this.resetTimerSession();
+      }
+      );
     });
   }
 
@@ -80,6 +61,16 @@ export class SessionService {
     this.inactivityTimeout = setTimeout(() => {
       this.showInactivityPrompt();
     }, this.inactivityDuration);
+  }
+
+  private resetTimerSession() {
+    clearTimeout(this.sessionTimeout);
+    clearTimeout(this.confirmationSessionTimeout);
+
+    // Configurar el temporizador de inactividad
+    this.sessionTimeout = setTimeout(() => {
+      this.showAlertSession();
+    }, this.verificationDuration);
   }
 
   /**
@@ -118,13 +109,55 @@ export class SessionService {
         this.logoutService();
       }, this.confirmationDuration);
     } else {
-      console.log('No está en ruta!')
       this.resetInactivityTimer();
     }
   }
 
+  private async showAlertSession() {
+    this.utilsSvc.getDataObservable('usuario')?.subscribe(user => {
+      this.usuario = user;
+    });
+    if (this.usuario) {
+      const getUser = await this.firebaseSvc.getDocument(`usuario/${this.usuario.uid}`);
+      const device = await this.utilsSvc.itsThisDevice(getUser['dispositivo']);
+      if (!device) {
+        const alert = await this.alertController.create({
+          header: 'Lo sentimos :(',
+          message: 'Se ha iniciado sesión en otro dispositivo.',
+          buttons: [
+            {
+              text: 'Aceptar',
+              handler: () => {
+                clearTimeout(this.sessionTimeout);
+                clearTimeout(this.confirmationSessionTimeout);
+                this.firebaseSvc.signOut(); // Si responde, reinicia el temporizador
+              },
+            },
+          ],
+        });
+
+        await alert.present();
+
+        // Configurar cierre automático si no responde
+        this.confirmationSessionTimeout = setTimeout(() => {
+          alert.dismiss();
+          clearTimeout(this.sessionTimeout);
+          clearTimeout(this.confirmationSessionTimeout);
+
+          this.firebaseSvc.signOut();
+        }, this.waitDuration);
+      } else {
+        this.resetTimerSession();
+      }
+    } else {
+      console.log('No hay usuario')
+      clearTimeout(this.sessionTimeout);
+      clearTimeout(this.confirmationSessionTimeout);
+    }
+  }
+
   /**
-   * Cierra la sesión del usuario.
+   * Finaliza el Servicio del Chofer.
    */
   private async logoutService() {
     clearTimeout(this.inactivityTimeout);
@@ -142,11 +175,11 @@ export class SessionService {
         this.utilsSvc.saveInLocalStorage(asientoKey, true);
       }
 
-      if(this.usuario.en_ruta){
+      if (this.usuario.en_ruta) {
         this.firebaseSvc.updateDocument(`vehiculo/${this.usuario.vehiculo_actual}`, { ...{ en_ruta: false, chofer_actual: '', nombre_chofer: '', asientos_dispo_vehiculo: 4, ruta_actual: false, token: '', rut_chofer: '' } });
       }
 
-      this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '', isLoggedIn: false, lastActive: Date.now() } });
+      this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '' } });
 
       this.usuario.en_ruta = false;
       this.usuario.vehiculo_actual = '';

@@ -437,6 +437,7 @@ export class MapPage implements OnInit {
                 central: veh.central,
                 id_chofer: veh.chofer_actual,
                 nombreChofer: veh.nombre_chofer,
+                rutChofer: veh.rut_chofer,
                 patente: veh.patente_vehiculo,
                 modelo: veh.nombre_modelo,
                 distancia: distance,

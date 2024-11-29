@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,7 @@ export class DeviceGuard implements CanActivate {
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
     const isMobile = this.detectMobile();
-
-    if (!isMobile) {
+    if (!Capacitor.isNativePlatform()) {
       // Redirige a la vista web
       if (state.url !== '/redirect-apk') {
         this.router.navigate(['/redirect-apk']);

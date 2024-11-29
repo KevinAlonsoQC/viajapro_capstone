@@ -1,9 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Capacitor } from '@capacitor/core';
 import { User } from 'src/app/models/user';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { Chart, registerables } from 'chart.js';  // Para versiones 3.x y superiores
 import { CentralColectivo } from 'src/app/models/central-colectivo';
+
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 import * as Papa from 'papaparse'; // Para CSV
 import * as XLSX from 'xlsx'; // Para Excel
 
@@ -313,7 +316,7 @@ export class AdministradorPage implements OnInit {
     this.firebaseSvc.signOut();
   }
 
-  downloadCSV() {
+  async downloadCSV() {
     const ventasFiltradas = this.getVentasPorAnio();
 
     if (ventasFiltradas.length === 0) {
@@ -322,39 +325,67 @@ export class AdministradorPage implements OnInit {
         duration: 1500,
         color: 'warning',
         position: 'middle',
-        icon: 'alert-circle-outline'
+        icon: 'alert-circle-outline',
       });
       return;
     }
 
     const data = ventasFiltradas.map(venta => ({
-      'ID_Transaccion': venta.payment_id,
-      'Fecha': venta.fecha_pago,
-      'Monto': Math.trunc(venta.amount),
-      'Nombre_Chofer': venta.nombre_chofer,
-      'Rut_Chofer': venta.rut_chofer,
-      'Nombre_Pasajero': venta.nombre_pasajero,
-      'Rut_Pasajero': venta.rut_pasajero,
-      'Razon': venta.subject,
-      'Modelo_Vehiculo': venta.vehiculo.modelo,
-      'Patente_Vehiculo': venta.vehiculo.patente,
-      'Banco': venta.bank,
-      'Comprobante': venta.receipt_url
+      ID_Transaccion: venta.payment_id,
+      Fecha: venta.fecha_pago,
+      Monto: Math.trunc(venta.amount),
+      Nombre_Chofer: venta.nombre_chofer,
+      Rut_Chofer: venta.rut_chofer,
+      Nombre_Pasajero: venta.nombre_pasajero,
+      Rut_Pasajero: venta.rut_pasajero,
+      Razon: venta.subject,
+      Modelo_Vehiculo: venta.vehiculo.modelo,
+      Patente_Vehiculo: venta.vehiculo.patente,
+      Banco: venta.bank,
+      Comprobante: venta.receipt_url,
     }));
 
-    // Usando PapaParse para convertir los datos a CSV
     const csv = Papa.unparse(data);
+    const fileName = `ventas_${this.selectedYear}.csv`;
 
-    // Crear un blob con el CSV y preparar la descarga
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `ventas_${this.selectedYear}.csv`; // Nombre del archivo CSV con el año
-    link.click(); // Iniciar la descarga
+    if (Capacitor.isNativePlatform()) {
+      // En plataformas nativas (Android/iOS)
+      try {
+        await Filesystem.writeFile({
+          path: fileName,
+          data: btoa(csv), // Codificar en base64 para Filesystem
+          directory: Directory.Documents,
+          encoding: Encoding.UTF8,
+        });
+
+        this.utilsSvc.presentToast({
+          message: `Archivo CSV guardado: ${fileName}`,
+          duration: 1500,
+          color: 'success',
+          position: 'middle',
+          icon: 'checkmark-circle-outline',
+        });
+      } catch (error) {
+        console.error('Error al guardar el archivo:', error);
+        this.utilsSvc.presentToast({
+          message: 'Error al guardar el archivo:'+ error,
+          duration: 1500,
+          color: 'danger',
+          position: 'middle',
+          icon: 'close-circle-outline',
+        });
+      }
+    } else {
+      // En la web, descargar usando un enlace
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+    }
   }
 
-  // Función para descargar los datos en Excel
-  downloadExcel() {
+  async downloadExcel() {
     const ventasFiltradas = this.getVentasPorAnio();
 
     if (ventasFiltradas.length === 0) {
@@ -363,32 +394,81 @@ export class AdministradorPage implements OnInit {
         duration: 1500,
         color: 'warning',
         position: 'middle',
-        icon: 'alert-circle-outline'
-      });      
+        icon: 'alert-circle-outline',
+      });
       return;
     }
 
     const data = ventasFiltradas.map(venta => ({
-      'ID_Transaccion': venta.payment_id,
-      'Fecha': venta.fecha_pago,
-      'Monto': Math.trunc(venta.amount),
-      'Nombre_Chofer': venta.nombre_chofer,
-      'Rut_Chofer': venta.rut_chofer,
-      'Nombre_Pasajero': venta.nombre_pasajero,
-      'Rut_Pasajero': venta.rut_pasajero,
-      'Razon': venta.subject,
-      'Modelo_Vehiculo': venta.vehiculo.modelo,
-      'Patente_Vehiculo': venta.vehiculo.patente,
-      'Banco': venta.bank,
-      'Comprobante': venta.receipt_url
+      ID_Transaccion: venta.payment_id,
+      Fecha: venta.fecha_pago,
+      Monto: Math.trunc(venta.amount),
+      Nombre_Chofer: venta.nombre_chofer,
+      Rut_Chofer: venta.rut_chofer,
+      Nombre_Pasajero: venta.nombre_pasajero,
+      Rut_Pasajero: venta.rut_pasajero,
+      Razon: venta.subject,
+      Modelo_Vehiculo: venta.vehiculo.modelo,
+      Patente_Vehiculo: venta.vehiculo.patente,
+      Banco: venta.bank,
+      Comprobante: venta.receipt_url,
     }));
 
-    // Convertir el array de objetos a una hoja de Excel
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
-    const wb: XLSX.WorkBook = { Sheets: { 'Ventas': ws }, SheetNames: ['Ventas'] };
+    const wb: XLSX.WorkBook = { Sheets: { Ventas: ws }, SheetNames: ['Ventas'] };
+    const excelBuffer: ArrayBuffer = XLSX.write(wb, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+    const fileName = `ventas_${this.selectedYear}.xlsx`;
 
-    // Exportar la hoja como un archivo Excel
-    XLSX.writeFile(wb, `ventas_${this.selectedYear}.xlsx`); // Nombre del archivo Excel con el año
+    if (Capacitor.isNativePlatform()) {
+      // En plataformas nativas (Android/iOS)
+      const dataBlob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      try {
+        await Filesystem.writeFile({
+          path: fileName,
+          data: await this.blobToBase64(dataBlob),
+          directory: Directory.Documents,
+        });
+
+        this.utilsSvc.presentToast({
+          message: `Archivo Excel guardado: ${fileName}`,
+          duration: 1500,
+          color: 'success',
+          position: 'middle',
+          icon: 'checkmark-circle-outline',
+        });
+      } catch (error) {
+        console.error('Error al guardar el archivo:', error);
+        this.utilsSvc.presentToast({
+          message: 'Error al guardar el archivo:'+ error,
+          duration: 1500,
+          color: 'danger',
+          position: 'middle',
+          icon: 'close-circle-outline',
+        });
+      }
+    } else {
+      // En la web, descargar usando un enlace
+      const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+    }
   }
 
+  // Conversión de Blob a Base64 (requiere esta función)
+  private blobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        resolve(dataUrl.split(',')[1]); // Remover el encabezado de data URL
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
 }

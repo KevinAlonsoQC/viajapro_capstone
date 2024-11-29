@@ -69,11 +69,26 @@ export class AuthPage implements OnInit {
             }
             if (userStatus['en_ruta']) {
               if (userStatus['vehiculo_actual']) {
-                this.firebaseSvc.updateDocument(`vehiculo/${userStatus['vehiculo_actual']}`, { ...{ en_ruta: false, chofer_actual: '', nombre_chofer: '', asientos_dispo_vehiculo: 4, ruta_actual: false, token: '', rut_chofer: '' } });
+                await this.firebaseSvc.updateDocument(`vehiculo/${userStatus['vehiculo_actual']}`, { ...{ en_ruta: false, chofer_actual: '', nombre_chofer: '', asientos_dispo_vehiculo: 4, ruta_actual: false, token: '', rut_chofer: '' } });
               }
-              this.firebaseSvc.updateDocument(`usuario/${uid}`, { ...{ en_ruta: false, vehiculo_actual: '' } });
+              await this.firebaseSvc.updateDocument(`usuario/${uid}`, { ...{ en_ruta: false, vehiculo_actual: '' } });
             }
 
+            // Ejecutar ambas promesas en paralelo
+            const [callback] = await Promise.all([
+              this.firebaseSvc.getCollectionDocuments('vehiculo') as Promise<any>,
+            ]);
+
+            // Filtrar los resultados para obtener solo los choferes de la misma central
+            const vehiculos = callback.filter(veh => {
+              // Recorre la lista de usuarios asociados al vehículo
+              for (let item in veh.usuario) {
+                if (veh.central === userStatus['central'] && uid === veh.usuario[item] && veh.chofer_actual == uid && veh.en_ruta == true) {
+                  this.firebaseSvc.updateDocument(`vehiculo/${veh.id}`, { ...{ en_ruta: false, chofer_actual: '', nombre_chofer: '', asientos_dispo_vehiculo: 4, ruta_actual: false, token: '', rut_chofer: '' } });
+                  console.log('Vehículo en servicio marcado en false!')
+                }
+              }
+            });
           }
 
           // Obtener información del usuario
@@ -97,7 +112,7 @@ export class AuthPage implements OnInit {
       } catch (error) {
         console.error(error);
         this.utilsSvc.presentToast({
-          message: 'Ocurrió un error al intentar iniciar sesión. '+error,
+          message: 'Ocurrió un error al intentar iniciar sesión. ' + error,
           duration: 2500,
           position: 'middle',
           icon: 'close-circle-outline',

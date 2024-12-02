@@ -27,15 +27,17 @@ export class ProfileMenuPage implements OnInit {
   }
 
   async signOut() {
-    if (this.usuario.tipo_usuario == '2') {
+    if (this.usuario && this.usuario.tipo_usuario == '2') {
       const asientos = [true, true, true, true];
       for (let i = 0; i < asientos.length; i++) {
         const asientoKey = `asiento${i + 1}`;
         this.utilsSvc.saveInLocalStorage(asientoKey, true);
       }
 
-      await this.firebaseSvc.updateDocument(`vehiculo/${this.usuario.vehiculo_actual}`, { ...{ en_ruta: false, chofer_actual: '', nombre_chofer: '', asientos_dispo_vehiculo: 4, ruta_actual: false, token: '', rut_chofer: '' } });
-      await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '', isLoggedIn: false, lastActive: Date.now() } });
+      if(this.usuario.vehiculo_actual){
+        await this.firebaseSvc.updateDocument(`vehiculo/${this.usuario.vehiculo_actual}`, { ...{ en_ruta: false, chofer_actual: '', nombre_chofer: '', asientos_dispo_vehiculo: 4, ruta_actual: false, token: '', rut_chofer: '' } });
+      }
+      await this.firebaseSvc.updateDocument(`usuario/${this.usuario.uid}`, { ...{ en_ruta: false, vehiculo_actual: '',  isLoggedIn: false, lastActive: Date.now()} });
       
       this.usuario.en_ruta = false;
       this.usuario.vehiculo_actual = '';
